@@ -1,1959 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Morrison — Creative Digital Agency</title>
-
-<meta
-    name="description"
-    content="Morrison is a creative digital agency creating brands, products and digital experiences."
->
-
-<!-- =========================================================
-     GOOGLE FONTS
-========================================================= -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-<link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
->
-
-
-<style>
-
-/* =========================================================
-   ROOT
-========================================================= */
-
-:root {
-    --black: #10100f;
-    --black-soft: #151514;
-
-    --white: #f4f1e9;
-    --white-muted: #a7a49c;
-
-    --yellow: #ffe51b;
-    --yellow-dark: #e8cf00;
-
-    --line: rgba(244, 241, 233, 0.18);
-
-    --display: "Space Grotesk", sans-serif;
-    --body: "DM Sans", sans-serif;
-
-    --page-width: 1400px;
-}
-
-
-/* =========================================================
-   RESET
-========================================================= */
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    background: var(--black);
-    color: var(--white);
-    font-family: var(--body);
-    overflow-x: hidden;
-    -webkit-font-smoothing: antialiased;
-}
-
-button,
-a {
-    font: inherit;
-}
-
-button {
-    border: 0;
-}
-
-a {
-    color: inherit;
-    text-decoration: none;
-}
-
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero {
-    position: relative;
-
-    min-height: 100svh;
-
-    background:
-        radial-gradient(
-            circle at 70% 45%,
-            rgba(255, 229, 27, 0.045),
-            transparent 28%
-        ),
-        radial-gradient(
-            circle at 20% 70%,
-            rgba(255, 255, 255, 0.025),
-            transparent 30%
-        ),
-        var(--black);
-
-    overflow: hidden;
-}
-
-
-/* subtle texture */
-
-.hero::before {
-    content: "";
-
-    position: absolute;
-    inset: 0;
-
-    pointer-events: none;
-
-    opacity: 0.16;
-
-    background-image:
-        radial-gradient(
-            rgba(255,255,255,0.18) 0.6px,
-            transparent 0.6px
-        );
-
-    background-size: 5px 5px;
-
-    mask-image: linear-gradient(
-        to bottom,
-        black,
-        transparent 95%
-    );
-}
-
-
-/* =========================================================
-   CONTAINER
-========================================================= */
-
-.hero-inner {
-    position: relative;
-    z-index: 2;
-
-    width: min(
-        calc(100% - 80px),
-        var(--page-width)
-    );
-
-    min-height: 100svh;
-
-    margin: 0 auto;
-
-    display: flex;
-    flex-direction: column;
-}
-
-
-/* =========================================================
-   NAVIGATION
-========================================================= */
-
-.nav {
-    height: 86px;
-
-    display: grid;
-    grid-template-columns: 1fr auto 1fr;
-
-    align-items: center;
-
-    border-bottom: 1px solid var(--line);
-}
-
-
-/* logo */
-
-.logo {
-    font-family: var(--display);
-
-    font-size: 1.05rem;
-
-    font-weight: 700;
-
-    letter-spacing: -0.06em;
-
-    display: inline-flex;
-    align-items: center;
-}
-
-.logo-dot {
-    width: 7px;
-    height: 7px;
-
-    margin-left: 2px;
-
-    border-radius: 50%;
-
-    background: var(--yellow);
-}
-
-
-/* nav links */
-
-.nav-links {
-    display: flex;
-    gap: 34px;
-
-    font-size: 0.76rem;
-
-    font-weight: 600;
-
-    color: rgba(244, 241, 233, 0.65);
-}
-
-.nav-links a {
-    position: relative;
-
-    transition:
-        color 220ms ease;
-}
-
-.nav-links a::after {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    bottom: -5px;
-
-    width: 100%;
-    height: 1px;
-
-    background: var(--yellow);
-
-    transform: scaleX(0);
-
-    transform-origin: right;
-
-    transition:
-        transform 250ms ease;
-}
-
-.nav-links a:hover {
-    color: var(--white);
-}
-
-.nav-links a:hover::after {
-    transform: scaleX(1);
-    transform-origin: left;
-}
-
-
-/* nav CTA */
-
-.nav-cta {
-    justify-self: end;
-
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-
-    padding: 12px 17px 12px 20px;
-
-    border-radius: 100px;
-
-    background: var(--yellow);
-
-    color: var(--black);
-
-    font-size: 0.75rem;
-
-    font-weight: 700;
-
-    transition:
-        transform 200ms ease,
-        background 200ms ease;
-}
-
-.nav-cta span {
-    display: grid;
-    place-items: center;
-
-    width: 22px;
-    height: 22px;
-
-    border-radius: 50%;
-
-    background: var(--black);
-
-    color: var(--yellow);
-
-    font-size: 0.7rem;
-}
-
-.nav-cta:hover {
-    transform: translateY(-2px);
-    background: #fff02f;
-}
-
-
-/* =========================================================
-   HERO CONTENT
-========================================================= */
-
-.hero-content {
-    flex: 1;
-
-    display: grid;
-
-    grid-template-columns:
-        minmax(0, 1.15fr)
-        minmax(340px, 0.85fr);
-
-    gap: 40px;
-
-    align-items: center;
-
-    padding:
-        clamp(70px, 10vh, 120px)
-        0
-        70px;
-}
-
-
-/* =========================================================
-   LEFT CONTENT
-========================================================= */
-
-.hero-copy {
-    position: relative;
-
-    z-index: 4;
-}
-
-
-/* eyebrow */
-
-.eyebrow {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    margin-bottom: 25px;
-
-    font-size: 0.7rem;
-
-    font-weight: 600;
-
-    letter-spacing: 0.16em;
-
-    text-transform: uppercase;
-
-    color: rgba(244, 241, 233, 0.65);
-}
-
-.eyebrow-line {
-    width: 31px;
-    height: 2px;
-
-    background: var(--yellow);
-}
-
-
-/* =========================================================
-   MAIN HEADLINE
-========================================================= */
-
-.hero-title {
-    font-family: var(--display);
-
-    font-size:
-        clamp(4.3rem, 8.2vw, 8.5rem);
-
-    line-height: 0.82;
-
-    font-weight: 700;
-
-    letter-spacing: -0.085em;
-
-    text-transform: uppercase;
-
-    max-width: 900px;
-}
-
-
-/* static rows */
-
-.title-row {
-    display: block;
-}
-
-
-/* =========================================================
-   INTERACTIVE WORD
-========================================================= */
-
-.word-stage {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-
-    height:
-        clamp(4.4rem, 8.2vw, 8.5rem);
-
-    width: fit-content;
-
-    min-width:
-        clamp(270px, 45vw, 700px);
-
-    cursor: pointer;
-
-    color: var(--yellow);
-
-    overflow: visible;
-
-    isolation: isolate;
-}
-
-
-/* word */
-
-.dynamic-word {
-    position: relative;
-
-    display: block;
-
-    white-space: nowrap;
-
-    will-change:
-        transform,
-        opacity,
-        filter;
-
-    transition:
-        transform 180ms cubic-bezier(.22,.61,.36,1),
-        filter 180ms ease;
-}
-
-
-/* word leaving */
-
-.dynamic-word.exit {
-    animation:
-        wordExit 360ms cubic-bezier(.76,0,.24,1) forwards;
-}
-
-
-/* word entering */
-
-.dynamic-word.enter {
-    animation:
-        wordEnter 480ms cubic-bezier(.16,1,.3,1) forwards;
-}
-
-
-@keyframes wordExit {
-
-    0% {
-        opacity: 1;
-        transform:
-            translateY(0)
-            scale(1);
-        filter: blur(0);
-    }
-
-    100% {
-        opacity: 0;
-
-        transform:
-            translateY(-35%)
-            scale(0.92);
-
-        filter: blur(8px);
-    }
-}
-
-
-@keyframes wordEnter {
-
-    0% {
-        opacity: 0;
-
-        transform:
-            translateY(45%)
-            scale(1.08);
-
-        filter: blur(8px);
-    }
-
-    65% {
-        opacity: 1;
-
-        transform:
-            translateY(-4%)
-            scale(0.995);
-
-        filter: blur(0);
-    }
-
-    100% {
-        opacity: 1;
-
-        transform:
-            translateY(0)
-            scale(1);
-
-        filter: blur(0);
-    }
-}
-
-
-/* =========================================================
-   CLICK RIPPLE
-========================================================= */
-
-.word-stage::after {
-    content: "";
-
-    position: absolute;
-
-    left: 50%;
-    top: 52%;
-
-    width: 20px;
-    height: 20px;
-
-    border-radius: 50%;
-
-    border: 2px solid var(--yellow);
-
-    opacity: 0;
-
-    transform:
-        translate(-50%, -50%)
-        scale(0.4);
-
-    pointer-events: none;
-}
-
-.word-stage.is-clicked::after {
-    animation: clickRipple 600ms ease-out;
-}
-
-@keyframes clickRipple {
-
-    0% {
-        opacity: 0.9;
-
-        transform:
-            translate(-50%, -50%)
-            scale(0.3);
-    }
-
-    100% {
-        opacity: 0;
-
-        transform:
-            translate(-50%, -50%)
-            scale(4);
-    }
-}
-
-
-/* =========================================================
-   PERIOD
-========================================================= */
-
-.period {
-    color: var(--yellow);
-
-    display: inline-block;
-
-    transform: translateX(-0.08em);
-}
-
-
-/* =========================================================
-   SUPPORTING COPY
-========================================================= */
-
-.hero-description {
-    max-width: 470px;
-
-    margin-top: 60px;
-
-    color: rgba(244, 241, 233, 0.68);
-
-    font-size:
-        clamp(0.9rem, 1.2vw, 1.05rem);
-
-    line-height: 1.55;
-}
-
-.hero-description strong {
-    color: var(--white);
-    font-weight: 700;
-}
-
-
-/* =========================================================
-   RIGHT SIDE
-========================================================= */
-
-.hero-visual {
-    position: relative;
-
-    min-height: 480px;
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: center;
-}
-
-
-/* =========================================================
-   HAND INTERACTION AREA
-========================================================= */
-
-.hand-zone {
-    position: relative;
-
-    width: min(520px, 100%);
-
-    height: 500px;
-}
-
-
-/* decorative yellow line */
-
-.motion-line {
-    position: absolute;
-
-    left: 15%;
-    top: 43%;
-
-    width: 105px;
-    height: 1px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            rgba(255,229,27,0.55)
-        );
-
-    transform:
-        rotate(-8deg);
-
-    transform-origin: left center;
-
-    opacity: 0.7;
-}
-
-
-/* =========================================================
-   HAND WRAPPER
-========================================================= */
-
-.hand {
-    position: absolute;
-
-    left: 50%;
-    top: 50%;
-
-    width: 210px;
-    height: 290px;
-
-    transform:
-        translate(-10%, -42%)
-        rotate(-8deg);
-
-    transform-origin:
-        50% 70%;
-
-    z-index: 8;
-
-    will-change: transform;
-
-    pointer-events: none;
-}
-
-
-/* hand SVG */
-
-.hand svg {
-    width: 100%;
-    height: 100%;
-
-    overflow: visible;
-
-    filter:
-        drop-shadow(
-            0 18px 24px
-            rgba(0,0,0,0.28)
-        );
-}
-
-
-/* entire hand movement */
-
-.hand.travel {
-    animation:
-        handTravel 1.25s
-        cubic-bezier(.16,1,.3,1)
-        forwards;
-}
-
-
-/*
-    The hand moves into the headline,
-    then pauses at the interaction point.
-*/
-
-@keyframes handTravel {
-
-    0% {
-        transform:
-            translate(
-                80px,
-                55px
-            )
-            rotate(12deg)
-            scale(0.9);
-    }
-
-    65% {
-        transform:
-            translate(
-                -10%,
-                -42%
-            )
-            rotate(-8deg)
-            scale(1);
-    }
-
-    100% {
-        transform:
-            translate(
-                -10%,
-                -42%
-            )
-            rotate(-8deg)
-            scale(1);
-    }
-}
-
-
-/* =========================================================
-   INDEX FINGER PRESS
-========================================================= */
-
-.hand .index-finger {
-    transform-box: fill-box;
-
-    transform-origin:
-        50% 92%;
-}
-
-
-/*
-    The finger physically presses downward.
-*/
-
-.hand.clicking .index-finger {
-    animation:
-        fingerClick 260ms
-        cubic-bezier(.22,.61,.36,1);
-}
-
-@keyframes fingerClick {
-
-    0% {
-        transform: translateY(0);
-    }
-
-    45% {
-        transform: translateY(12px);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
-
-
-/* =========================================================
-   HAND GLOW
-========================================================= */
-
-.hand-glow {
-    position: absolute;
-
-    width: 150px;
-    height: 150px;
-
-    left: 46%;
-    top: 30%;
-
-    transform: translate(-50%, -50%);
-
-    border-radius: 50%;
-
-    background:
-        radial-gradient(
-            circle,
-            rgba(255,229,27,0.13),
-            transparent 65%
-        );
-
-    filter: blur(14px);
-
-    pointer-events: none;
-
-    opacity: 0;
-
-    transition:
-        opacity 400ms ease;
-}
-
-.hand-zone.active .hand-glow {
-    opacity: 1;
-}
-
-
-/* =========================================================
-   HAND CLICK INDICATOR
-========================================================= */
-
-.click-ring {
-    position: absolute;
-
-    width: 18px;
-    height: 18px;
-
-    left: 47%;
-    top: 24%;
-
-    border:
-        1.5px solid
-        var(--yellow);
-
-    border-radius: 50%;
-
-    opacity: 0;
-
-    pointer-events: none;
-}
-
-.click-ring.active {
-    animation:
-        clickRing 600ms ease-out;
-}
-
-@keyframes clickRing {
-
-    0% {
-        opacity: 0.8;
-
-        transform: scale(0.5);
-    }
-
-    100% {
-        opacity: 0;
-
-        transform: scale(3.5);
-    }
-}
-
-
-/* =========================================================
-   CTA AREA
-========================================================= */
-
-.hero-footer {
-    display: flex;
-
-    align-items: flex-end;
-
-    justify-content: space-between;
-
-    gap: 40px;
-
-    margin-top: 65px;
-}
-
-
-/* CTA */
-
-.main-cta {
-    position: relative;
-
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 14px;
-
-    padding: 16px 18px 16px 24px;
-
-    border-radius: 100px;
-
-    background: var(--yellow);
-
-    color: var(--black);
-
-    font-size: 0.8rem;
-
-    font-weight: 700;
-
-    overflow: hidden;
-
-    transition:
-        transform 250ms ease;
-}
-
-.main-cta::before {
-    content: "";
-
-    position: absolute;
-
-    inset: 0;
-
-    background: #fff;
-
-    transform:
-        translateX(-105%);
-
-    transition:
-        transform 400ms
-        cubic-bezier(.16,1,.3,1);
-}
-
-.main-cta:hover::before {
-    transform:
-        translateX(0);
-}
-
-.main-cta:hover {
-    transform:
-        translateY(-3px);
-}
-
-.main-cta span,
-.main-cta svg {
-    position: relative;
-    z-index: 1;
-}
-
-.main-cta .arrow-circle {
-    display: grid;
-    place-items: center;
-
-    width: 28px;
-    height: 28px;
-
-    border-radius: 50%;
-
-    background: var(--black);
-
-    color: var(--yellow);
-
-    transition:
-        transform 250ms ease;
-}
-
-.main-cta:hover .arrow-circle {
-    transform:
-        rotate(45deg);
-}
-
-
-/* small footer note */
-
-.hero-meta {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    color: rgba(244,241,233,0.38);
-
-    font-size: 0.62rem;
-
-    letter-spacing: 0.13em;
-
-    text-transform: uppercase;
-}
-
-.hero-meta-dot {
-    width: 4px;
-    height: 4px;
-
-    border-radius: 50%;
-
-    background: var(--yellow);
-}
-
-
-/* =========================================================
-   MOBILE MENU BUTTON
-========================================================= */
-
-.mobile-menu {
-    display: none;
-
-    width: 42px;
-    height: 42px;
-
-    border-radius: 50%;
-
-    background: var(--yellow);
-
-    cursor: pointer;
-}
-
-.mobile-menu span,
-.mobile-menu span::after {
-    content: "";
-
-    display: block;
-
-    width: 16px;
-    height: 1.5px;
-
-    margin: auto;
-
-    background: var(--black);
-
-    transition:
-        transform 200ms ease;
-}
-
-.mobile-menu span::after {
-    margin-top: 5px;
-}
-
-
-/* =========================================================
-   RESPONSIVE — TABLET
-========================================================= */
-
-@media (max-width: 1050px) {
-
-    .hero-inner {
-        width:
-            min(
-                calc(100% - 48px),
-                var(--page-width)
-            );
-    }
-
-    .hero-content {
-        grid-template-columns:
-            1fr;
-
-        padding-top: 80px;
-    }
-
-    .hero-visual {
-        position: absolute;
-
-        right: -30px;
-        top: 50%;
-
-        width: 430px;
-
-        min-height: 430px;
-
-        opacity: 0.9;
-
-        pointer-events: none;
-    }
-
-    .hero-copy {
-        max-width: 900px;
-    }
-
-    .hero-description {
-        position: relative;
-        z-index: 10;
-    }
-
-    .hero-footer {
-        margin-top: 50px;
-    }
-}
-
-
-/* =========================================================
-   RESPONSIVE — MOBILE
-========================================================= */
-
-@media (max-width: 720px) {
-
-    .hero-inner {
-        width:
-            calc(100% - 36px);
-    }
-
-    .nav {
-        height: 72px;
-
-        grid-template-columns:
-            1fr auto;
-    }
-
-    .nav-links,
-    .nav-cta {
-        display: none;
-    }
-
-    .mobile-menu {
-        display: grid;
-        place-items: center;
-    }
-
-
-    .hero-content {
-        display: block;
-
-        padding-top: 70px;
-        padding-bottom: 45px;
-    }
-
-
-    .eyebrow {
-        margin-bottom: 20px;
-
-        font-size: 0.6rem;
-    }
-
-
-    .hero-title {
-        font-size:
-            clamp(
-                3.3rem,
-                16vw,
-                6rem
-            );
-
-        line-height: 0.86;
-
-        letter-spacing:
-            -0.08em;
-    }
-
-
-    .word-stage {
-        min-width: 0;
-
-        width: 100%;
-
-        height:
-            clamp(
-                3.5rem,
-                16vw,
-                6rem
-            );
-    }
-
-
-    .hero-description {
-        max-width: 320px;
-
-        margin-top: 42px;
-
-        font-size: 0.88rem;
-    }
-
-
-    .hero-visual {
-        position: relative;
-
-        right: auto;
-        top: auto;
-
-        width: 100%;
-
-        min-height: 260px;
-
-        margin-top: -20px;
-
-        opacity: 1;
-    }
-
-
-    .hand-zone {
-        width: 100%;
-
-        height: 280px;
-    }
-
-
-    .hand {
-        width: 150px;
-        height: 210px;
-
-        left: 62%;
-        top: 48%;
-    }
-
-
-    .motion-line {
-        left: 24%;
-        top: 42%;
-
-        width: 75px;
-    }
-
-
-    .hero-footer {
-        flex-direction: column;
-
-        align-items: flex-start;
-
-        margin-top: 20px;
-
-        gap: 22px;
-    }
-
-
-    .hero-meta {
-        font-size: 0.54rem;
-    }
-}
-
-
-/* =========================================================
-   VERY SMALL MOBILE
-========================================================= */
-
-@media (max-width: 430px) {
-
-    .hero-title {
-        font-size:
-            clamp(
-                3rem,
-                15.5vw,
-                4.4rem
-            );
-    }
-
-    .hero-visual {
-        margin-top: -5px;
-    }
-
-    .hand {
-        left: 60%;
-    }
-}
-
-
-/* =========================================================
-   ACCESSIBILITY — REDUCED MOTION
-========================================================= */
-
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        scroll-behavior: auto !important;
-
-        animation-duration:
-            0.01ms !important;
-
-        animation-iteration-count:
-            1 !important;
-
-        transition-duration:
-            0.01ms !important;
-    }
-}
-
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIG BOLD Hero Section</title>
+    
+    <!-- Importing a Big Bold font (Inter) and an elegant Serif (Playfair Display) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+
+    <style>
+        /* =========================================
+           CSS STYLING
+           ========================================= */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #050505; /* Deep black background */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden; /* Prevents scrollbars during animation */
+        }
+
+        .hero-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* The Big Bold Wordmark Container */
+        .wordmark {
+            display: flex;
+            align-items: center;
+            font-size: 14vw; /* Scales with screen width */
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+        }
+
+        .letter {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* The 'I' that acts as the mask/canvas */
+        .mask-container {
+            position: relative;
+            height: 10.5vw; /* Matches the visual height of the text */
+            width: 2.8vw; /* Matches the visual width of the letter 'I' */
+            margin: 0 0.8vw; /* Spacing between letters */
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1;
+        }
+
+        /* The container for the flashing images */
+        .mask-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0; /* Hidden initially */
+        }
+
+        /* The accent mark that snaps up */
+        .accent {
+            position: absolute;
+            top: 0;
+            right: 0;
+            font-size: 8vw;
+            line-height: 0;
+            opacity: 0;
+            transform: translateY(0) rotate(15deg);
+            pointer-events: none;
+        }
+
+        /* The contextual text that fades in */
+        .side-text {
+            position: absolute;
+            left: calc(100% + 4vw); /* Positions it perfectly to the right of the logo */
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5vw;
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            opacity: 0;
+            white-space: nowrap;
+            line-height: 1.3;
+            color: #dddddd;
+            border-left: 2px solid #333;
+            padding-left: 1vw;
+        }
+    </style>
 </head>
-
-
 <body>
 
-<!-- =======================================================
-     HERO
-======================================================= -->
-
-<main class="hero" id="home">
-
-    <div class="hero-inner">
-
-
-        <!-- =================================================
-             NAVIGATION
-        ================================================== -->
-
-        <header class="nav">
-
-            <a
-                href="#home"
-                class="logo"
-                aria-label="Morrison home"
-            >
-                MORRISON
-                <span class="logo-dot"></span>
-            </a>
-
-
-            <nav
-                class="nav-links"
-                aria-label="Main navigation"
-            >
-                <a href="#work">Work</a>
-                <a href="#about">About</a>
-                <a href="#services">Services</a>
-            </nav>
-
-
-            <a
-                href="#contact"
-                class="nav-cta"
-            >
-                Let's talk
-                <span>↗</span>
-            </a>
-
-
-            <button
-                class="mobile-menu"
-                type="button"
-                aria-label="Open navigation menu"
-            >
-                <span></span>
-            </button>
-
-        </header>
-
-
-
-        <!-- =================================================
-             HERO CONTENT
-        ================================================== -->
-
-        <section class="hero-content">
-
-
-            <!-- =============================================
-                 LEFT / TYPOGRAPHY
-            ============================================== -->
-
-            <div class="hero-copy">
-
-
-                <div class="eyebrow">
-
-                    <span class="eyebrow-line"></span>
-
-                    Creative Digital Agency
-
-                </div>
-
-
-
-                <h1 class="hero-title">
-
-                    <span class="title-row">
-                        We Make
-                    </span>
-
-
-                    <!-- =====================================
-                         INTERACTIVE WORD
-                    ====================================== -->
-
-                    <span
-                        class="word-stage"
-                        id="wordStage"
-                        tabindex="0"
-                        role="button"
-                        aria-label="Change the word"
-                    >
-
-                        <span
-                            class="dynamic-word"
-                            id="dynamicWord"
-                        >
-                            Ideas
-                        </span>
-
-                    </span>
-
-
-                    <span class="title-row">
-
-                        Move<span class="period">.</span>
-
-                    </span>
-
-                </h1>
-
-
-
-                <p class="hero-description">
-
-                    <strong>
-                        Independent creative digital agency.
-                    </strong>
-
-                    We build brands, digital experiences
-                    and products that give ambitious ideas
-                    somewhere to go.
-
-                </p>
-
+    <!-- =========================================
+         HTML STRUCTURE
+         ========================================= -->
+    <div class="hero-container">
+        <div class="wordmark">
+            <div class="letter">S</div>
+            <div class="letter">K</div>
+            
+            <!-- The expanding middle section -->
+            <div class="mask-container" id="mask">
+                <div class="mask-inner" id="mask-inner"></div>
+                <div class="accent" id="accent">´</div>
             </div>
-
-
-
-            <!-- =============================================
-                 RIGHT / HAND INTERACTION
-            ============================================== -->
-
-            <div class="hero-visual">
-
-                <div
-                    class="hand-zone"
-                    id="handZone"
-                >
-
-                    <div class="hand-glow"></div>
-
-                    <div class="motion-line"></div>
-
-                    <div
-                        class="click-ring"
-                        id="clickRing"
-                    ></div>
-
-
-                    <!-- =====================================
-                         ORIGINAL INLINE SVG HAND
-                    ====================================== -->
-
-                    <div
-                        class="hand"
-                        id="hand"
-                        aria-hidden="true"
-                    >
-
-                        <svg
-                            viewBox="0 0 240 320"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-
-                            <!-- wrist / palm -->
-
-                            <path
-                                d="
-                                    M91 293
-                                    C88 271 88 251 82 234
-                                    C75 214 61 200 49 181
-                                    C39 165 36 148 45 137
-                                    C54 126 69 128 79 140
-
-                                    L91 157
-
-                                    L85 91
-
-                                    C84 73 95 60 109 60
-                                    C124 60 133 70 134 86
-
-                                    L139 136
-
-                                    L141 72
-
-                                    C142 54 153 44 167 45
-                                    C182 46 190 58 189 74
-
-                                    L188 137
-
-                                    L192 92
-
-                                    C194 76 204 67 217 70
-                                    C230 73 236 85 234 100
-
-                                    L228 177
-
-                                    C226 206 214 227 197 243
-
-                                    C184 256 172 267 168 281
-
-                                    L170 300
-
-                                    Z
-                                "
-                                fill="#F4B46D"
-                                stroke="#10100F"
-                                stroke-width="6"
-                                stroke-linejoin="round"
-                            />
-
-
-                            <!-- INDEX FINGER
-                                 This group is animated during click.
-                            -->
-
-                            <g class="index-finger">
-
-                                <path
-                                    d="
-                                        M85 91
-                                        C84 73 95 60 109 60
-                                        C124 60 133 70 134 86
-                                        L139 136
-
-                                        L119 138
-
-                                        L115 91
-
-                                        C114 82 110 78 105 79
-                                        C99 80 98 85 99 93
-
-                                        L102 134
-                                    "
-                                    fill="#F4B46D"
-                                    stroke="#10100F"
-                                    stroke-width="6"
-                                    stroke-linejoin="round"
-                                />
-
-
-                                <!-- fingernail -->
-
-                                <path
-                                    d="
-                                        M103 76
-                                        C104 68 109 65 115 66
-                                        C121 67 124 72 124 79
-                                        L124 91
-                                        L104 93
-                                        Z
-                                    "
-                                    fill="#FFE1B8"
-                                    stroke="#10100F"
-                                    stroke-width="4"
-                                />
-
-                            </g>
-
-
-                            <!-- palm creases -->
-
-                            <path
-                                d="
-                                    M101 204
-                                    C113 211 127 213 140 212
-                                "
-                                fill="none"
-                                stroke="#C8864D"
-                                stroke-width="4"
-                                stroke-linecap="round"
-                                opacity="0.65"
-                            />
-
-                            <path
-                                d="
-                                    M108 219
-                                    C119 224 131 226 143 224
-                                "
-                                fill="none"
-                                stroke="#C8864D"
-                                stroke-width="4"
-                                stroke-linecap="round"
-                                opacity="0.55"
-                            />
-
-                            <!-- thumb crease -->
-
-                            <path
-                                d="
-                                    M79 159
-                                    C92 153 103 158 110 169
-                                "
-                                fill="none"
-                                stroke="#C8864D"
-                                stroke-width="4"
-                                stroke-linecap="round"
-                                opacity="0.6"
-                            />
-
-                        </svg>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             HERO FOOTER
-        ================================================== -->
-
-        <div class="hero-footer">
-
-
-            <a
-                href="#contact"
-                class="main-cta"
-            >
-
-                <span>
-                    Let's work together
-                </span>
-
-                <span class="arrow-circle">
-                    ↗
-                </span>
-
-            </a>
-
-
-            <div class="hero-meta">
-
-                <span>London</span>
-
-                <span class="hero-meta-dot"></span>
-
-                <span>Worldwide</span>
-
-                <span class="hero-meta-dot"></span>
-
-                <span>Scroll to explore</span>
-
-            </div>
-
+            
+            <div class="letter">C</div>
+            <div class="letter">A</div>
         </div>
-
+        
+        <!-- Text that appears at the end of the animation -->
+        <div class="side-text" id="side-text">
+            Creative Developer<br>
+            Open Source Contributor<br>
+            \ GitHub \
+        </div>
     </div>
 
-</main>
-
-
-
-<script>
-
-/* =========================================================
-   MORRISON HERO INTERACTION
-========================================================= */
-
-
-/* ---------------------------------------------------------
-   WORDS
---------------------------------------------------------- */
-
-const words = [
-    "Ideas",
-    "Products",
-    "Brands",
-    "Experiences",
-    "Digital"
-];
-
-let currentWord = 0;
-
-
-/* ---------------------------------------------------------
-   ELEMENTS
---------------------------------------------------------- */
-
-const wordStage =
-    document.getElementById("wordStage");
-
-const dynamicWord =
-    document.getElementById("dynamicWord");
-
-const hand =
-    document.getElementById("hand");
-
-const handZone =
-    document.getElementById("handZone");
-
-const clickRing =
-    document.getElementById("clickRing");
-
-
-/* ---------------------------------------------------------
-   CHANGE WORD
---------------------------------------------------------- */
-
-function changeWord() {
-
-    /*
-        Prevent multiple animations from stacking.
-    */
-
-    if (
-        dynamicWord.classList.contains("exit")
-    ) {
-        return;
-    }
-
-
-    /* -----------------------------------------------
-       HAND PRESSES
-    ------------------------------------------------ */
-
-    hand.classList.remove("clicking");
-
-    /*
-        Force browser reflow so the animation can
-        restart every time.
-    */
-
-    void hand.offsetWidth;
-
-    hand.classList.add("clicking");
-
-
-    /* -----------------------------------------------
-       CLICK RIPPLE
-    ------------------------------------------------ */
-
-    wordStage.classList.remove("is-clicked");
-
-    void wordStage.offsetWidth;
-
-    wordStage.classList.add("is-clicked");
-
-
-    clickRing.classList.remove("active");
-
-    void clickRing.offsetWidth;
-
-    clickRing.classList.add("active");
-
-
-    /* -----------------------------------------------
-       WORD EXIT
-    ------------------------------------------------ */
-
-    dynamicWord.classList.remove("enter");
-
-    dynamicWord.classList.add("exit");
-
-
-    /*
-        After the old word leaves,
-        replace it with the next word.
-    */
-
-    setTimeout(() => {
-
-        currentWord =
-            (currentWord + 1)
-            % words.length;
-
-        dynamicWord.textContent =
-            words[currentWord];
-
-
-        dynamicWord.classList.remove("exit");
-
-        void dynamicWord.offsetWidth;
-
-        dynamicWord.classList.add("enter");
-
-    }, 260);
-}
-
-
-/* ---------------------------------------------------------
-   INITIAL HAND ENTRANCE
---------------------------------------------------------- */
-
-window.addEventListener(
-    "load",
-    () => {
-
-        /*
-            Give the page a moment before the hand
-            enters the composition.
-        */
-
-        setTimeout(() => {
-
-            hand.classList.add("travel");
-
-            handZone.classList.add("active");
-
-        }, 600);
-
-
-        /*
-            Start the interaction after the hand
-            has reached the headline.
-        */
-
-        setTimeout(() => {
-
-            startInteraction();
-
-        }, 2200);
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   AUTOMATIC INTERACTION LOOP
---------------------------------------------------------- */
-
-let interactionTimer = null;
-
-function startInteraction() {
-
-    /*
-        First click.
-    */
-
-    changeWord();
-
-
-    /*
-        Continue periodically.
-    */
-
-    interactionTimer =
-        setInterval(
-            changeWord,
-            3100
-        );
-}
-
-
-/* ---------------------------------------------------------
-   USER CLICK
---------------------------------------------------------- */
-
-wordStage.addEventListener(
-    "click",
-    () => {
-
-        /*
-            User can manually control the
-            interactive word.
-        */
-
-        changeWord();
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   KEYBOARD ACCESSIBILITY
---------------------------------------------------------- */
-
-wordStage.addEventListener(
-    "keydown",
-    (event) => {
-
-        if (
-            event.key === "Enter" ||
-            event.key === " "
-        ) {
-
-            event.preventDefault();
-
-            changeWord();
-
-        }
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   POINTER HOVER
---------------------------------------------------------- */
-
-wordStage.addEventListener(
-    "mouseenter",
-    () => {
-
-        dynamicWord.style.transform =
-            "translateY(-3px)";
-
-        dynamicWord.style.filter =
-            "brightness(1.12)";
-
-    }
-);
-
-
-wordStage.addEventListener(
-    "mouseleave",
-    () => {
-
-        dynamicWord.style.transform =
-            "";
-
-        dynamicWord.style.filter =
-            "";
-
-    }
-);
-
-
-/* ---------------------------------------------------------
-   PAUSE WHEN TAB IS NOT VISIBLE
---------------------------------------------------------- */
-
-document.addEventListener(
-    "visibilitychange",
-    () => {
-
-        if (
-            document.hidden
-        ) {
-
-            if (interactionTimer) {
-
-                clearInterval(
-                    interactionTimer
-                );
-
-                interactionTimer = null;
-
-            }
-
-        } else {
-
-            if (!interactionTimer) {
-
-                interactionTimer =
-                    setInterval(
-                        changeWord,
-                        3100
-                    );
-
-            }
-
-        }
-
-    }
-);
-
-</script>
-
+    <!-- =========================================
+         JAVASCRIPT & GSAP ANIMATION
+         ========================================= -->
+    <!-- Importing GSAP (GreenSock) for high-performance timelines -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    
+    <script>
+        // Array of images to flash (Replace with your own project screenshots/GIFs)
+        const images = [
+            "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80", // Tech/Code
+            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80", // Circuit
+            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80", // Workspace
+            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80"  // Matrix code
+        ];
+
+        // Select DOM Elements
+        const maskContainer = document.getElementById('mask');
+        const maskInner = document.getElementById('mask-inner');
+        const accent = document.getElementById('accent');
+        const sideText = document.getElementById('side-text');
+
+        // Create a looping master timeline
+        const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+
+        // Step 1: Expand the "I" mask horizontally
+        tl.to(maskContainer, {
+            width: "30vw", // Expands to reveal images
+            duration: 0.8,
+            ease: "power3.inOut"
+        });
+
+        // Step 2: Fade in the image container
+        tl.to(maskInner, { opacity: 1, duration: 0.1 });
+
+        // Step 3: Rapidly flash through the images
+        images.forEach((img) => {
+            tl.set(maskInner, { backgroundImage: `url(${img})` }, "+=0.2"); // 0.2 seconds per image
+        });
+
+        // Step 4: Fade out the image container
+        tl.to(maskInner, { opacity: 0, duration: 0.1 }, "+=0.2");
+
+        // Step 5: Contract the mask back into an "I" shape
+        tl.to(maskContainer, {
+            width: "2.8vw", 
+            duration: 0.8,
+            ease: "power3.inOut"
+        });
+
+        // Step 6: Shoot the accent mark up & Fade in the context text simultaneously
+        tl.to(accent, {
+            opacity: 1,
+            y: "-3.5vw", // Moves up
+            x: "1.5vw",  // Moves slightly right
+            duration: 0.6,
+            ease: "back.out(1.7)" // Adds a nice little "snap" effect
+        }, "-=0.3"); // Starts slightly before the contraction finishes
+
+        tl.to(sideText, {
+            opacity: 1,
+            x: "2vw", // Slides in slightly
+            duration: 0.8,
+            ease: "power2.out"
+        }, "<"); // "<" means it starts at the exact same time as the previous animation
+
+        // Step 7: Hold the final state so the user can read it, then reset for the loop
+        tl.to([accent, sideText], {
+            opacity: 0,
+            duration: 0.6,
+            delay: 4 // Holds the final logo state for 4 seconds
+        });
+
+        // Reset the accent position instantly for the next loop
+        tl.set(accent, { y: 0, x: 0 });
+        tl.set(sideText, { x: 0 });
+
+    </script>
 </body>
 </html>
