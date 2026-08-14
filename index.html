@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIG BOLD Hero Section</title>
+    <title>BIG BOLD Hero Section - Updated</title>
     
-    <!-- Importing a Big Bold font (Inter) and an elegant Serif (Playfair Display) -->
+    <!-- Fonts for the main text, side text, and dynamic font cycling -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Playfair+Display:ital,wght@1,600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Playfair+Display:ital,wght@1,600&family=Courier+Prime:wght@700&family=Cinzel:wght@800&family=Abril+Fatface&display=swap" rel="stylesheet">
 
     <style>
         /* =========================================
@@ -19,13 +19,13 @@
             padding: 0;
             width: 100%;
             height: 100vh;
-            background-color: #050505; /* Deep black background */
+            background-color: #101010; /* Deep custom black */
             color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             font-family: 'Inter', sans-serif;
-            overflow: hidden; /* Prevents scrollbars during animation */
+            overflow: hidden;
         }
 
         .hero-container {
@@ -39,7 +39,7 @@
         .wordmark {
             display: flex;
             align-items: center;
-            font-size: 14vw; /* Scales with screen width */
+            font-size: 14vw;
             font-weight: 900;
             line-height: 1;
             letter-spacing: -0.02em;
@@ -51,17 +51,31 @@
             z-index: 2;
         }
 
-        /* The 'I' that acts as the mask/canvas */
+        /* The central container acting as the mask and the letter 'I' */
         .mask-container {
             position: relative;
-            height: 10.5vw; /* Matches the visual height of the text */
-            width: 2.8vw; /* Matches the visual width of the letter 'I' */
-            margin: 0 0.8vw; /* Spacing between letters */
+            height: 10.5vw; 
+            width: 2.8vw; 
+            margin: 0 0.8vw;
             background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1;
+        }
+
+        /* The dynamic 'I' that cycles fonts (hidden initially) */
+        .dynamic-i {
+            position: absolute;
+            font-size: 14vw;
+            line-height: 1;
+            color: #ffffff;
+            opacity: 0; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
         }
 
         /* The container for the flashing images */
@@ -74,25 +88,27 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0; /* Hidden initially */
+            opacity: 0; 
         }
 
-        /* The accent mark that snaps up */
+        /* The accent mark */
         .accent {
             position: absolute;
             top: 0;
             right: 0;
             font-size: 8vw;
             line-height: 0;
+            color: #FF473A; /* Bold secondary accent color */
             opacity: 0;
             transform: translateY(0) rotate(15deg);
             pointer-events: none;
+            z-index: 3;
         }
 
         /* The contextual text that fades in */
         .side-text {
             position: absolute;
-            left: calc(100% + 4vw); /* Positions it perfectly to the right of the logo */
+            left: calc(100% + 4vw); 
             top: 50%;
             transform: translateY(-50%);
             font-size: 1.5vw;
@@ -102,8 +118,9 @@
             white-space: nowrap;
             line-height: 1.3;
             color: #dddddd;
-            border-left: 2px solid #333;
+            border-left: 2px solid #FF473A; /* Matching accent color */
             padding-left: 1vw;
+            z-index: 0;
         }
     </style>
 </head>
@@ -117,9 +134,9 @@
             <div class="letter">S</div>
             <div class="letter">K</div>
             
-            <!-- The expanding middle section -->
             <div class="mask-container" id="mask">
                 <div class="mask-inner" id="mask-inner"></div>
+                <div class="dynamic-i" id="dynamic-i">I</div>
                 <div class="accent" id="accent">´</div>
             </div>
             
@@ -127,7 +144,6 @@
             <div class="letter">A</div>
         </div>
         
-        <!-- Text that appears at the end of the animation -->
         <div class="side-text" id="side-text">
             Creative Developer<br>
             Open Source Contributor<br>
@@ -138,78 +154,105 @@
     <!-- =========================================
          JAVASCRIPT & GSAP ANIMATION
          ========================================= -->
-    <!-- Importing GSAP (GreenSock) for high-performance timelines -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     
     <script>
-        // Array of images to flash (Replace with your own project screenshots/GIFs)
+        // Array of 11 images to ensure a full 5.5-second runtime (0.5s per image)
         const images = [
-            "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80", // Tech/Code
-            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80", // Circuit
-            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80", // Workspace
-            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80"  // Matrix code
+            "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80", 
+            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80", 
+            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80", 
+            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1607799279861-4dddf9657b85?auto=format&fit=crop&w=600&q=80",
+            "https://images.unsplash.com/photo-1627398225058-f4f4087336ef?auto=format&fit=crop&w=600&q=80"
         ];
 
-        // Select DOM Elements
+        // Array of fonts to cycle through
+        const fontsToCycle = [
+            "'Playfair Display', serif", 
+            "'Courier Prime', monospace", 
+            "'Cinzel', serif", 
+            "'Abril Fatface', serif", 
+            "'Georgia', serif", 
+            "'Inter', sans-serif" // Resolves back to the original font
+        ];
+
         const maskContainer = document.getElementById('mask');
         const maskInner = document.getElementById('mask-inner');
+        const dynamicI = document.getElementById('dynamic-i');
         const accent = document.getElementById('accent');
         const sideText = document.getElementById('side-text');
 
-        // Create a looping master timeline
         const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
 
-        // Step 1: Expand the "I" mask horizontally
+        // Step 1: Smooth, slow expansion (1.5 seconds)
         tl.to(maskContainer, {
-            width: "30vw", // Expands to reveal images
-            duration: 0.8,
-            ease: "power3.inOut"
+            width: "35vw",
+            duration: 1.5,
+            ease: "power2.inOut"
         });
 
-        // Step 2: Fade in the image container
-        tl.to(maskInner, { opacity: 1, duration: 0.1 });
+        tl.to(maskInner, { opacity: 1, duration: 0.3 }, "-=0.3");
 
-        // Step 3: Rapidly flash through the images
+        // Step 2: 5.5 Seconds of Image Flashing (11 images x 0.5 seconds each)
         images.forEach((img) => {
-            tl.set(maskInner, { backgroundImage: `url(${img})` }, "+=0.2"); // 0.2 seconds per image
+            tl.set(maskInner, { backgroundImage: `url(${img})` }, "+=0.5");
         });
 
-        // Step 4: Fade out the image container
-        tl.to(maskInner, { opacity: 0, duration: 0.1 }, "+=0.2");
+        tl.to(maskInner, { opacity: 0, duration: 0.3 }, "+=0.5");
 
-        // Step 5: Contract the mask back into an "I" shape
+        // Step 3: Smooth, slow contraction (1.5 seconds)
         tl.to(maskContainer, {
             width: "2.8vw", 
-            duration: 0.8,
-            ease: "power3.inOut"
-        });
+            duration: 1.5,
+            ease: "power2.inOut"
+        }, "-=0.3");
 
-        // Step 6: Shoot the accent mark up & Fade in the context text simultaneously
-        tl.to(accent, {
-            opacity: 1,
-            y: "-3.5vw", // Moves up
-            x: "1.5vw",  // Moves slightly right
-            duration: 0.6,
-            ease: "back.out(1.7)" // Adds a nice little "snap" effect
-        }, "-=0.3"); // Starts slightly before the contraction finishes
+        // Step 4: Switch from white block to text to allow font cycling
+        tl.add("fontCycleStart");
+        tl.set(maskContainer, { backgroundColor: "transparent" }, "fontCycleStart");
+        tl.set(dynamicI, { opacity: 1 }, "fontCycleStart");
 
+        // Step 5: Side text moves in VERY slowly (3.5 seconds)
         tl.to(sideText, {
             opacity: 1,
-            x: "2vw", // Slides in slightly
-            duration: 0.8,
-            ease: "power2.out"
-        }, "<"); // "<" means it starts at the exact same time as the previous animation
+            x: "2vw", 
+            duration: 3.5,
+            ease: "power1.out"
+        }, "fontCycleStart");
 
-        // Step 7: Hold the final state so the user can read it, then reset for the loop
+        // Step 6: Cycle fonts while the text is moving in
+        // Distribute the font changes evenly across the 3.5-second text animation
+        fontsToCycle.forEach((fontFamily, index) => {
+            let delay = index * 0.5; // Change font every 0.5s
+            tl.set(dynamicI, { fontFamily: fontFamily }, `fontCycleStart+=${delay}`);
+        });
+
+        // Step 7: Pop the accent mark up just as the text finishes arriving
+        tl.to(accent, {
+            opacity: 1,
+            y: "-3.5vw", 
+            x: "1.5vw", 
+            duration: 0.6,
+            ease: "back.out(1.7)" 
+        }, "fontCycleStart+=3.2");
+
+        // Step 8: Hold state, then reset for continuous loop
         tl.to([accent, sideText], {
             opacity: 0,
             duration: 0.6,
-            delay: 4 // Holds the final logo state for 4 seconds
+            delay: 4 
         });
 
-        // Reset the accent position instantly for the next loop
         tl.set(accent, { y: 0, x: 0 });
         tl.set(sideText, { x: 0 });
+        tl.set(maskContainer, { backgroundColor: "#ffffff" });
+        tl.set(dynamicI, { opacity: 0, fontFamily: "'Inter', sans-serif" });
 
     </script>
 </body>
