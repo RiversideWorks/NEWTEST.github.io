@@ -1,3206 +1,3270 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Morrison — Creative digital agency. We make ideas move." />
-  <meta name="theme-color" content="#0A0A0A" />
+<meta charset="UTF-8">
 
-  <title>Morrison — We Make Ideas Move.</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-    rel="stylesheet"
-  />
+<meta name="description" content="Morrison — Creative Digital Agency. We make ideas move.">
 
-  <style>
-    /* =========================================================
-       MORRISON
-       Creative Digital Agency
-       Single-file GitHub Pages implementation
-       ========================================================= */
+<title>Morrison — Creative Digital Agency</title>
 
-    :root {
-      --black: #0a0a0a;
-      --black-soft: #111111;
-      --yellow: #ffd400;
-      --yellow-soft: #ffe45a;
-      --white: #ffffff;
-      --cream: #f5f2ea;
-      --cream-dark: #e9e4d9;
-      --grey: #77736c;
-      --grey-light: #aaa69d;
+<!-- Google Font -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-      --display: "Space Grotesk", Arial, sans-serif;
-      --body: "DM Sans", Arial, sans-serif;
+<style>
 
-      --container: 1440px;
-      --gutter: clamp(1.25rem, 4vw, 4rem);
+/* =========================================================
+   MORRISON
+   Creative Digital Agency
+   Single-file GitHub Pages implementation
+   ========================================================= */
 
-      --ease: cubic-bezier(0.22, 1, 0.36, 1);
-      --ease-fast: cubic-bezier(0.4, 0, 0.2, 1);
 
-      --radius: 18px;
+/* =========================================================
+   RESET
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #11110f;
+    color: #f7f5ed;
+    font-family: "DM Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+}
+
+body.menu-open {
+    overflow: hidden;
+}
+
+button,
+a {
+    font: inherit;
+}
+
+button {
+    border: 0;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+img,
+svg {
+    display: block;
+    max-width: 100%;
+}
+
+::selection {
+    background: #f4d928;
+    color: #11110f;
+}
+
+
+/* =========================================================
+   VARIABLES
+   ========================================================= */
+
+:root {
+
+    --black: #11110f;
+    --black-soft: #181815;
+
+    --yellow: #f4d928;
+    --yellow-light: #ffe96b;
+
+    --cream: #f7f5ed;
+    --cream-soft: #e8e5db;
+
+    --muted: #9b998f;
+
+    --border-dark: rgba(247, 245, 237, 0.15);
+    --border-yellow: rgba(244, 217, 40, 0.35);
+
+    --container: 1440px;
+
+    --display:
+        "Space Grotesk",
+        "DM Sans",
+        Arial,
+        sans-serif;
+}
+
+
+/* =========================================================
+   GLOBAL UTILITIES
+   ========================================================= */
+
+.container {
+    width: min(calc(100% - 64px), var(--container));
+    margin-inline: auto;
+}
+
+.yellow {
+    color: var(--yellow);
+}
+
+.noise {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.035;
+    background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");
+}
+
+
+/* =========================================================
+   NAVIGATION
+   ========================================================= */
+
+.site-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+.nav {
+    height: 92px;
+
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.logo {
+    font-family: var(--display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: -0.055em;
+}
+
+.logo-dot {
+    color: var(--yellow);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+}
+
+.nav-link {
+    position: relative;
+
+    color: rgba(247,245,237,0.72);
+
+    font-size: 0.83rem;
+    font-weight: 500;
+
+    transition:
+        color 220ms ease;
+}
+
+.nav-link::after {
+    content: "";
+
+    position: absolute;
+    left: 0;
+    bottom: -7px;
+
+    width: 0;
+    height: 1px;
+
+    background: var(--yellow);
+
+    transition: width 220ms ease;
+}
+
+.nav-link:hover {
+    color: var(--cream);
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.nav-contact {
+    justify-self: end;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+
+    color: var(--black);
+    background: var(--yellow);
+
+    padding: 11px 17px;
+
+    border-radius: 100px;
+
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    transition:
+        transform 220ms ease,
+        background 220ms ease;
+}
+
+.nav-contact:hover {
+    transform: translateY(-2px);
+    background: var(--yellow-light);
+}
+
+.nav-contact-arrow {
+    font-size: 1rem;
+}
+
+
+/* =========================================================
+   MOBILE MENU BUTTON
+   ========================================================= */
+
+.menu-toggle {
+    display: none;
+
+    justify-self: end;
+
+    width: 42px;
+    height: 42px;
+
+    background: transparent;
+    color: var(--cream);
+
+    cursor: pointer;
+}
+
+.menu-toggle span {
+    display: block;
+
+    width: 24px;
+    height: 1px;
+
+    margin: 6px auto;
+
+    background: currentColor;
+
+    transition:
+        transform 250ms ease,
+        opacity 250ms ease;
+}
+
+body.menu-open .menu-toggle span:first-child {
+    transform: translateY(3.5px) rotate(45deg);
+}
+
+body.menu-open .menu-toggle span:last-child {
+    transform: translateY(-3.5px) rotate(-45deg);
+}
+
+
+/* =========================================================
+   MOBILE NAV
+   ========================================================= */
+
+.mobile-nav {
+    position: fixed;
+    inset: 0;
+
+    z-index: 90;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: var(--black);
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition:
+        opacity 300ms ease,
+        visibility 300ms ease;
+}
+
+body.menu-open .mobile-nav {
+    opacity: 1;
+    visibility: visible;
+}
+
+.mobile-nav-inner {
+    width: min(90%, 500px);
+}
+
+.mobile-nav a {
+    display: block;
+
+    padding: 14px 0;
+
+    border-bottom: 1px solid var(--border-dark);
+
+    font-family: var(--display);
+    font-size: clamp(2.4rem, 10vw, 5rem);
+    font-weight: 600;
+    letter-spacing: -0.07em;
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero {
+    position: relative;
+
+    min-height: 100svh;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at 70% 42%,
+            rgba(244,217,40,0.045),
+            transparent 26%
+        ),
+        var(--black);
+}
+
+
+/* subtle grid */
+
+.hero::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    opacity: 0.22;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 80px 80px;
+
+    mask-image:
+        linear-gradient(
+            to bottom,
+            black,
+            transparent 80%
+        );
+}
+
+
+/* hero content */
+
+.hero-inner {
+    position: relative;
+
+    width: min(calc(100% - 64px), var(--container));
+
+    margin-inline: auto;
+
+    padding-top: 100px;
+    padding-bottom: 54px;
+}
+
+.hero-kicker {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 30px;
+
+    color: var(--muted);
+
+    font-size: 0.76rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+}
+
+.kicker-line {
+    width: 42px;
+    height: 1px;
+
+    background: var(--yellow);
+}
+
+
+/* =========================================================
+   HERO TYPOGRAPHY
+   ========================================================= */
+
+.hero-title {
+    position: relative;
+
+    max-width: 1180px;
+
+    margin: 0;
+
+    font-family: var(--display);
+
+    font-size: clamp(
+        4.4rem,
+        10.2vw,
+        10rem
+    );
+
+    font-weight: 600;
+
+    line-height: 0.84;
+
+    letter-spacing: -0.085em;
+
+    z-index: 5;
+}
+
+.hero-line {
+    display: block;
+}
+
+.hero-line:last-child {
+    color: var(--cream);
+}
+
+
+/* =========================================================
+   DYNAMIC WORD
+   ========================================================= */
+
+.word-wrap {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+
+    min-width: min(62vw, 750px);
+
+    margin-left: -0.03em;
+
+    color: var(--yellow);
+
+    cursor: pointer;
+
+    vertical-align: baseline;
+
+    perspective: 900px;
+}
+
+.dynamic-word {
+    display: inline-block;
+
+    transform-origin: 20% 70%;
+
+    will-change: transform, opacity;
+
+    transition:
+        transform 600ms cubic-bezier(.16,1,.3,1),
+        opacity 350ms ease;
+}
+
+.dynamic-word.is-moving {
+    transform:
+        translate3d(45px, -12px, 0)
+        rotate(-4deg)
+        scale(0.94);
+
+    opacity: 0;
+}
+
+.word-hint {
+    position: absolute;
+
+    left: 12px;
+    bottom: -25px;
+
+    display: flex;
+    align-items: center;
+    gap: 7px;
+
+    color: rgba(247,245,237,0.42);
+
+    font-family: "DM Sans", sans-serif;
+
+    font-size: 0.65rem;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    opacity: 0;
+
+    transition: opacity 300ms ease;
+}
+
+.word-wrap:hover .word-hint {
+    opacity: 1;
+}
+
+.word-hint-dot {
+    width: 5px;
+    height: 5px;
+
+    border-radius: 50%;
+
+    background: var(--yellow);
+}
+
+
+/* =========================================================
+   HAND STAGE
+   ========================================================= */
+
+.hand-stage {
+    position: absolute;
+
+    top: 52%;
+    right: 3%;
+
+    width: min(31vw, 420px);
+
+    z-index: 10;
+
+    pointer-events: none;
+
+    transform:
+        translateY(-50%)
+        rotate(-4deg);
+}
+
+
+/* yellow hand aura */
+
+.hand-stage::before {
+    content: "";
+
+    position: absolute;
+
+    width: 160px;
+    height: 160px;
+
+    left: 31%;
+    top: 40%;
+
+    border-radius: 50%;
+
+    background: var(--yellow);
+
+    opacity: 0.075;
+
+    filter: blur(40px);
+
+    transform: translate(-50%, -50%);
+
+    animation: aura 4s ease-in-out infinite;
+}
+
+@keyframes aura {
+    0%,100% {
+        transform: translate(-50%,-50%) scale(0.9);
+        opacity: 0.055;
     }
 
-    /* =========================================================
-       RESET
-       ========================================================= */
+    50% {
+        transform: translate(-50%,-50%) scale(1.2);
+        opacity: 0.09;
+    }
+}
+
+
+/* actual SVG */
+
+.pointer-hand {
+    width: 100%;
+
+    overflow: visible;
+
+    filter:
+        drop-shadow(
+            0 20px 30px rgba(0,0,0,0.25)
+        );
+
+    transform-origin: 50% 70%;
+
+    animation:
+        handEnter 1100ms cubic-bezier(.16,1,.3,1) both,
+        handFloat 5s ease-in-out 1100ms infinite;
+}
+
+@keyframes handEnter {
+
+    0% {
+        opacity: 0;
+        transform:
+            translate3d(100px, 80px, 0)
+            rotate(10deg)
+            scale(0.8);
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+            translate3d(0,0,0)
+            rotate(0)
+            scale(1);
+    }
+}
+
+@keyframes handFloat {
+
+    0%,100% {
+        transform:
+            translate3d(0,0,0)
+            rotate(0);
+    }
+
+    50% {
+        transform:
+            translate3d(-8px,-10px,0)
+            rotate(-1deg);
+    }
+}
+
+
+/* finger direction line */
+
+.direction-line {
+    position: absolute;
+
+    left: 4%;
+    top: 51%;
+
+    width: 150px;
+    height: 1px;
+
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--yellow)
+    );
+
+    transform-origin: left center;
+
+    opacity: 0.55;
+
+    animation:
+        directionLine 1.4s ease 1.2s both;
+}
+
+@keyframes directionLine {
+    from {
+        transform: scaleX(0);
+        opacity: 0;
+    }
+
+    to {
+        transform: scaleX(1);
+        opacity: 0.55;
+    }
+}
+
+
+/* =========================================================
+   HERO BOTTOM
+   ========================================================= */
+
+.hero-bottom {
+    position: relative;
+
+    z-index: 20;
+
+    display: grid;
+
+    grid-template-columns: 1fr auto;
+
+    align-items: end;
+
+    gap: 40px;
+
+    margin-top: 74px;
+}
+
+.hero-description {
+    max-width: 430px;
+
+    color: rgba(247,245,237,0.62);
+
+    font-size: 0.96rem;
+    line-height: 1.65;
+}
+
+.hero-description strong {
+    color: var(--cream);
+    font-weight: 600;
+}
+
+
+/* CTA */
+
+.hero-cta {
+    position: relative;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 18px;
+
+    padding: 17px 22px;
+
+    color: var(--black);
+
+    background: var(--yellow);
+
+    border-radius: 100px;
+
+    font-size: 0.84rem;
+    font-weight: 700;
+
+    overflow: hidden;
+
+    transition:
+        transform 250ms ease,
+        background 250ms ease;
+}
+
+.hero-cta::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: var(--yellow-light);
+
+    transform: translateX(-101%);
+
+    transition:
+        transform 400ms cubic-bezier(.16,1,.3,1);
+}
+
+.hero-cta:hover {
+    transform: translateY(-4px);
+}
+
+.hero-cta:hover::before {
+    transform: translateX(0);
+}
+
+.hero-cta span {
+    position: relative;
+    z-index: 2;
+}
+
+.cta-arrow {
+    position: relative;
+    z-index: 2;
+
+    display: grid;
+    place-items: center;
+
+    width: 30px;
+    height: 30px;
+
+    border-radius: 50%;
+
+    background: var(--black);
+
+    color: var(--yellow);
+
+    font-size: 1rem;
+
+    transition:
+        transform 300ms ease;
+}
+
+.hero-cta:hover .cta-arrow {
+    transform: rotate(45deg);
+}
+
+
+/* =========================================================
+   HERO META
+   ========================================================= */
+
+.hero-meta {
+    position: absolute;
+
+    right: 0;
+    bottom: 40px;
+
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    color: rgba(247,245,237,0.35);
+
+    font-size: 0.68rem;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.scroll-indicator {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.scroll-dot {
+    width: 7px;
+    height: 7px;
+
+    border: 1px solid var(--yellow);
+
+    border-radius: 50%;
+}
+
+
+/* =========================================================
+   SECTION BASE
+   ========================================================= */
+
+.section {
+    position: relative;
+
+    padding: 140px 0;
+}
+
+.section-light {
+    background: var(--cream);
+    color: var(--black);
+}
+
+.section-dark {
+    background: var(--black);
+    color: var(--cream);
+}
+
+.section-yellow {
+    background: var(--yellow);
+    color: var(--black);
+}
+
+.section-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    margin-bottom: 24px;
+
+    font-size: 0.7rem;
+    font-weight: 700;
+
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.eyebrow-number {
+    color: var(--yellow);
+}
+
+.section-light .eyebrow-number {
+    color: #8c7d00;
+}
+
+.section-title {
+    max-width: 950px;
+
+    margin: 0;
+
+    font-family: var(--display);
+
+    font-size: clamp(
+        3.2rem,
+        7vw,
+        7.8rem
+    );
+
+    line-height: 0.88;
+
+    letter-spacing: -0.08em;
+
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   INTRO / POSITIONING
+   ========================================================= */
+
+.intro-section {
+    padding-bottom: 170px;
+}
+
+.intro-grid {
+    display: grid;
+
+    grid-template-columns:
+        minmax(160px, 0.35fr)
+        minmax(0, 1.65fr);
+
+    gap: 60px;
+
+    align-items: start;
+}
+
+.intro-copy {
+    max-width: 950px;
+
+    font-family: var(--display);
+
+    font-size: clamp(
+        2rem,
+        4vw,
+        4.4rem
+    );
+
+    line-height: 1.02;
+
+    letter-spacing: -0.055em;
+}
+
+.intro-copy span {
+    color: #99968b;
+}
+
+.intro-small {
+    max-width: 330px;
+
+    margin-top: 42px;
+
+    color: #5d5b55;
+
+    font-family: "DM Sans", sans-serif;
+
+    font-size: 0.9rem;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   SERVICES
+   ========================================================= */
+
+.services-section {
+    background: var(--black);
+}
+
+.services-header {
+    display: flex;
+
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 50px;
+
+    margin-bottom: 75px;
+}
+
+.services-note {
+    max-width: 330px;
+
+    color: var(--muted);
+
+    font-size: 0.88rem;
+    line-height: 1.6;
+}
+
+.service-list {
+    border-top: 1px solid var(--border-dark);
+}
+
+.service-item {
+    position: relative;
+
+    display: grid;
+
+    grid-template-columns: 80px 1fr auto;
+
+    align-items: center;
+
+    gap: 30px;
+
+    padding: 30px 0;
+
+    border-bottom: 1px solid var(--border-dark);
+
+    overflow: hidden;
+
+    transition:
+        padding 300ms cubic-bezier(.16,1,.3,1);
+}
+
+.service-item::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    background: var(--yellow);
+
+    transform: translateX(-101%);
+
+    transition:
+        transform 500ms cubic-bezier(.16,1,.3,1);
+
+    z-index: 0;
+}
+
+.service-item:hover {
+    padding-left: 20px;
+    padding-right: 20px;
+
+    color: var(--black);
+}
+
+.service-item:hover::before {
+    transform: translateX(0);
+}
+
+.service-number,
+.service-name,
+.service-arrow {
+    position: relative;
+    z-index: 2;
+}
+
+.service-number {
+    color: var(--muted);
+
+    font-size: 0.72rem;
+    font-weight: 600;
+}
+
+.service-item:hover .service-number {
+    color: rgba(17,17,15,0.6);
+}
+
+.service-name {
+    font-family: var(--display);
+
+    font-size: clamp(
+        2.2rem,
+        5vw,
+        5.3rem
+    );
+
+    font-weight: 600;
+
+    line-height: 0.95;
+
+    letter-spacing: -0.065em;
+}
+
+.service-arrow {
+    width: 46px;
+    height: 46px;
+
+    display: grid;
+    place-items: center;
+
+    border: 1px solid currentColor;
+    border-radius: 50%;
+
+    transition:
+        transform 300ms ease;
+}
+
+.service-item:hover .service-arrow {
+    transform: rotate(45deg);
+}
+
+
+/* =========================================================
+   WORK / SELECTED PROJECTS
+   ========================================================= */
+
+.work-section {
+    background: var(--cream);
+    color: var(--black);
+}
+
+.work-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    margin-bottom: 70px;
+
+    gap: 40px;
+}
+
+.work-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+
+    font-size: 0.82rem;
+    font-weight: 700;
+}
+
+.work-link span {
+    transition:
+        transform 250ms ease;
+}
+
+.work-link:hover span {
+    transform: translateX(5px);
+}
+
+.work-grid {
+    display: grid;
+
+    grid-template-columns:
+        1.25fr
+        0.75fr;
+
+    gap: 24px;
+}
+
+.project {
+    position: relative;
+
+    min-height: 540px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 28px;
+
+    overflow: hidden;
+
+    background: var(--black);
+
+    color: var(--cream);
+
+    border-radius: 2px;
+}
+
+.project:nth-child(2) {
+    margin-top: 100px;
+    min-height: 440px;
+}
+
+.project-visual {
+    position: absolute;
+    inset: 0;
+
+    overflow: hidden;
+}
+
+.project-visual::before,
+.project-visual::after {
+    content: "";
+
+    position: absolute;
+
+    border-radius: 50%;
+}
+
+.project:nth-child(1) .project-visual {
+    background:
+        radial-gradient(
+            circle at 72% 38%,
+            var(--yellow),
+            transparent 0 15%,
+            transparent 15%
+        ),
+        #181815;
+}
+
+.project:nth-child(1) .project-visual::before {
+    width: 470px;
+    height: 470px;
+
+    top: 12%;
+    right: 4%;
+
+    border: 1px solid rgba(244,217,40,0.5);
+}
+
+.project:nth-child(1) .project-visual::after {
+    width: 270px;
+    height: 270px;
+
+    top: 31%;
+    right: 24%;
+
+    background: var(--yellow);
+
+    transform:
+        rotate(18deg);
+}
+
+.project:nth-child(2) .project-visual {
+    background: var(--yellow);
+}
+
+.project:nth-child(2) .project-visual::before {
+    width: 300px;
+    height: 300px;
+
+    left: -80px;
+    bottom: -70px;
+
+    background: var(--black);
+}
+
+.project:nth-child(2) .project-visual::after {
+    width: 180px;
+    height: 180px;
+
+    right: 15%;
+    top: 18%;
+
+    border: 2px solid var(--black);
+}
+
+.project-top,
+.project-bottom {
+    position: relative;
+    z-index: 2;
+}
+
+.project-label {
+    display: inline-block;
+
+    padding: 7px 10px;
+
+    border: 1px solid rgba(255,255,255,0.22);
+
+    border-radius: 100px;
+
+    font-size: 0.65rem;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.project:nth-child(2) .project-label {
+    color: var(--black);
+    border-color: rgba(17,17,15,0.35);
+}
+
+.project-title {
+    margin: 0;
+
+    max-width: 700px;
+
+    font-family: var(--display);
+
+    font-size: clamp(
+        2.6rem,
+        5vw,
+        5.8rem
+    );
+
+    line-height: 0.88;
+
+    letter-spacing: -0.075em;
+}
+
+.project-meta {
+    margin-top: 16px;
+
+    color: rgba(247,245,237,0.6);
+
+    font-size: 0.76rem;
+}
+
+.project:nth-child(2) {
+    color: var(--black);
+}
+
+.project:nth-child(2) .project-meta {
+    color: rgba(17,17,15,0.62);
+}
+
+
+/* =========================================================
+   PROCESS
+   ========================================================= */
+
+.process-section {
+    background: #20201c;
+}
+
+.process-grid {
+    display: grid;
+
+    grid-template-columns:
+        0.7fr
+        1.3fr;
+
+    gap: 100px;
+}
+
+.process-copy {
+    max-width: 370px;
+
+    color: var(--muted);
+
+    font-size: 0.95rem;
+    line-height: 1.7;
+}
+
+.process-copy strong {
+    color: var(--cream);
+}
+
+.process-list {
+    border-top: 1px solid var(--border-dark);
+}
+
+.process-item {
+    display: grid;
+
+    grid-template-columns: 60px 1fr;
+
+    gap: 20px;
+
+    padding: 26px 0;
+
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.process-number {
+    color: var(--yellow);
+
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.process-name {
+    margin: 0 0 7px;
+
+    font-family: var(--display);
+
+    font-size: clamp(
+        1.7rem,
+        3vw,
+        3rem
+    );
+
+    font-weight: 500;
+
+    letter-spacing: -0.05em;
+}
+
+.process-description {
+    max-width: 540px;
+
+    margin: 0;
+
+    color: var(--muted);
+
+    font-size: 0.82rem;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   FINAL CTA
+   ========================================================= */
+
+.final-cta {
+    min-height: 80vh;
+
+    display: flex;
+    align-items: center;
+
+    overflow: hidden;
+
+    background: var(--yellow);
+
+    color: var(--black);
+}
+
+.final-cta-inner {
+    position: relative;
+
+    width: 100%;
+}
+
+.final-cta-title {
+    max-width: 1100px;
+
+    margin: 0;
+
+    font-family: var(--display);
+
+    font-size: clamp(
+        4rem,
+        10vw,
+        10rem
+    );
+
+    line-height: 0.82;
+
+    letter-spacing: -0.09em;
+}
+
+.final-cta-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+
+    margin-top: 55px;
+
+    padding: 17px 21px;
+
+    border: 1px solid var(--black);
+    border-radius: 100px;
+
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    transition:
+        background 250ms ease,
+        color 250ms ease,
+        transform 250ms ease;
+}
+
+.final-cta-link:hover {
+    background: var(--black);
+    color: var(--yellow);
+
+    transform: translateY(-3px);
+}
+
+.final-cta-hand {
+    position: absolute;
+
+    width: min(29vw, 390px);
+
+    right: 4%;
+    bottom: -80px;
+
+    transform:
+        rotate(-15deg);
+
+    transform-origin: 50% 70%;
+
+    animation:
+        finalHand 4s ease-in-out infinite;
+}
+
+@keyframes finalHand {
+
+    0%,100% {
+        transform:
+            rotate(-15deg)
+            translateY(0);
+    }
+
+    50% {
+        transform:
+            rotate(-12deg)
+            translateY(-15px);
+    }
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer {
+    background: var(--black);
+
+    color: var(--cream);
+
+    padding: 34px 0;
+}
+
+.footer-inner {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 30px;
+}
+
+.footer-logo {
+    font-family: var(--display);
+
+    font-weight: 700;
+
+    letter-spacing: -0.05em;
+}
+
+.footer-copy {
+    color: var(--muted);
+
+    font-size: 0.7rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 20px;
+
+    color: var(--muted);
+
+    font-size: 0.72rem;
+}
+
+.footer-links a {
+    transition:
+        color 200ms ease;
+}
+
+.footer-links a:hover {
+    color: var(--yellow);
+}
+
+
+/* =========================================================
+   REVEAL ANIMATIONS
+   ========================================================= */
+
+.reveal {
+    opacity: 0;
+
+    transform:
+        translateY(35px);
+
+    transition:
+        opacity 800ms cubic-bezier(.16,1,.3,1),
+        transform 800ms cubic-bezier(.16,1,.3,1);
+}
+
+.reveal.visible {
+    opacity: 1;
+
+    transform:
+        translateY(0);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1000px) {
+
+    .nav-links,
+    .nav-contact {
+        display: none;
+    }
+
+    .nav {
+        grid-template-columns: 1fr auto;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .hero-inner {
+        padding-top: 130px;
+    }
+
+    .hero-title {
+        font-size: clamp(
+            4rem,
+            12vw,
+            7rem
+        );
+    }
+
+    .hand-stage {
+        width: min(40vw, 360px);
+
+        top: 56%;
+        right: -3%;
+    }
+
+    .hero-bottom {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-cta {
+        justify-self: start;
+    }
+
+    .hero-meta {
+        display: none;
+    }
+
+    .intro-grid {
+        grid-template-columns: 1fr;
+        gap: 35px;
+    }
+
+    .process-grid {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .work-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .project:nth-child(2) {
+        margin-top: 0;
+    }
+
+    .final-cta-hand {
+        width: 330px;
+        right: -50px;
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    .container,
+    .hero-inner {
+        width: min(calc(100% - 36px), var(--container));
+    }
+
+    .nav {
+        height: 74px;
+    }
+
+    .hero {
+        min-height: 100svh;
+    }
+
+    .hero-inner {
+        padding-top: 105px;
+        padding-bottom: 35px;
+    }
+
+    .hero-kicker {
+        margin-bottom: 22px;
+    }
+
+    .hero-title {
+        font-size: clamp(
+            3.6rem,
+            16vw,
+            6rem
+        );
+
+        line-height: 0.86;
+    }
+
+    .word-wrap {
+        min-width: 0;
+
+        display: block;
+    }
+
+    .word-hint {
+        display: none;
+    }
+
+    .hand-stage {
+        width: 245px;
+
+        right: -55px;
+        top: 52%;
+
+        opacity: 0.95;
+    }
+
+    .direction-line {
+        display: none;
+    }
+
+    .hero-bottom {
+        margin-top: 65px;
+    }
+
+    .hero-description {
+        max-width: 290px;
+
+        font-size: 0.84rem;
+    }
+
+    .section {
+        padding: 95px 0;
+    }
+
+    .section-title {
+        font-size: clamp(
+            3rem,
+            15vw,
+            5rem
+        );
+    }
+
+    .services-header,
+    .work-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .service-item {
+        grid-template-columns: 38px 1fr auto;
+
+        gap: 12px;
+
+        padding: 23px 0;
+    }
+
+    .service-item:hover {
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .service-name {
+        font-size: clamp(
+            2rem,
+            10vw,
+            3.5rem
+        );
+    }
+
+    .service-arrow {
+        width: 36px;
+        height: 36px;
+    }
+
+    .project {
+        min-height: 430px;
+    }
+
+    .project:nth-child(2) {
+        min-height: 350px;
+    }
+
+    .process-item {
+        grid-template-columns: 40px 1fr;
+    }
+
+    .final-cta {
+        min-height: 70vh;
+    }
+
+    .final-cta-title {
+        font-size: clamp(
+            3.8rem,
+            16vw,
+            7rem
+        );
+    }
+
+    .final-cta-hand {
+        width: 260px;
+
+        right: -80px;
+        bottom: -45px;
+
+        opacity: 0.85;
+    }
+
+    .footer-inner {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .footer-links {
+        flex-wrap: wrap;
+    }
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    html {
+        scroll-behavior: auto;
+    }
 
     *,
     *::before,
     *::after {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-      background: var(--black);
-    }
-
-    body {
-      margin: 0;
-      background: var(--black);
-      color: var(--white);
-      font-family: var(--body);
-      font-weight: 400;
-      line-height: 1.5;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      text-rendering: optimizeLegibility;
-    }
-
-    body.menu-open {
-      overflow: hidden;
-    }
-
-    img,
-    svg {
-      display: block;
-      max-width: 100%;
-    }
-
-    button,
-    input,
-    textarea {
-      font: inherit;
-    }
-
-    button {
-      border: 0;
-      cursor: pointer;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    ::selection {
-      background: var(--yellow);
-      color: var(--black);
-    }
-
-    /* =========================================================
-       ACCESSIBILITY
-       ========================================================= */
-
-    .skip-link {
-      position: fixed;
-      top: 1rem;
-      left: 1rem;
-      z-index: 10000;
-      padding: 0.75rem 1rem;
-      background: var(--yellow);
-      color: var(--black);
-      font-weight: 700;
-      transform: translateY(-150%);
-      transition: transform 0.25s ease;
-    }
-
-    .skip-link:focus {
-      transform: translateY(0);
-    }
-
-    :focus-visible {
-      outline: 3px solid var(--yellow);
-      outline-offset: 5px;
-    }
-
-    /* =========================================================
-       UTILITIES
-       ========================================================= */
-
-    .container {
-      width: min(var(--container), calc(100% - (var(--gutter) * 2)));
-      margin-inline: auto;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.72rem;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-    }
-
-    .eyebrow::before {
-      content: "";
-      width: 0.45rem;
-      height: 0.45rem;
-      background: var(--yellow);
-      border-radius: 50%;
-      flex: 0 0 auto;
-    }
-
-    .yellow {
-      color: var(--yellow);
-    }
-
-    /* =========================================================
-       HEADER
-       ========================================================= */
-
-    .site-header {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      z-index: 500;
-      padding: 1.25rem var(--gutter);
-      mix-blend-mode: normal;
-      transition:
-        background-color 0.35s var(--ease),
-        padding 0.35s var(--ease),
-        color 0.35s var(--ease);
-    }
-
-    .site-header.scrolled {
-      padding-block: 0.85rem;
-      background: rgba(10, 10, 10, 0.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-    }
-
-    .nav {
-      width: min(var(--container), 100%);
-      margin-inline: auto;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-    }
-
-    .brand {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-family: var(--display);
-      font-size: 1.25rem;
-      line-height: 1;
-      font-weight: 700;
-      letter-spacing: -0.045em;
-      position: relative;
-      z-index: 2;
-    }
-
-    .brand-mark {
-      width: 0.7rem;
-      height: 0.7rem;
-      background: var(--yellow);
-      border-radius: 50%;
-      transition: transform 0.4s var(--ease);
-    }
-
-    .brand:hover .brand-mark {
-      transform: scale(1.35);
-    }
-
-    .desktop-nav {
-      display: flex;
-      align-items: center;
-      gap: clamp(1.25rem, 3vw, 3rem);
-    }
-
-    .nav-link {
-      position: relative;
-      font-size: 0.78rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.72);
-      transition: color 0.25s ease;
-    }
-
-    .nav-link::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: -0.35rem;
-      width: 100%;
-      height: 2px;
-      background: var(--yellow);
-      transform: scaleX(0);
-      transform-origin: right;
-      transition: transform 0.35s var(--ease);
-    }
-
-    .nav-link:hover,
-    .nav-link.active {
-      color: var(--white);
-    }
-
-    .nav-link:hover::after,
-    .nav-link.active::after {
-      transform: scaleX(1);
-      transform-origin: left;
-    }
-
-    .nav-contact {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.55rem;
-      padding: 0.75rem 1rem;
-      background: var(--yellow);
-      color: var(--black);
-      font-size: 0.75rem;
-      font-weight: 700;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      transition:
-        background-color 0.25s ease,
-        transform 0.25s var(--ease);
-    }
-
-    .nav-contact:hover {
-      background: var(--white);
-      transform: translateY(-2px);
-    }
-
-    .nav-contact span {
-      transition: transform 0.3s var(--ease);
-    }
-
-    .nav-contact:hover span {
-      transform: translateX(4px);
-    }
-
-    /* Mobile menu button */
-
-    .menu-toggle {
-      display: none;
-      position: relative;
-      z-index: 2;
-      width: 46px;
-      height: 46px;
-      padding: 0;
-      background: transparent;
-      border: 1px solid rgba(255,255,255,0.3);
-      color: var(--white);
-    }
-
-    .menu-toggle-lines {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 19px;
-      height: 13px;
-      transform: translate(-50%, -50%);
-    }
-
-    .menu-toggle-lines span {
-      position: absolute;
-      left: 0;
-      width: 100%;
-      height: 2px;
-      background: currentColor;
-      transition:
-        transform 0.35s var(--ease),
-        top 0.35s var(--ease);
-    }
-
-    .menu-toggle-lines span:first-child {
-      top: 2px;
-    }
-
-    .menu-toggle-lines span:last-child {
-      top: 9px;
-    }
-
-    body.menu-open .menu-toggle-lines span:first-child {
-      top: 5px;
-      transform: rotate(45deg);
-    }
-
-    body.menu-open .menu-toggle-lines span:last-child {
-      top: 5px;
-      transform: rotate(-45deg);
-    }
-
-    /* Mobile navigation */
-
-    .mobile-menu {
-      position: fixed;
-      inset: 0;
-      z-index: 400;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 6rem var(--gutter) 3rem;
-      background: var(--black);
-      visibility: hidden;
-      opacity: 0;
-      clip-path: circle(0% at calc(100% - 2.5rem) 2.5rem);
-      transition:
-        clip-path 0.65s var(--ease),
-        opacity 0.35s ease,
-        visibility 0.35s ease;
-    }
-
-    body.menu-open .mobile-menu {
-      visibility: visible;
-      opacity: 1;
-      clip-path: circle(150% at calc(100% - 2.5rem) 2.5rem);
-    }
-
-    .mobile-menu-links {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .mobile-menu-link {
-      font-family: var(--display);
-      font-size: clamp(3rem, 13vw, 6rem);
-      line-height: 0.95;
-      font-weight: 600;
-      letter-spacing: -0.065em;
-      transform: translateY(30px);
-      opacity: 0;
-      transition:
-        transform 0.5s var(--ease),
-        opacity 0.5s ease,
-        color 0.25s ease;
-    }
-
-    body.menu-open .mobile-menu-link {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    body.menu-open .mobile-menu-link:nth-child(1) { transition-delay: 0.08s; }
-    body.menu-open .mobile-menu-link:nth-child(2) { transition-delay: 0.13s; }
-    body.menu-open .mobile-menu-link:nth-child(3) { transition-delay: 0.18s; }
-    body.menu-open .mobile-menu-link:nth-child(4) { transition-delay: 0.23s; }
-
-    .mobile-menu-link:hover {
-      color: var(--yellow);
-    }
-
-    .mobile-menu-bottom {
-      margin-top: auto;
-      display: flex;
-      justify-content: space-between;
-      gap: 2rem;
-      font-size: 0.75rem;
-      color: var(--grey-light);
-    }
-
-    /* =========================================================
-       HERO
-       ========================================================= */
-
-    .hero {
-      position: relative;
-      min-height: 100svh;
-      display: flex;
-      align-items: center;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 85% 30%, rgba(255, 212, 0, 0.08), transparent 22rem),
-        var(--black);
-    }
-
-    .hero::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      opacity: 0.15;
-      background-image:
-        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-      background-size: 80px 80px;
-      mask-image: linear-gradient(to bottom, black, transparent 80%);
-      -webkit-mask-image: linear-gradient(to bottom, black, transparent 80%);
-    }
-
-    .hero-content {
-      position: relative;
-      z-index: 2;
-      width: min(var(--container), calc(100% - (var(--gutter) * 2)));
-      margin-inline: auto;
-      padding-top: 7rem;
-      padding-bottom: 4rem;
-    }
-
-    .hero-intro {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      margin-bottom: clamp(2rem, 5vw, 4rem);
-      color: var(--grey-light);
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .hero-intro-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--yellow);
-      border-radius: 50%;
-      box-shadow: 0 0 0 0 rgba(255, 212, 0, 0.4);
-      animation: pulseDot 2.5s infinite;
-    }
-
-    @keyframes pulseDot {
-      0%, 100% {
-        box-shadow: 0 0 0 0 rgba(255, 212, 0, 0);
-      }
-      50% {
-        box-shadow: 0 0 0 8px rgba(255, 212, 0, 0.08);
-      }
-    }
-
-    .hero-title {
-      max-width: 1200px;
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(4rem, 10.8vw, 10rem);
-      line-height: 0.84;
-      font-weight: 600;
-      letter-spacing: -0.085em;
-      text-transform: uppercase;
-    }
-
-    .hero-line {
-      display: block;
-      overflow: hidden;
-    }
-
-    .hero-word {
-      display: inline-block;
-      transform: translateY(115%);
-      opacity: 0;
-      transition:
-        transform 1s var(--ease),
-        opacity 0.8s ease;
-    }
-
-    body.loaded .hero-word {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .hero-line:nth-child(1) .hero-word {
-      transition-delay: 0.15s;
-    }
-
-    .hero-line:nth-child(2) .hero-word {
-      transition-delay: 0.3s;
-    }
-
-    .hero-line:nth-child(3) .hero-word {
-      transition-delay: 0.45s;
-    }
-
-    .hero-title .accent-word {
-      color: var(--yellow);
-    }
-
-    .hero-bottom {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: end;
-      gap: 3rem;
-      margin-top: clamp(3rem, 7vw, 6rem);
-    }
-
-    .hero-description {
-      max-width: 430px;
-      color: #aaa69d;
-      font-size: clamp(0.95rem, 1.2vw, 1.08rem);
-      line-height: 1.6;
-      transform: translateY(25px);
-      opacity: 0;
-      transition:
-        transform 0.8s var(--ease) 0.8s,
-        opacity 0.8s ease 0.8s;
-    }
-
-    body.loaded .hero-description {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-      transform: translateY(25px);
-      opacity: 0;
-      transition:
-        transform 0.8s var(--ease) 0.95s,
-        opacity 0.8s ease 0.95s;
-    }
-
-    body.loaded .hero-actions {
-      transform: translateY(0);
-      opacity: 1;
-    }
-
-    .button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.8rem;
-      min-height: 52px;
-      padding: 0.9rem 1.25rem;
-      border: 1px solid transparent;
-      font-size: 0.75rem;
-      font-weight: 700;
-      line-height: 1;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      transition:
-        transform 0.3s var(--ease),
-        background-color 0.3s ease,
-        border-color 0.3s ease,
-        color 0.3s ease;
-    }
-
-    .button-primary {
-      background: var(--yellow);
-      color: var(--black);
-    }
-
-    .button-primary:hover {
-      background: var(--white);
-      transform: translateY(-3px);
-    }
-
-    .button-secondary {
-      background: transparent;
-      color: var(--white);
-      border-color: rgba(255,255,255,0.25);
-    }
-
-    .button-secondary:hover {
-      border-color: var(--white);
-      transform: translateY(-3px);
-    }
-
-    .button-arrow {
-      font-size: 1rem;
-      transition: transform 0.3s var(--ease);
-    }
-
-    .button:hover .button-arrow {
-      transform: translateX(5px);
-    }
-
-    /* Hero pointer */
-
-    .hero-pointer {
-      position: absolute;
-      z-index: 5;
-      left: clamp(53%, 59vw, 68%);
-      top: 52%;
-      width: clamp(80px, 9vw, 140px);
-      color: var(--yellow);
-      pointer-events: none;
-      opacity: 0;
-      transform:
-        translate(-50%, -50%)
-        rotate(-12deg)
-        scale(0.75);
-      transition:
-        left 1.2s var(--ease),
-        top 1.2s var(--ease),
-        transform 1.2s var(--ease),
-        opacity 0.8s ease;
-      filter: drop-shadow(0 12px 22px rgba(0,0,0,0.25));
-    }
-
-    body.loaded .hero-pointer {
-      opacity: 1;
-      transform:
-        translate(-50%, -50%)
-        rotate(-12deg)
-        scale(1);
-      animation: pointerFloat 3.6s ease-in-out infinite;
-      animation-delay: 1.5s;
-    }
-
-    .hero-pointer svg {
-      width: 100%;
-      height: auto;
-    }
-
-    @keyframes pointerFloat {
-      0%, 100% {
-        margin-top: 0;
-      }
-      50% {
-        margin-top: -8px;
-      }
-    }
-
-    .hero-pointer.pointer-cta {
-      left: auto;
-      top: auto;
-      right: 6%;
-      bottom: 11%;
-      transform:
-        rotate(-38deg)
-        scale(0.9);
-    }
-
-    .hero-scroll {
-      position: absolute;
-      left: var(--gutter);
-      bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.7rem;
-      color: var(--grey);
-      font-size: 0.65rem;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .hero-scroll-line {
-      width: 38px;
-      height: 1px;
-      background: var(--grey);
-      overflow: hidden;
-      position: relative;
-    }
-
-    .hero-scroll-line::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: var(--yellow);
-      transform: translateX(-100%);
-      animation: scrollLine 2s ease-in-out infinite;
-    }
-
-    @keyframes scrollLine {
-      0% { transform: translateX(-100%); }
-      50%, 70% { transform: translateX(0); }
-      100% { transform: translateX(100%); }
-    }
-
-    /* =========================================================
-       INTRO
-       ========================================================= */
-
-    .intro {
-      position: relative;
-      padding: clamp(6rem, 13vw, 12rem) 0;
-      background: var(--cream);
-      color: var(--black);
-      overflow: hidden;
-    }
-
-    .intro-grid {
-      display: grid;
-      grid-template-columns: minmax(160px, 0.35fr) minmax(0, 1.65fr);
-      gap: 3rem;
-    }
-
-    .intro-copy {
-      max-width: 1100px;
-    }
-
-    .intro-title {
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(3rem, 6.4vw, 7rem);
-      line-height: 0.94;
-      letter-spacing: -0.075em;
-      font-weight: 600;
-    }
-
-    .intro-title span {
-      display: inline-block;
-    }
-
-    .intro-title .highlight {
-      position: relative;
-      color: var(--black);
-      z-index: 1;
-    }
-
-    .intro-title .highlight::after {
-      content: "";
-      position: absolute;
-      z-index: -1;
-      left: -0.08em;
-      right: -0.08em;
-      bottom: 0.02em;
-      height: 0.28em;
-      background: var(--yellow);
-      transform: skewX(-8deg);
-    }
-
-    .intro-description {
-      max-width: 620px;
-      margin: clamp(2rem, 4vw, 3.5rem) 0 0 auto;
-      color: #55524c;
-      font-size: clamp(1rem, 1.4vw, 1.2rem);
-      line-height: 1.65;
-    }
-
-    /* =========================================================
-       SECTION HEADER
-       ========================================================= */
-
-    .section-header {
-      display: flex;
-      align-items: flex-end;
-      justify-content: space-between;
-      gap: 2rem;
-      margin-bottom: clamp(2.5rem, 5vw, 5rem);
-    }
-
-    .section-title {
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(2.8rem, 6vw, 6rem);
-      line-height: 0.9;
-      letter-spacing: -0.075em;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .section-note {
-      max-width: 260px;
-      margin: 0;
-      color: var(--grey);
-      font-size: 0.8rem;
-      line-height: 1.5;
-    }
-
-    /* =========================================================
-       WORK
-       ========================================================= */
-
-    .work {
-      padding: clamp(6rem, 11vw, 11rem) 0;
-      background: var(--cream);
-      color: var(--black);
-    }
-
-    .work-list {
-      display: grid;
-      gap: clamp(4rem, 9vw, 9rem);
-    }
-
-    .project {
-      display: grid;
-      grid-template-columns: 0.25fr 1fr;
-      gap: clamp(1.5rem, 5vw, 5rem);
-      align-items: start;
-    }
-
-    .project:nth-child(even) {
-      grid-template-columns: 1fr 0.25fr;
-    }
-
-    .project:nth-child(even) .project-meta {
-      order: 2;
-    }
-
-    .project:nth-child(even) .project-visual-wrap {
-      order: 1;
-    }
-
-    .project-meta {
-      padding-top: 0.3rem;
-    }
-
-    .project-number {
-      display: block;
-      margin-bottom: 1.5rem;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      color: var(--grey);
-    }
-
-    .project-name {
-      margin: 0 0 1rem;
-      font-family: var(--display);
-      font-size: clamp(1.7rem, 3vw, 3rem);
-      line-height: 0.95;
-      letter-spacing: -0.06em;
-      font-weight: 600;
-    }
-
-    .project-type {
-      margin: 0;
-      color: var(--grey);
-      font-size: 0.78rem;
-      line-height: 1.5;
-    }
-
-    .project-visual-wrap {
-      position: relative;
-    }
-
-    .project-visual {
-      position: relative;
-      min-height: clamp(320px, 55vw, 700px);
-      overflow: hidden;
-      border-radius: var(--radius);
-      background: #d8d0c1;
-      cursor: pointer;
-    }
-
-    .project-visual::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(0,0,0,0.05),
-        transparent 45%,
-        rgba(0,0,0,0.12)
-      );
-      pointer-events: none;
-    }
-
-    /* Abstract project artwork 01 */
-
-    .project-art-one {
-      position: absolute;
-      inset: 0;
-      background:
-        radial-gradient(circle at 70% 35%, rgba(255, 212, 0, 0.95) 0 12%, transparent 12.5%),
-        linear-gradient(135deg, #151515 0 47%, #f2eee3 47% 100%);
-      transition: transform 0.9s var(--ease);
-    }
-
-    .project-art-one::before {
-      content: "";
-      position: absolute;
-      width: 45%;
-      aspect-ratio: 1;
-      left: 9%;
-      top: 18%;
-      border: clamp(18px, 3vw, 45px) solid var(--yellow);
-      border-radius: 50%;
-      transform: rotate(18deg);
-    }
-
-    .project-art-one::after {
-      content: "M";
-      position: absolute;
-      right: 8%;
-      bottom: 2%;
-      font-family: var(--display);
-      font-size: clamp(12rem, 32vw, 35rem);
-      line-height: 0.7;
-      font-weight: 700;
-      letter-spacing: -0.15em;
-      color: rgba(10,10,10,0.08);
-    }
-
-    /* Abstract project artwork 02 */
-
-    .project-art-two {
-      position: absolute;
-      inset: 0;
-      background:
-        linear-gradient(120deg, #ffd400 0 30%, #0a0a0a 30% 100%);
-      transition: transform 0.9s var(--ease);
-    }
-
-    .project-art-two::before {
-      content: "";
-      position: absolute;
-      width: 50%;
-      height: 150%;
-      left: 35%;
-      top: -25%;
-      background: #f5f2ea;
-      transform: rotate(20deg);
-    }
-
-    .project-art-two::after {
-      content: "MOVE";
-      position: absolute;
-      left: 5%;
-      bottom: 7%;
-      color: #0a0a0a;
-      font-family: var(--display);
-      font-size: clamp(4rem, 11vw, 11rem);
-      line-height: 0.8;
-      font-weight: 700;
-      letter-spacing: -0.08em;
-      transform: rotate(-90deg);
-      transform-origin: left bottom;
-    }
-
-    .project-hover {
-      position: absolute;
-      right: 1.5rem;
-      bottom: 1.5rem;
-      z-index: 3;
-      width: 58px;
-      height: 58px;
-      display: grid;
-      place-items: center;
-      border-radius: 50%;
-      background: var(--yellow);
-      color: var(--black);
-      font-size: 1.4rem;
-      opacity: 0;
-      transform: scale(0.7) rotate(-20deg);
-      transition:
-        opacity 0.35s ease,
-        transform 0.5s var(--ease);
-    }
-
-    .project:hover .project-hover,
-    .project:focus-within .project-hover {
-      opacity: 1;
-      transform: scale(1) rotate(0);
-    }
-
-    .project:hover .project-art-one,
-    .project:hover .project-art-two {
-      transform: scale(1.035);
-    }
-
-    .project-pointer {
-      position: absolute;
-      z-index: 5;
-      right: 8%;
-      top: 8%;
-      width: clamp(60px, 8vw, 100px);
-      color: var(--yellow);
-      transform: rotate(18deg);
-      opacity: 0;
-      pointer-events: none;
-      transition:
-        opacity 0.4s ease,
-        transform 0.6s var(--ease);
-      filter: drop-shadow(0 8px 14px rgba(0,0,0,0.2));
-    }
-
-    .project:hover .project-pointer {
-      opacity: 1;
-      transform: rotate(4deg) translateY(-5px);
-    }
-
-    /* =========================================================
-       SERVICES
-       ========================================================= */
-
-    .services {
-      position: relative;
-      padding: clamp(6rem, 12vw, 12rem) 0;
-      background: var(--black);
-      color: var(--white);
-      overflow: hidden;
-    }
-
-    .services-header {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      align-items: end;
-      margin-bottom: clamp(4rem, 8vw, 8rem);
-    }
-
-    .services-title {
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(3.5rem, 8vw, 8rem);
-      line-height: 0.82;
-      letter-spacing: -0.08em;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .services-description {
-      max-width: 420px;
-      margin-left: auto;
-      color: var(--grey-light);
-      font-size: 1rem;
-      line-height: 1.65;
-    }
-
-    .service-list {
-      border-top: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .service-item {
-      position: relative;
-      border-bottom: 1px solid rgba(255,255,255,0.2);
-    }
-
-    .service-trigger {
-      width: 100%;
-      min-height: clamp(100px, 12vw, 170px);
-      display: grid;
-      grid-template-columns: 80px 1fr auto;
-      align-items: center;
-      gap: 2rem;
-      padding: 0;
-      background: transparent;
-      color: var(--white);
-      text-align: left;
-    }
-
-    .service-number {
-      color: var(--grey);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-    }
-
-    .service-name {
-      font-family: var(--display);
-      font-size: clamp(2rem, 5.5vw, 6rem);
-      line-height: 0.9;
-      letter-spacing: -0.075em;
-      font-weight: 500;
-      transition:
-        color 0.35s ease,
-        transform 0.5s var(--ease);
-    }
-
-    .service-arrow {
-      display: grid;
-      place-items: center;
-      width: 52px;
-      height: 52px;
-      border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 50%;
-      color: var(--grey-light);
-      font-size: 1.1rem;
-      transition:
-        background-color 0.35s ease,
-        color 0.35s ease,
-        transform 0.5s var(--ease);
-    }
-
-    .service-item:hover .service-name,
-    .service-item.active .service-name {
-      color: var(--yellow);
-      transform: translateX(12px);
-    }
-
-    .service-item:hover .service-arrow,
-    .service-item.active .service-arrow {
-      background: var(--yellow);
-      border-color: var(--yellow);
-      color: var(--black);
-      transform: rotate(-45deg);
-    }
-
-    .service-detail {
-      display: grid;
-      grid-template-columns: 80px 1fr;
-      gap: 2rem;
-      max-height: 0;
-      overflow: hidden;
-      opacity: 0;
-      transition:
-        max-height 0.6s var(--ease),
-        opacity 0.4s ease,
-        padding-bottom 0.6s var(--ease);
-    }
-
-    .service-item.active .service-detail {
-      max-height: 180px;
-      padding-bottom: 2rem;
-      opacity: 1;
-    }
-
-    .service-detail-copy {
-      max-width: 550px;
-      color: var(--grey-light);
-      font-size: 0.95rem;
-      line-height: 1.65;
-    }
-
-    .service-pointer {
-      position: absolute;
-      right: 11%;
-      top: 50%;
-      z-index: 5;
-      width: clamp(60px, 7vw, 100px);
-      color: var(--yellow);
-      pointer-events: none;
-      opacity: 0;
-      transform:
-        translateY(-50%)
-        rotate(-18deg)
-        scale(0.75);
-      transition:
-        opacity 0.4s ease,
-        transform 0.5s var(--ease);
-      filter: drop-shadow(0 10px 16px rgba(0,0,0,0.3));
-    }
-
-    .service-item:hover .service-pointer,
-    .service-item.active .service-pointer {
-      opacity: 1;
-      transform:
-        translateY(-50%)
-        rotate(-8deg)
-        scale(1);
-    }
-
-    /* =========================================================
-       APPROACH
-       ========================================================= */
-
-    .approach {
-      position: relative;
-      min-height: 100vh;
-      padding: clamp(6rem, 12vw, 12rem) 0;
-      background: var(--cream);
-      color: var(--black);
-      overflow: hidden;
-    }
-
-    .approach-intro {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-      margin-bottom: clamp(5rem, 10vw, 10rem);
-    }
-
-    .approach-title {
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(3.2rem, 7vw, 7rem);
-      line-height: 0.85;
-      letter-spacing: -0.08em;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .approach-copy {
-      max-width: 450px;
-      margin-left: auto;
-      color: #5e5a52;
-      font-size: 1rem;
-      line-height: 1.65;
-    }
-
-    .process {
-      position: relative;
-      border-top: 1px solid rgba(10,10,10,0.2);
-    }
-
-    .process-line {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 0;
-      height: 2px;
-      background: var(--yellow);
-      transform-origin: left;
-      transform: scaleX(0);
-      transition: transform 1s var(--ease);
-    }
-
-    .approach.in-view .process-line {
-      transform: scaleX(1);
-    }
-
-    .process-item {
-      position: relative;
-      display: grid;
-      grid-template-columns: 100px 1fr auto;
-      align-items: center;
-      gap: 2rem;
-      min-height: clamp(110px, 14vw, 180px);
-      border-bottom: 1px solid rgba(10,10,10,0.2);
-      transition:
-        padding 0.5s var(--ease),
-        background-color 0.35s ease;
-    }
-
-    .process-number {
-      color: var(--grey);
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-    }
-
-    .process-name {
-      font-family: var(--display);
-      font-size: clamp(2.2rem, 5vw, 5.5rem);
-      line-height: 0.9;
-      letter-spacing: -0.075em;
-      font-weight: 500;
-      transition:
-        color 0.35s ease,
-        transform 0.5s var(--ease);
-    }
-
-    .process-description {
-      max-width: 250px;
-      color: var(--grey);
-      font-size: 0.8rem;
-      line-height: 1.5;
-      opacity: 0;
-      transform: translateX(-10px);
-      transition:
-        opacity 0.4s ease,
-        transform 0.5s var(--ease);
-    }
-
-    .process-item:hover {
-      padding-inline: 1rem;
-      background: rgba(255,212,0,0.08);
-    }
-
-    .process-item:hover .process-name {
-      color: var(--black);
-      transform: translateX(12px);
-    }
-
-    .process-item:hover .process-description {
-      opacity: 1;
-      transform: translateX(0);
-    }
-
-    .process-pointer {
-      position: absolute;
-      left: 20%;
-      top: 50%;
-      width: 70px;
-      color: var(--yellow);
-      opacity: 0;
-      pointer-events: none;
-      transform:
-        translateY(-50%)
-        rotate(15deg)
-        scale(0.7);
-      transition:
-        opacity 0.35s ease,
-        left 0.7s var(--ease),
-        transform 0.5s var(--ease);
-      filter: drop-shadow(0 8px 12px rgba(0,0,0,0.15));
-    }
-
-    .process-item:hover .process-pointer {
-      left: 42%;
-      opacity: 1;
-      transform:
-        translateY(-50%)
-        rotate(0)
-        scale(1);
-    }
-
-    /* =========================================================
-       STATEMENT
-       ========================================================= */
-
-    .statement {
-      position: relative;
-      min-height: 85vh;
-      display: grid;
-      place-items: center;
-      padding: 6rem var(--gutter);
-      background: var(--black);
-      color: var(--white);
-      overflow: hidden;
-    }
-
-    .statement::before {
-      content: "";
-      position: absolute;
-      width: 50vw;
-      height: 50vw;
-      right: -20vw;
-      top: -25vw;
-      border-radius: 50%;
-      border: 1px solid rgba(255,212,0,0.18);
-    }
-
-    .statement-content {
-      position: relative;
-      z-index: 2;
-      width: min(1200px, 100%);
-      text-align: center;
-    }
-
-    .statement-title {
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(4rem, 10vw, 10rem);
-      line-height: 0.82;
-      letter-spacing: -0.09em;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .statement-title span {
-      display: block;
-    }
-
-    .statement-title .yellow-word {
-      color: var(--yellow);
-    }
-
-    .statement-pointer {
-      position: absolute;
-      right: 4%;
-      bottom: -5%;
-      width: clamp(80px, 10vw, 140px);
-      color: var(--yellow);
-      transform: rotate(-35deg);
-      animation: statementFloat 4s ease-in-out infinite;
-      filter: drop-shadow(0 15px 22px rgba(0,0,0,0.3));
-    }
-
-    @keyframes statementFloat {
-      0%, 100% {
-        transform: rotate(-35deg) translateY(0);
-      }
-      50% {
-        transform: rotate(-28deg) translateY(-12px);
-      }
-    }
-
-    /* =========================================================
-       FINAL CTA
-       ========================================================= */
-
-    .final-cta {
-      position: relative;
-      min-height: 90vh;
-      display: flex;
-      align-items: center;
-      background: var(--yellow);
-      color: var(--black);
-      overflow: hidden;
-    }
-
-    .final-cta::before {
-      content: "";
-      position: absolute;
-      width: 60vw;
-      height: 60vw;
-      right: -30vw;
-      bottom: -40vw;
-      border-radius: 50%;
-      background: rgba(10,10,10,0.06);
-    }
-
-    .cta-content {
-      position: relative;
-      z-index: 2;
-      width: min(var(--container), calc(100% - (var(--gutter) * 2)));
-      margin-inline: auto;
-    }
-
-    .cta-eyebrow {
-      margin-bottom: 2rem;
-    }
-
-    .cta-title {
-      max-width: 1200px;
-      margin: 0;
-      font-family: var(--display);
-      font-size: clamp(4rem, 10vw, 10rem);
-      line-height: 0.8;
-      letter-spacing: -0.09em;
-      font-weight: 600;
-      text-transform: uppercase;
-    }
-
-    .cta-title span {
-      display: block;
-    }
-
-    .cta-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-      margin-top: clamp(3rem, 7vw, 6rem);
-    }
-
-    .cta-copy {
-      max-width: 360px;
-      color: rgba(10,10,10,0.65);
-      font-size: 0.95rem;
-      line-height: 1.6;
-    }
-
-    .cta-button {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.2rem 1.4rem;
-      background: var(--black);
-      color: var(--white);
-      font-size: 0.78rem;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      text-transform: uppercase;
-      overflow: hidden;
-      transition:
-        transform 0.4s var(--ease),
-        color 0.3s ease;
-    }
-
-    .cta-button::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: var(--white);
-      transform: translateY(100%);
-      transition: transform 0.5s var(--ease);
-    }
-
-    .cta-button:hover::before {
-      transform: translateY(0);
-    }
-
-    .cta-button:hover {
-      color: var(--black);
-      transform: translateY(-4px);
-    }
-
-    .cta-button span {
-      position: relative;
-      z-index: 2;
-    }
-
-    .cta-button .cta-arrow {
-      transition: transform 0.35s var(--ease);
-    }
-
-    .cta-button:hover .cta-arrow {
-      transform: translateX(5px);
-    }
-
-    .cta-pointer {
-      position: absolute;
-      right: clamp(6%, 10vw, 14%);
-      bottom: 15%;
-      width: clamp(80px, 10vw, 145px);
-      color: var(--black);
-      pointer-events: none;
-      transform: rotate(-28deg);
-      animation: ctaPointerFloat 3.2s ease-in-out infinite;
-    }
-
-    @keyframes ctaPointerFloat {
-      0%, 100% {
-        transform: rotate(-28deg) translateY(0);
-      }
-      50% {
-        transform: rotate(-22deg) translateY(-10px);
-      }
-    }
-
-    /* =========================================================
-       FOOTER
-       ========================================================= */
-
-    .footer {
-      padding: 3rem var(--gutter) 2rem;
-      background: var(--black);
-      color: var(--white);
-    }
-
-    .footer-inner {
-      width: min(var(--container), 100%);
-      margin-inline: auto;
-    }
-
-    .footer-top {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 3rem;
-      padding-bottom: 5rem;
-      border-bottom: 1px solid rgba(255,255,255,0.15);
-    }
-
-    .footer-brand {
-      font-family: var(--display);
-      font-size: clamp(3.5rem, 9vw, 9rem);
-      line-height: 0.8;
-      font-weight: 600;
-      letter-spacing: -0.09em;
-    }
-
-    .footer-links {
-      display: flex;
-      gap: clamp(2rem, 5vw, 5rem);
-    }
-
-    .footer-column {
-      display: flex;
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .footer-column-title {
-      margin-bottom: 0.5rem;
-      color: var(--grey);
-      font-size: 0.65rem;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-    }
-
-    .footer-link {
-      width: fit-content;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.82rem;
-      transition: color 0.25s ease;
-    }
-
-    .footer-link:hover {
-      color: var(--yellow);
-    }
-
-    .footer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 2rem;
-      padding-top: 1.25rem;
-      color: var(--grey);
-      font-size: 0.65rem;
-    }
-
-    /* =========================================================
-       SCROLL REVEALS
-       ========================================================= */
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(35px);
-      transition:
-        opacity 0.8s ease,
-        transform 0.9s var(--ease);
-    }
-
-    .reveal.in-view {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .reveal-delay-1 {
-      transition-delay: 0.1s;
-    }
-
-    .reveal-delay-2 {
-      transition-delay: 0.2s;
-    }
-
-    .reveal-delay-3 {
-      transition-delay: 0.3s;
-    }
-
-    /* =========================================================
-       RESPONSIVE — TABLET
-       ========================================================= */
-
-    @media (max-width: 900px) {
-
-      .desktop-nav {
-        display: none;
-      }
-
-      .menu-toggle {
-        display: block;
-      }
-
-      .hero-bottom {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-
-      .hero-actions {
-        justify-content: flex-start;
-      }
-
-      .hero-pointer {
-        left: 75%;
-        top: 46%;
-      }
-
-      .intro-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .intro-description {
-        margin-left: 0;
-      }
-
-      .project,
-      .project:nth-child(even) {
-        grid-template-columns: 1fr;
-      }
-
-      .project-meta,
-      .project:nth-child(even) .project-meta {
-        order: initial;
-      }
-
-      .project-visual-wrap,
-      .project:nth-child(even) .project-visual-wrap {
-        order: initial;
-      }
-
-      .services-header,
-      .approach-intro {
-        grid-template-columns: 1fr;
-      }
-
-      .services-description,
-      .approach-copy {
-        margin-left: 0;
-      }
-
-      .service-trigger {
-        grid-template-columns: 60px 1fr auto;
-      }
-
-      .service-detail {
-        grid-template-columns: 60px 1fr;
-      }
-
-      .process-item {
-        grid-template-columns: 60px 1fr;
-      }
-
-      .process-description {
-        display: none;
-      }
-
-      .process-pointer {
-        left: auto;
-        right: 12%;
-      }
-
-      .process-item:hover .process-pointer {
-        left: auto;
-        right: 12%;
-      }
-
-      .footer-top {
-        grid-template-columns: 1fr;
-      }
-
-      .footer-links {
-        flex-wrap: wrap;
-      }
-    }
-
-    /* =========================================================
-       RESPONSIVE — MOBILE
-       ========================================================= */
-
-    @media (max-width: 600px) {
-
-      :root {
-        --gutter: 1.15rem;
-      }
-
-      .site-header {
-        padding-top: 1rem;
-      }
-
-      .site-header.scrolled {
-        padding-block: 0.7rem;
-      }
-
-      .brand {
-        font-size: 1.1rem;
-      }
-
-      .hero-content {
-        padding-top: 6rem;
-        padding-bottom: 4rem;
-      }
-
-      .hero {
-        min-height: 100svh;
-      }
-
-      .hero-intro {
-        margin-bottom: 2.5rem;
-        font-size: 0.65rem;
-      }
-
-      .hero-title {
-        font-size: clamp(3.5rem, 18vw, 6.5rem);
-        line-height: 0.84;
-      }
-
-      .hero-pointer {
-        width: 65px;
-        left: auto;
-        right: 10%;
-        top: 42%;
-      }
-
-      .hero-bottom {
-        margin-top: 3.5rem;
-      }
-
-      .hero-description {
-        max-width: 330px;
-        font-size: 0.9rem;
-      }
-
-      .hero-actions {
-        width: 100%;
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .button {
-        width: 100%;
-      }
-
-      .hero-scroll {
-        display: none;
-      }
-
-      .intro,
-      .work,
-      .services,
-      .approach {
-        padding-block: 5.5rem;
-      }
-
-      .section-header {
-        align-items: flex-start;
-        flex-direction: column;
-        margin-bottom: 3rem;
-      }
-
-      .section-note {
-        max-width: 300px;
-      }
-
-      .intro-title {
-        font-size: clamp(2.7rem, 13vw, 5rem);
-      }
-
-      .intro-description {
-        font-size: 0.92rem;
-      }
-
-      .work-list {
-        gap: 4.5rem;
-      }
-
-      .project-visual {
-        min-height: 390px;
-        border-radius: 12px;
-      }
-
-      .project-hover {
-        opacity: 1;
-        transform: scale(1);
-        width: 48px;
-        height: 48px;
-        right: 1rem;
-        bottom: 1rem;
-      }
-
-      .project-pointer {
-        opacity: 1;
-        width: 55px;
-        right: 7%;
-        top: 6%;
-      }
-
-      .services-header {
-        margin-bottom: 4rem;
-      }
-
-      .services-title {
-        font-size: clamp(3.5rem, 18vw, 6rem);
-      }
-
-      .services-description {
-        font-size: 0.9rem;
-      }
-
-      .service-trigger {
-        min-height: 100px;
-        grid-template-columns: 34px 1fr auto;
-        gap: 0.8rem;
-      }
-
-      .service-number {
-        font-size: 0.6rem;
-      }
-
-      .service-name {
-        font-size: clamp(1.7rem, 9vw, 3rem);
-      }
-
-      .service-arrow {
-        width: 40px;
-        height: 40px;
-        font-size: 0.9rem;
-      }
-
-      .service-detail {
-        grid-template-columns: 34px 1fr;
-        gap: 0.8rem;
-      }
-
-      .service-detail-copy {
-        font-size: 0.82rem;
-      }
-
-      .service-pointer {
-        width: 50px;
-        right: 12%;
-      }
-
-      .approach-intro {
-        margin-bottom: 4rem;
-      }
-
-      .approach-title {
-        font-size: clamp(3.1rem, 16vw, 6rem);
-      }
-
-      .process-item {
-        min-height: 100px;
-        grid-template-columns: 35px 1fr;
-        gap: 0.8rem;
-      }
-
-      .process-number {
-        font-size: 0.6rem;
-      }
-
-      .process-name {
-        font-size: clamp(2rem, 10vw, 3rem);
-      }
-
-      .process-pointer {
-        width: 48px;
-        right: 10%;
-      }
-
-      .statement {
-        min-height: 70vh;
-        padding-block: 5rem;
-      }
-
-      .statement-title {
-        font-size: clamp(3.5rem, 17vw, 6rem);
-      }
-
-      .statement-pointer {
-        width: 65px;
-        right: 5%;
-        bottom: 8%;
-      }
-
-      .final-cta {
-        min-height: 75vh;
-      }
-
-      .cta-title {
-        font-size: clamp(4rem, 18vw, 7rem);
-      }
-
-      .cta-bottom {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .cta-copy {
-        font-size: 0.88rem;
-      }
-
-      .cta-pointer {
-        width: 70px;
-        right: 6%;
-        bottom: 23%;
-      }
-
-      .footer {
-        padding-top: 2.5rem;
-      }
-
-      .footer-brand {
-        font-size: clamp(4rem, 20vw, 7rem);
-      }
-
-      .footer-links {
-        gap: 2rem 3rem;
-      }
-
-      .footer-bottom {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-    }
-
-    /* =========================================================
-       REDUCED MOTION
-       ========================================================= */
-
-    @media (prefers-reduced-motion: reduce) {
-
-      html {
-        scroll-behavior: auto;
-      }
-
-      *,
-      *::before,
-      *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
-      }
-
-      .reveal,
-      .hero-word,
-      .hero-description,
-      .hero-actions {
-        opacity: 1 !important;
-        transform: none !important;
-      }
-
-      .hero-pointer {
-        opacity: 1 !important;
-      }
     }
-  </style>
+
+    .reveal {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+</style>
 </head>
+
 
 <body>
 
-  <!-- Accessibility -->
-  <a class="skip-link" href="#main">Skip to content</a>
+<div class="noise"></div>
 
-  <!-- =======================================================
-       HEADER
-       ======================================================= -->
 
-  <header class="site-header" id="siteHeader">
-    <nav class="nav" aria-label="Primary navigation">
+<!-- =======================================================
+     MOBILE NAV
+     ======================================================= -->
 
-      <a class="brand" href="#top" aria-label="Morrison home">
-        <span class="brand-mark" aria-hidden="true"></span>
-        MORRISON
-      </a>
+<div class="mobile-nav" aria-hidden="true">
 
-      <div class="desktop-nav">
-        <a class="nav-link active" href="#top">Home</a>
-        <a class="nav-link" href="#about">About</a>
-        <a class="nav-link" href="#services">Services</a>
+    <div class="mobile-nav-inner">
 
-        <a class="nav-contact" href="#contact">
-          Contact
-          <span aria-hidden="true">↗</span>
-        </a>
-      </div>
+        <a href="#top" data-close-menu>Home</a>
+        <a href="#about" data-close-menu>About</a>
+        <a href="#services" data-close-menu>Services</a>
+        <a href="#work" data-close-menu>Work</a>
+        <a href="#contact" data-close-menu>Contact</a>
 
-      <button
-        class="menu-toggle"
-        id="menuToggle"
-        type="button"
-        aria-label="Open navigation menu"
-        aria-expanded="false"
-        aria-controls="mobileMenu"
-      >
-        <span class="menu-toggle-lines" aria-hidden="true">
-          <span></span>
-          <span></span>
-        </span>
-      </button>
-
-    </nav>
-  </header>
-
-  <!-- Mobile navigation -->
-
-  <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
-
-    <nav class="mobile-menu-links" aria-label="Mobile navigation">
-      <a class="mobile-menu-link" href="#top">Home</a>
-      <a class="mobile-menu-link" href="#about">About</a>
-      <a class="mobile-menu-link" href="#services">Services</a>
-      <a class="mobile-menu-link" href="#contact">Contact</a>
-    </nav>
-
-    <div class="mobile-menu-bottom">
-      <span>Creative Digital Agency</span>
-      <span>© 2026 Morrison</span>
     </div>
 
-  </div>
+</div>
 
-  <main id="main">
 
-    <!-- =====================================================
-         HERO
-         ===================================================== -->
+<!-- =======================================================
+     HEADER
+     ======================================================= -->
 
-    <section class="hero" id="top" aria-labelledby="hero-title">
+<header class="site-header">
 
-      <div class="hero-content">
+    <div class="container">
 
-        <div class="hero-intro">
-          <span class="hero-intro-dot" aria-hidden="true"></span>
-          Creative Digital Agency
+        <nav class="nav">
+
+            <a
+                href="#top"
+                class="logo"
+                aria-label="Morrison home"
+            >
+                MORRISON<span class="logo-dot">.</span>
+            </a>
+
+
+            <div class="nav-links">
+
+                <a class="nav-link" href="#work">
+                    Work
+                </a>
+
+                <a class="nav-link" href="#about">
+                    About
+                </a>
+
+                <a class="nav-link" href="#services">
+                    Services
+                </a>
+
+            </div>
+
+
+            <a
+                class="nav-contact"
+                href="#contact"
+            >
+                Let's talk
+                <span class="nav-contact-arrow">↗</span>
+            </a>
+
+
+            <button
+                class="menu-toggle"
+                type="button"
+                aria-label="Open menu"
+                aria-expanded="false"
+            >
+                <span></span>
+                <span></span>
+            </button>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+<!-- =======================================================
+     HERO
+     ======================================================= -->
+
+<main id="top">
+
+<section class="hero">
+
+    <div class="hero-inner">
+
+
+        <div class="hero-kicker">
+
+            <span class="kicker-line"></span>
+
+            Creative digital agency
+
         </div>
 
-        <h1 class="hero-title" id="hero-title">
 
-          <span class="hero-line">
-            <span class="hero-word">WE MAKE</span>
-          </span>
+        <h1 class="hero-title">
 
-          <span class="hero-line">
-            <span class="hero-word accent-word">IDEAS</span>
-          </span>
+            <span class="hero-line">
+                WE MAKE
+            </span>
 
-          <span class="hero-line">
-            <span class="hero-word">MOVE.</span>
-          </span>
+
+            <span class="hero-line">
+
+                <span
+                    class="word-wrap"
+                    id="wordTrigger"
+                    tabindex="0"
+                    role="button"
+                    aria-label="Change the highlighted word"
+                >
+
+                    <span
+                        class="dynamic-word"
+                        id="dynamicWord"
+                    >
+                        IDEAS
+                    </span>
+
+                    <span class="word-hint">
+                        <span class="word-hint-dot"></span>
+                        click to move
+                    </span>
+
+                </span>
+
+            </span>
+
+
+            <span class="hero-line">
+                MOVE<span class="yellow">.</span>
+            </span>
 
         </h1>
 
+
+        <!-- ================================================
+             CUSTOM INLINE SVG HAND
+             ================================================ -->
+
+        <div class="hand-stage">
+
+            <div class="direction-line"></div>
+
+
+            <svg
+                class="pointer-hand"
+                viewBox="0 0 520 520"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+            >
+
+                <!-- arm -->
+
+                <path
+                    d="
+                        M455 482
+                        C430 442 402 404 374 374
+                        C350 348 325 330 302 316
+                        C282 304 266 300 252 306
+                        C239 311 230 324 232 339
+                        C234 354 245 365 258 374
+                        L305 408
+                        C318 418 325 430 325 444
+                        L325 482
+                        Z
+                    "
+                    fill="#E8B27A"
+                    stroke="#11110F"
+                    stroke-width="9"
+                    stroke-linejoin="round"
+                />
+
+
+                <!-- palm -->
+
+                <path
+                    d="
+                        M238 337
+                        C218 326 202 311 194 291
+                        C184 268 182 242 188 222
+                        C194 202 208 190 225 191
+                        C244 192 256 207 260 225
+                        L270 266
+                        L267 177
+                        C266 158 278 143 295 141
+                        C312 139 326 152 328 171
+                        L334 246
+                        L339 147
+                        C340 128 354 115 371 116
+                        C389 117 400 131 399 150
+                        L396 248
+                        L404 168
+                        C406 150 420 139 436 142
+                        C453 145 462 160 459 178
+                        L448 278
+                        C445 305 435 325 420 341
+                        C401 362 377 373 351 378
+                        L304 387
+                        Z
+                    "
+                    fill="#F0BB83"
+                    stroke="#11110F"
+                    stroke-width="9"
+                    stroke-linejoin="round"
+                />
+
+
+                <!-- pointing index finger -->
+
+                <path
+                    d="
+                        M270 266
+                        L252 105
+                        C250 85 264 70 282 69
+                        C301 68 315 82 317 101
+                        L328 246
+                    "
+                    fill="#F0BB83"
+                    stroke="#11110F"
+                    stroke-width="9"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                />
+
+
+                <!-- fingernail -->
+
+                <path
+                    d="
+                        M265 104
+                        C264 91 272 82 283 82
+                        C294 82 301 91 302 104
+                        L306 134
+                        C295 129 280 130 269 137
+                        Z
+                    "
+                    fill="#F7D1AA"
+                    stroke="#11110F"
+                    stroke-width="4"
+                />
+
+
+                <!-- thumb -->
+
+                <path
+                    d="
+                        M240 337
+                        C220 327 206 312 200 294
+                        C195 279 201 264 214 258
+                        C228 252 242 260 250 274
+                        L272 311
+                        C279 323 276 337 266 345
+                        C259 350 249 347 240 337
+                        Z
+                    "
+                    fill="#E5AD75"
+                    stroke="#11110F"
+                    stroke-width="8"
+                />
+
+
+                <!-- palm crease -->
+
+                <path
+                    d="
+                        M287 291
+                        C307 306 325 314 346 315
+                    "
+                    fill="none"
+                    stroke="#B67E52"
+                    stroke-width="6"
+                    stroke-linecap="round"
+                    opacity=".7"
+                />
+
+
+                <path
+                    d="
+                        M290 319
+                        C309 332 326 337 344 337
+                    "
+                    fill="none"
+                    stroke="#B67E52"
+                    stroke-width="5"
+                    stroke-linecap="round"
+                    opacity=".55"
+                />
+
+
+                <!-- yellow gesture marks -->
+
+                <path
+                    d="
+                        M163 110
+                        C139 89 122 69 110 46
+                    "
+                    fill="none"
+                    stroke="#F4D928"
+                    stroke-width="9"
+                    stroke-linecap="round"
+                />
+
+                <path
+                    d="
+                        M188 91
+                        C177 67 172 45 173 23
+                    "
+                    fill="none"
+                    stroke="#F4D928"
+                    stroke-width="7"
+                    stroke-linecap="round"
+                    opacity=".75"
+                />
+
+            </svg>
+
+        </div>
+
+
+        <!-- HERO BOTTOM -->
+
         <div class="hero-bottom">
 
-          <p class="hero-description">
-            We turn ambitious ideas into brands, digital experiences
-            and products that make people stop, look and remember.
-          </p>
+            <p class="hero-description">
 
-          <div class="hero-actions">
+                <strong>Independent creative digital agency.</strong>
+                We build brands, digital experiences and products
+                that give ambitious ideas somewhere to go.
 
-            <a class="button button-secondary" href="#work">
-              See our work
-              <span class="button-arrow" aria-hidden="true">↓</span>
-            </a>
-
-            <a class="button button-primary" href="#contact">
-              Let's talk
-              <span class="button-arrow" aria-hidden="true">→</span>
-            </a>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <!-- Custom Morrison pointer -->
-
-      <div class="hero-pointer" id="heroPointer" aria-hidden="true">
-
-        <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-            fill="currentColor"
-          />
-          <path
-            d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-            fill="none"
-            stroke="#0A0A0A"
-            stroke-width="5"
-            stroke-linejoin="round"
-          />
-        </svg>
-
-      </div>
-
-      <a class="hero-scroll" href="#about" aria-label="Scroll to introduction">
-        <span class="hero-scroll-line" aria-hidden="true"></span>
-        Scroll to explore
-      </a>
-
-    </section>
-
-    <!-- =====================================================
-         INTRODUCTION
-         ===================================================== -->
-
-    <section class="intro" id="about" aria-labelledby="intro-title">
-
-      <div class="container">
-
-        <div class="intro-grid">
-
-          <div class="reveal">
-            <span class="eyebrow">Morrison / 01</span>
-          </div>
-
-          <div class="intro-copy">
-
-            <h2 class="intro-title reveal" id="intro-title">
-              <span>Ideas are</span>
-              <span>everywhere.</span>
-              <span>We make them <span class="highlight">matter.</span></span>
-            </h2>
-
-            <p class="intro-description reveal reveal-delay-1">
-              Morrison is a creative digital agency for ambitious brands,
-              businesses and ideas. We bring strategy, design, technology
-              and motion together to create digital experiences with
-              something to say.
             </p>
 
-          </div>
 
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- =====================================================
-         SELECTED WORK
-         ===================================================== -->
-
-    <section class="work" id="work" aria-labelledby="work-title">
-
-      <div class="container">
-
-        <div class="section-header reveal">
-
-          <div>
-            <span class="eyebrow">Selected work</span>
-            <h2 class="section-title" id="work-title">Things<br>we've made.</h2>
-          </div>
-
-          <p class="section-note">
-            A small selection of ideas, identities and digital experiences.
-          </p>
-
-        </div>
-
-        <div class="work-list">
-
-          <!-- Project 01 -->
-
-          <article class="project reveal">
-
-            <div class="project-meta">
-
-              <span class="project-number">01 / 02</span>
-
-              <h3 class="project-name">
-                Northline
-              </h3>
-
-              <p class="project-type">
-                Brand identity<br>
-                Digital experience
-              </p>
-
-            </div>
-
-            <div class="project-visual-wrap">
-
-              <a
-                class="project-visual"
+            <a
                 href="#contact"
-                aria-label="View Northline project"
-              >
-
-                <div class="project-art-one" aria-hidden="true"></div>
-
-                <div class="project-pointer" aria-hidden="true">
-                  <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                      fill="none"
-                      stroke="#0A0A0A"
-                      stroke-width="5"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-
-                <span class="project-hover" aria-hidden="true">↗</span>
-
-              </a>
-
-            </div>
-
-          </article>
-
-          <!-- Project 02 -->
-
-          <article class="project reveal reveal-delay-1">
-
-            <div class="project-meta">
-
-              <span class="project-number">02 / 02</span>
-
-              <h3 class="project-name">
-                Motion House
-              </h3>
-
-              <p class="project-type">
-                Digital design<br>
-                Creative development
-              </p>
-
-            </div>
-
-            <div class="project-visual-wrap">
-
-              <a
-                class="project-visual"
-                href="#contact"
-                aria-label="View Motion House project"
-              >
-
-                <div class="project-art-two" aria-hidden="true"></div>
-
-                <div class="project-pointer" aria-hidden="true">
-                  <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                      fill="currentColor"
-                    />
-                    <path
-                      d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                      fill="none"
-                      stroke="#0A0A0A"
-                      stroke-width="5"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-
-                <span class="project-hover" aria-hidden="true">↗</span>
-
-              </a>
-
-            </div>
-
-          </article>
-
-        </div>
-
-      </div>
-
-    </section>
-
-    <!-- =====================================================
-         SERVICES
-         ===================================================== -->
-
-    <section class="services" id="services" aria-labelledby="services-title">
-
-      <div class="container">
-
-        <div class="services-header reveal">
-
-          <div>
-            <span class="eyebrow">Capabilities</span>
-
-            <h2 class="services-title" id="services-title">
-              What<br>we do.
-            </h2>
-          </div>
-
-          <p class="services-description">
-            Strategy, design, technology and motion working together
-            to turn ambitious ideas into meaningful digital experiences.
-          </p>
-
-        </div>
-
-        <div class="service-list">
-
-          <!-- Service 01 -->
-
-          <article class="service-item active">
-
-            <button
-              class="service-trigger"
-              type="button"
-              aria-expanded="true"
+                class="hero-cta"
+                id="heroCta"
             >
-              <span class="service-number">01</span>
-              <span class="service-name">Brand &amp; Strategy</span>
-              <span class="service-arrow" aria-hidden="true">↗</span>
-            </button>
 
-            <div class="service-detail">
-              <span></span>
-              <p class="service-detail-copy">
-                Positioning, identity and creative direction that give
-                ambitious ideas a clear voice and a distinctive place
-                in the world.
-              </p>
-            </div>
+                <span>LET'S WORK TOGETHER</span>
 
-            <div class="service-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 5.6L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="none"
-                  stroke="#0A0A0A"
-                  stroke-width="5"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </div>
+                <span class="cta-arrow">
+                    ↗
+                </span>
 
-          </article>
-
-          <!-- Service 02 -->
-
-          <article class="service-item">
-
-            <button
-              class="service-trigger"
-              type="button"
-              aria-expanded="false"
-            >
-              <span class="service-number">02</span>
-              <span class="service-name">Digital Design</span>
-              <span class="service-arrow" aria-hidden="true">↗</span>
-            </button>
-
-            <div class="service-detail">
-              <span></span>
-              <p class="service-detail-copy">
-                Websites, interfaces and digital experiences designed
-                around people, behaviour and the moments that matter.
-              </p>
-            </div>
-
-            <div class="service-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-          </article>
-
-          <!-- Service 03 -->
-
-          <article class="service-item">
-
-            <button
-              class="service-trigger"
-              type="button"
-              aria-expanded="false"
-            >
-              <span class="service-number">03</span>
-              <span class="service-name">Development</span>
-              <span class="service-arrow" aria-hidden="true">↗</span>
-            </button>
-
-            <div class="service-detail">
-              <span></span>
-              <p class="service-detail-copy">
-                Fast, accessible and carefully engineered digital products
-                that turn creative ideas into reliable experiences.
-              </p>
-            </div>
-
-            <div class="service-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-          </article>
-
-          <!-- Service 04 -->
-
-          <article class="service-item">
-
-            <button
-              class="service-trigger"
-              type="button"
-              aria-expanded="false"
-            >
-              <span class="service-number">04</span>
-              <span class="service-name">Motion &amp; Interaction</span>
-              <span class="service-arrow" aria-hidden="true">↗</span>
-            </button>
-
-            <div class="service-detail">
-              <span></span>
-              <p class="service-detail-copy">
-                Motion systems and thoughtful interactions that give digital
-                experiences rhythm, character and a reason to explore.
-              </p>
-            </div>
-
-            <div class="service-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-          </article>
+            </a>
 
         </div>
 
-      </div>
 
-    </section>
+        <div class="hero-meta">
 
-    <!-- =====================================================
-         APPROACH
-         ===================================================== -->
+            <span>London · Worldwide</span>
 
-    <section class="approach" aria-labelledby="approach-title">
-
-      <div class="container">
-
-        <div class="approach-intro">
-
-          <div>
-            <span class="eyebrow reveal">Our approach</span>
-
-            <h2 class="approach-title reveal" id="approach-title">
-              From idea<br>
-              to something<br>
-              real.
-            </h2>
-          </div>
-
-          <p class="approach-copy reveal reveal-delay-1">
-            We don't believe in one-size-fits-all processes. We start with
-            the idea, understand the problem, find the opportunity and
-            build the right experience around it.
-          </p>
-
-        </div>
-
-        <div class="process">
-
-          <div class="process-line" aria-hidden="true"></div>
-
-          <div class="process-item reveal">
-            <span class="process-number">01</span>
-            <span class="process-name">Think</span>
-            <span class="process-description">
-              Find the idea worth building.
+            <span class="scroll-indicator">
+                <span class="scroll-dot"></span>
+                Scroll to explore
             </span>
 
-            <div class="process-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div class="process-item reveal reveal-delay-1">
-            <span class="process-number">02</span>
-            <span class="process-name">Make</span>
-            <span class="process-description">
-              Turn thinking into something tangible.
-            </span>
-
-            <div class="process-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div class="process-item reveal reveal-delay-2">
-            <span class="process-number">03</span>
-            <span class="process-name">Move</span>
-            <span class="process-description">
-              Give the idea energy, rhythm and direction.
-            </span>
-
-            <div class="process-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div class="process-item reveal reveal-delay-3">
-            <span class="process-number">04</span>
-            <span class="process-name">Refine</span>
-            <span class="process-description">
-              Sweat the details that make the difference.
-            </span>
-
-            <div class="process-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-
-          <div class="process-item reveal reveal-delay-1">
-            <span class="process-number">05</span>
-            <span class="process-name">Launch</span>
-            <span class="process-description">
-              Put it into the world and let it move.
-            </span>
-
-            <div class="process-pointer" aria-hidden="true">
-              <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-                <path
-                  d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-          </div>
-
         </div>
-
-      </div>
-
-    </section>
-
-    <!-- =====================================================
-         BIG STATEMENT
-         ===================================================== -->
-
-    <section class="statement" aria-labelledby="statement-title">
-
-      <div class="statement-content reveal">
-
-        <h2 class="statement-title" id="statement-title">
-          <span>Good digital</span>
-          <span>should feel</span>
-          <span class="yellow-word">alive.</span>
-        </h2>
-
-      </div>
-
-      <div class="statement-pointer" aria-hidden="true">
-        <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-            fill="currentColor"
-          />
-          <path
-            d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-            fill="none"
-            stroke="#FFD400"
-            stroke-width="5"
-            stroke-linejoin="round"
-          />
-        </svg>
-      </div>
-
-    </section>
-
-    <!-- =====================================================
-         FINAL CTA
-         ===================================================== -->
-
-    <section class="final-cta" id="contact" aria-labelledby="cta-title">
-
-      <div class="cta-content">
-
-        <div class="cta-eyebrow">
-          <span class="eyebrow">Start something</span>
-        </div>
-
-        <h2 class="cta-title" id="cta-title">
-          <span>Have an</span>
-          <span>idea?</span>
-          <span>Let's make</span>
-          <span>it move.</span>
-        </h2>
-
-        <div class="cta-bottom">
-
-          <p class="cta-copy">
-            Have a project, an ambitious idea or simply something
-            you'd like to talk through? We'd love to hear it.
-          </p>
-
-          <a class="cta-button" href="mailto:hello@morrison.studio">
-            <span>Start a project</span>
-            <span class="cta-arrow" aria-hidden="true">→</span>
-          </a>
-
-        </div>
-
-      </div>
-
-      <div class="cta-pointer" aria-hidden="true">
-
-        <svg viewBox="0 0 180 210" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-            fill="currentColor"
-          />
-          <path
-            d="M88.7 203.5c-5.8 0-11.1-3.1-13.9-8.1L54 159.7l-19.8 11.4c-7.4 4.3-16.9 1.8-21.2-5.6-4.3-7.4-1.8-16.9 5.6-21.2l24.8-14.3-25.1-14.5c-7.4-4.3-9.9-13.8-5.6-21.2 4.3-7.4 13.8-9.9 21.2-5.6l25.1 14.5V29.8c0-8.6 7-15.6 15.6-15.6s15.6 7 15.6 15.6v46.4l18.6-10.7c7.4-4.3 16.9-1.8 21.2 5.6 4.3 7.4 1.8 16.9-5.6 21.2L111 105.8l25.3 14.6c7.4 4.3 9.9 13.8 5.6 21.2-4.3 7.4-13.8 9.9-21.2 5.6L102 135.9v49.1c0 10.2-5.2 18.7-13.3 18.7Z"
-            fill="none"
-            stroke="#FFD400"
-            stroke-width="5"
-            stroke-linejoin="round"
-          />
-        </svg>
-
-      </div>
-
-    </section>
-
-  </main>
-
-  <!-- =======================================================
-       FOOTER
-       ======================================================= -->
-
-  <footer class="footer">
-
-    <div class="footer-inner">
-
-      <div class="footer-top">
-
-        <div class="footer-brand">
-          MORRISON
-        </div>
-
-        <div class="footer-links">
-
-          <div class="footer-column">
-            <span class="footer-column-title">Navigate</span>
-            <a class="footer-link" href="#top">Home</a>
-            <a class="footer-link" href="#about">About</a>
-            <a class="footer-link" href="#services">Services</a>
-            <a class="footer-link" href="#contact">Contact</a>
-          </div>
-
-          <div class="footer-column">
-            <span class="footer-column-title">Connect</span>
-            <a class="footer-link" href="mailto:hello@morrison.studio">Email</a>
-            <a class="footer-link" href="#" aria-label="Instagram">Instagram</a>
-            <a class="footer-link" href="#" aria-label="LinkedIn">LinkedIn</a>
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="footer-bottom">
-        <span>Creative Digital Agency</span>
-        <span>© 2026 Morrison. All rights reserved.</span>
-      </div>
 
     </div>
 
-  </footer>
-
-  <!-- =======================================================
-       JAVASCRIPT
-       ======================================================= -->
-
-  <script>
-    (() => {
-      "use strict";
-
-      /* =====================================================
-         PAGE LOAD
-         ===================================================== */
-
-      window.addEventListener("load", () => {
-        document.body.classList.add("loaded");
-      });
+</section>
 
 
-      /* =====================================================
-         HEADER SCROLL STATE
-         ===================================================== */
+<!-- =======================================================
+     INTRO
+     ======================================================= -->
 
-      const header = document.getElementById("siteHeader");
+<section
+    class="section section-light intro-section"
+    id="about"
+>
 
-      const updateHeader = () => {
-        if (window.scrollY > 40) {
-          header.classList.add("scrolled");
-        } else {
-          header.classList.remove("scrolled");
-        }
-      };
+    <div class="container">
 
-      updateHeader();
-      window.addEventListener("scroll", updateHeader, { passive: true });
+        <div class="intro-grid">
 
+            <div class="section-eyebrow reveal">
 
-      /* =====================================================
-         MOBILE NAVIGATION
-         ===================================================== */
+                <span class="eyebrow-number">
+                    01
+                </span>
 
-      const menuToggle = document.getElementById("menuToggle");
-      const mobileMenu = document.getElementById("mobileMenu");
-      const mobileLinks = document.querySelectorAll(".mobile-menu-link");
+                About Morrison
 
-      const setMenu = (open) => {
-        document.body.classList.toggle("menu-open", open);
-
-        menuToggle.setAttribute("aria-expanded", String(open));
-        menuToggle.setAttribute(
-          "aria-label",
-          open ? "Close navigation menu" : "Open navigation menu"
-        );
-
-        mobileMenu.setAttribute("aria-hidden", String(!open));
-      };
-
-      menuToggle.addEventListener("click", () => {
-        setMenu(!document.body.classList.contains("menu-open"));
-      });
-
-      mobileLinks.forEach((link) => {
-        link.addEventListener("click", () => {
-          setMenu(false);
-        });
-      });
-
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          setMenu(false);
-        }
-      });
+            </div>
 
 
-      /* =====================================================
-         SCROLL REVEAL
-         ===================================================== */
+            <div>
 
-      const revealElements = document.querySelectorAll(".reveal");
+                <p class="intro-copy reveal">
 
-      const revealObserver = new IntersectionObserver(
-        (entries, observer) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add("in-view");
-              observer.unobserve(entry.target);
-            }
-          });
-        },
-        {
-          threshold: 0.12,
-          rootMargin: "0px 0px -40px 0px"
-        }
-      );
+                    We turn
+                    <span>ambitious ideas</span>
+                    into brands, experiences and digital products
+                    people actually want to spend time with.
 
-      revealElements.forEach((element) => {
-        revealObserver.observe(element);
-      });
+                </p>
 
 
-      /* =====================================================
-         APPROACH OBSERVER
-         ===================================================== */
+                <p class="intro-small reveal">
 
-      const approach = document.querySelector(".approach");
+                    Strategy, identity, digital design and technology —
+                    brought together under one roof.
 
-      if (approach) {
-        const approachObserver = new IntersectionObserver(
-          (entries, observer) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                approach.classList.add("in-view");
-                observer.unobserve(entry.target);
-              }
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     SERVICES
+     ======================================================= -->
+
+<section
+    class="section services-section"
+    id="services"
+>
+
+    <div class="container">
+
+        <div class="services-header">
+
+            <div>
+
+                <div class="section-eyebrow reveal">
+
+                    <span class="eyebrow-number">
+                        02
+                    </span>
+
+                    What we do
+
+                </div>
+
+                <h2 class="section-title reveal">
+                    BUILDING<br>
+                    WHAT'S NEXT<span class="yellow">.</span>
+                </h2>
+
+            </div>
+
+
+            <p class="services-note reveal">
+
+                From first thought to final interaction,
+                we connect strategy, creativity and technology
+                to make digital work matter.
+
+            </p>
+
+        </div>
+
+
+        <div class="service-list">
+
+            <a
+                href="#contact"
+                class="service-item reveal"
+            >
+
+                <span class="service-number">
+                    01
+                </span>
+
+                <span class="service-name">
+                    Brand Strategy
+                </span>
+
+                <span class="service-arrow">
+                    ↗
+                </span>
+
+            </a>
+
+
+            <a
+                href="#contact"
+                class="service-item reveal"
+            >
+
+                <span class="service-number">
+                    02
+                </span>
+
+                <span class="service-name">
+                    Identity
+                </span>
+
+                <span class="service-arrow">
+                    ↗
+                </span>
+
+            </a>
+
+
+            <a
+                href="#contact"
+                class="service-item reveal"
+            >
+
+                <span class="service-number">
+                    03
+                </span>
+
+                <span class="service-name">
+                    Digital Design
+                </span>
+
+                <span class="service-arrow">
+                    ↗
+                </span>
+
+            </a>
+
+
+            <a
+                href="#contact"
+                class="service-item reveal"
+            >
+
+                <span class="service-number">
+                    04
+                </span>
+
+                <span class="service-name">
+                    Development
+                </span>
+
+                <span class="service-arrow">
+                    ↗
+                </span>
+
+            </a>
+
+
+            <a
+                href="#contact"
+                class="service-item reveal"
+            >
+
+                <span class="service-number">
+                    05
+                </span>
+
+                <span class="service-name">
+                    Motion
+                </span>
+
+                <span class="service-arrow">
+                    ↗
+                </span>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     WORK
+     ======================================================= -->
+
+<section
+    class="section work-section"
+    id="work"
+>
+
+    <div class="container">
+
+        <div class="work-header">
+
+            <div>
+
+                <div class="section-eyebrow reveal">
+
+                    <span class="eyebrow-number">
+                        03
+                    </span>
+
+                    Selected work
+
+                </div>
+
+                <h2 class="section-title reveal">
+                    MADE TO<br>
+                    MOVE<span class="yellow">.</span>
+                </h2>
+
+            </div>
+
+
+            <a
+                href="#contact"
+                class="work-link reveal"
+            >
+                Start a project
+                <span>↗</span>
+            </a>
+
+        </div>
+
+
+        <div class="work-grid">
+
+
+            <article class="project reveal">
+
+                <div class="project-visual"></div>
+
+
+                <div class="project-top">
+
+                    <span class="project-label">
+                        Brand + Digital
+                    </span>
+
+                </div>
+
+
+                <div class="project-bottom">
+
+                    <h3 class="project-title">
+                        Northstar
+                    </h3>
+
+                    <p class="project-meta">
+                        Brand identity · Digital experience
+                    </p>
+
+                </div>
+
+            </article>
+
+
+            <article class="project reveal">
+
+                <div class="project-visual"></div>
+
+
+                <div class="project-top">
+
+                    <span class="project-label">
+                        Digital Product
+                    </span>
+
+                </div>
+
+
+                <div class="project-bottom">
+
+                    <h3 class="project-title">
+                        Mono
+                    </h3>
+
+                    <p class="project-meta">
+                        Strategy · UX · Product design
+                    </p>
+
+                </div>
+
+            </article>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     PROCESS
+     ======================================================= -->
+
+<section class="section process-section">
+
+    <div class="container">
+
+        <div class="process-grid">
+
+            <div>
+
+                <div class="section-eyebrow reveal">
+
+                    <span class="eyebrow-number">
+                        04
+                    </span>
+
+                    How we work
+
+                </div>
+
+
+                <p class="process-copy reveal">
+
+                    Good work isn't decoration.
+                    <strong>It's a process of finding the right
+                    idea, making it clear and giving it room
+                    to move.</strong>
+
+                </p>
+
+            </div>
+
+
+            <div class="process-list">
+
+
+                <div class="process-item reveal">
+
+                    <span class="process-number">
+                        01
+                    </span>
+
+                    <div>
+
+                        <h3 class="process-name">
+                            Find the idea
+                        </h3>
+
+                        <p class="process-description">
+                            Strategy, research and positioning
+                            uncover what actually matters.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="process-item reveal">
+
+                    <span class="process-number">
+                        02
+                    </span>
+
+                    <div>
+
+                        <h3 class="process-name">
+                            Make it distinctive
+                        </h3>
+
+                        <p class="process-description">
+                            Identity and design turn the idea
+                            into something people can recognise.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="process-item reveal">
+
+                    <span class="process-number">
+                        03
+                    </span>
+
+                    <div>
+
+                        <h3 class="process-name">
+                            Make it move
+                        </h3>
+
+                        <p class="process-description">
+                            Digital design, development and motion
+                            bring the experience to life.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     FINAL CTA
+     ======================================================= -->
+
+<section
+    class="final-cta"
+    id="contact"
+>
+
+    <div class="container">
+
+        <div class="final-cta-inner">
+
+
+            <div class="section-eyebrow">
+
+                <span>
+                    05
+                </span>
+
+                Your next move
+
+            </div>
+
+
+            <h2 class="final-cta-title">
+
+                GOT AN<br>
+                IDEA<span style="color:#11110f;">?</span>
+
+            </h2>
+
+
+            <a
+                href="mailto:hello@morrison.agency"
+                class="final-cta-link"
+            >
+
+                <span>
+                    LET'S MAKE IT MOVE
+                </span>
+
+                <span>
+                    ↗
+                </span>
+
+            </a>
+
+
+            <!-- Repeated custom SVG hand -->
+
+            <svg
+                class="final-cta-hand"
+                viewBox="0 0 520 520"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+            >
+
+                <path
+                    d="
+                        M455 482
+                        C430 442 402 404 374 374
+                        C350 348 325 330 302 316
+                        C282 304 266 300 252 306
+                        C239 311 230 324 232 339
+                        C234 354 245 365 258 374
+                        L305 408
+                        C318 418 325 430 325 444
+                        L325 482
+                        Z
+                    "
+                    fill="#E8B27A"
+                    stroke="#11110F"
+                    stroke-width="9"
+                    stroke-linejoin="round"
+                />
+
+                <path
+                    d="
+                        M238 337
+                        C218 326 202 311 194 291
+                        C184 268 182 242 188 222
+                        C194 202 208 190 225 191
+                        C244 192 256 207 260 225
+                        L270 266
+                        L267 177
+                        C266 158 278 143 295 141
+                        C312 139 326 152 328 171
+                        L334 246
+                        L339 147
+                        C340 128 354 115 371 116
+                        C389 117 400 131 399 150
+                        L396 248
+                        L404 168
+                        C406 150 420 139 436 142
+                        C453 145 462 160 459 178
+                        L448 278
+                        C445 305 435 325 420 341
+                        C401 362 377 373 351 378
+                        L304 387
+                        Z
+                    "
+                    fill="#F0BB83"
+                    stroke="#11110F"
+                    stroke-width="9"
+                    stroke-linejoin="round"
+                />
+
+                <path
+                    d="
+                        M270 266
+                        L252 105
+                        C250 85 264 70 282 69
+                        C301 68 315 82 317 101
+                        L328 246
+                    "
+                    fill="#F0BB83"
+                    stroke="#11110F"
+                    stroke-width="9"
+                    stroke-linecap="round"
+                />
+
+                <path
+                    d="
+                        M265 104
+                        C264 91 272 82 283 82
+                        C294 82 301 91 302 104
+                        L306 134
+                        C295 129 280 130 269 137
+                        Z
+                    "
+                    fill="#F7D1AA"
+                    stroke="#11110F"
+                    stroke-width="4"
+                />
+
+                <path
+                    d="
+                        M240 337
+                        C220 327 206 312 200 294
+                        C195 279 201 264 214 258
+                        C228 252 242 260 250 274
+                        L272 311
+                        C279 323 276 337 266 345
+                        C259 350 249 347 240 337
+                        Z
+                    "
+                    fill="#E5AD75"
+                    stroke="#11110F"
+                    stroke-width="8"
+                />
+
+            </svg>
+
+        </div>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<!-- =======================================================
+     FOOTER
+     ======================================================= -->
+
+<footer class="footer">
+
+    <div class="container">
+
+        <div class="footer-inner">
+
+            <div class="footer-logo">
+                MORRISON<span class="yellow">.</span>
+            </div>
+
+            <div class="footer-copy">
+                © 2026 Morrison. All rights reserved.
+            </div>
+
+            <div class="footer-links">
+
+                <a href="#top">
+                    Back to top
+                </a>
+
+                <a href="mailto:hello@morrison.agency">
+                    Email
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   MORRISON INTERACTION ENGINE
+   ========================================================= */
+
+
+/* =========================================================
+   DYNAMIC HERO WORD
+   ========================================================= */
+
+const dynamicWord =
+    document.getElementById("dynamicWord");
+
+const wordTrigger =
+    document.getElementById("wordTrigger");
+
+
+const words = [
+    "IDEAS",
+    "BRANDS",
+    "EXPERIENCES",
+    "PRODUCTS"
+];
+
+
+let wordIndex = 0;
+
+let changingWord = false;
+
+
+/*
+    Changes the word with a physical movement.
+
+    The old word exits diagonally,
+    then the new word enters from the opposite direction.
+*/
+
+function changeWord() {
+
+    if (changingWord) return;
+
+    changingWord = true;
+
+    dynamicWord.classList.add("is-moving");
+
+
+    setTimeout(() => {
+
+        wordIndex =
+            (wordIndex + 1) % words.length;
+
+        dynamicWord.textContent =
+            words[wordIndex];
+
+        dynamicWord.style.transform =
+            "translate3d(-35px, 15px, 0) rotate(4deg) scale(.94)";
+
+        dynamicWord.style.opacity = "0";
+
+
+        requestAnimationFrame(() => {
+
+            requestAnimationFrame(() => {
+
+                dynamicWord.classList.remove("is-moving");
+
+                dynamicWord.style.transform = "";
+                dynamicWord.style.opacity = "";
+
+                setTimeout(() => {
+
+                    changingWord = false;
+
+                }, 450);
+
             });
-          },
-          {
-            threshold: 0.15
-          }
-        );
-
-        approachObserver.observe(approach);
-      }
-
-
-      /* =====================================================
-         SERVICE ACCORDION
-         ===================================================== */
-
-      const serviceItems = document.querySelectorAll(".service-item");
-
-      serviceItems.forEach((item) => {
-        const trigger = item.querySelector(".service-trigger");
-
-        trigger.addEventListener("click", () => {
-
-          const isActive = item.classList.contains("active");
-
-          serviceItems.forEach((otherItem) => {
-            otherItem.classList.remove("active");
-
-            const otherTrigger =
-              otherItem.querySelector(".service-trigger");
-
-            otherTrigger.setAttribute("aria-expanded", "false");
-          });
-
-          if (!isActive) {
-            item.classList.add("active");
-            trigger.setAttribute("aria-expanded", "true");
-          }
-        });
-      });
-
-
-      /* =====================================================
-         SMOOTH ANCHOR NAVIGATION
-         ===================================================== */
-
-      document.querySelectorAll('a[href^="#"]').forEach((link) => {
-
-        link.addEventListener("click", (event) => {
-
-          const targetId = link.getAttribute("href");
-
-          if (!targetId || targetId === "#") {
-            return;
-          }
-
-          const target = document.querySelector(targetId);
-
-          if (!target) {
-            return;
-          }
-
-          event.preventDefault();
-
-          const headerOffset = 70;
-
-          const targetPosition =
-            target.getBoundingClientRect().top +
-            window.scrollY -
-            headerOffset;
-
-          window.scrollTo({
-            top: targetPosition,
-            behavior:
-              window.matchMedia("(prefers-reduced-motion: reduce)").matches
-                ? "auto"
-                : "smooth"
-          });
 
         });
 
-      });
+    }, 350);
+}
 
 
-      /* =====================================================
-         ACTIVE NAVIGATION
-         ===================================================== */
+/* mouse */
 
-      const sections = document.querySelectorAll(
-        "#top, #about, #services, #contact"
-      );
+wordTrigger.addEventListener(
+    "click",
+    changeWord
+);
 
-      const navLinks = document.querySelectorAll(".desktop-nav .nav-link");
 
-      const sectionObserver = new IntersectionObserver(
+/* keyboard */
+
+wordTrigger.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Enter" ||
+            event.key === " "
+        ) {
+
+            event.preventDefault();
+
+            changeWord();
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   AUTOMATIC HERO SEQUENCE
+   ========================================================= */
+
+let automaticSequence = true;
+
+
+/*
+    The automatic sequence deliberately pauses
+    between movements.
+
+    This prevents the hero from feeling like
+    an endlessly looping advertisement.
+*/
+
+const automaticInterval =
+    window.setInterval(() => {
+
+        if (!automaticSequence) return;
+
+        changeWord();
+
+    }, 4200);
+
+
+/*
+    Once the visitor interacts manually,
+    stop automatic word changes.
+*/
+
+wordTrigger.addEventListener(
+    "pointerdown",
+    () => {
+
+        automaticSequence = false;
+
+    },
+    { once: true }
+);
+
+
+/* =========================================================
+   CTA HAND-DIRECTION INTERACTION
+   ========================================================= */
+
+const heroCta =
+    document.getElementById("heroCta");
+
+const handStage =
+    document.querySelector(".hand-stage");
+
+
+heroCta.addEventListener(
+    "mouseenter",
+    () => {
+
+        handStage.style.transition =
+            "transform 700ms cubic-bezier(.16,1,.3,1)";
+
+        handStage.style.transform =
+            "translate(-15px, -50%) rotate(-9deg) scale(1.04)";
+
+    }
+);
+
+
+heroCta.addEventListener(
+    "mouseleave",
+    () => {
+
+        handStage.style.transform =
+            "";
+
+    }
+);
+
+
+/* =========================================================
+   SCROLL REVEAL
+   ========================================================= */
+
+const revealElements =
+    document.querySelectorAll(".reveal");
+
+
+const revealObserver =
+    new IntersectionObserver(
         (entries) => {
 
-          entries.forEach((entry) => {
+            entries.forEach((entry) => {
 
-            if (!entry.isIntersecting) {
-              return;
-            }
+                if (!entry.isIntersecting) return;
 
-            const id = entry.target.id;
+                entry.target.classList.add(
+                    "visible"
+                );
 
-            navLinks.forEach((link) => {
-              link.classList.remove("active");
+                revealObserver.unobserve(
+                    entry.target
+                );
 
-              if (link.getAttribute("href") === `#${id}`) {
-                link.classList.add("active");
-              }
             });
-
-          });
 
         },
         {
-          threshold: 0.35
+            threshold: 0.12,
+            rootMargin: "0px 0px -60px 0px"
         }
-      );
-
-      sections.forEach((section) => {
-        sectionObserver.observe(section);
-      });
+    );
 
 
-      /* =====================================================
-         POINTER — HERO CTA TRANSITION
-         ===================================================== */
+revealElements.forEach(
+    (element) => {
 
-      const heroPointer = document.getElementById("heroPointer");
-      const hero = document.querySelector(".hero");
+        revealObserver.observe(element);
 
-      const ctaLinks = document.querySelectorAll(
-        ".hero .button-primary"
-      );
+    }
+);
 
-      if (heroPointer && hero && ctaLinks.length) {
 
-        const pointerReset = () => {
-          if (window.innerWidth <= 600) {
-            heroPointer.style.left = "";
-            heroPointer.style.right = "";
-            heroPointer.style.top = "";
-            heroPointer.style.bottom = "";
-            heroPointer.classList.remove("pointer-cta");
-            return;
-          }
+/* =========================================================
+   MOBILE MENU
+   ========================================================= */
 
-          heroPointer.classList.remove("pointer-cta");
-        };
+const menuToggle =
+    document.querySelector(".menu-toggle");
 
-        ctaLinks.forEach((cta) => {
+const mobileNav =
+    document.querySelector(".mobile-nav");
 
-          cta.addEventListener("mouseenter", () => {
+const closeMenuLinks =
+    document.querySelectorAll("[data-close-menu]");
 
-            if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-              return;
+
+function setMenu(open) {
+
+    document.body.classList.toggle(
+        "menu-open",
+        open
+    );
+
+    menuToggle.setAttribute(
+        "aria-expanded",
+        String(open)
+    );
+
+    mobileNav.setAttribute(
+        "aria-hidden",
+        String(!open)
+    );
+
+}
+
+
+menuToggle.addEventListener(
+    "click",
+    () => {
+
+        const isOpen =
+            document.body.classList.contains(
+                "menu-open"
+            );
+
+        setMenu(!isOpen);
+
+    }
+);
+
+
+closeMenuLinks.forEach(
+    (link) => {
+
+        link.addEventListener(
+            "click",
+            () => {
+
+                setMenu(false);
+
             }
-
-            if (window.innerWidth > 900) {
-              heroPointer.classList.add("pointer-cta");
-            }
-
-          });
-
-          cta.addEventListener("mouseleave", pointerReset);
-
-        });
-
-      }
-
-
-      /* =====================================================
-         POINTER MOUSE RESPONSE
-         ===================================================== */
-
-      if (
-        hero &&
-        heroPointer &&
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
-
-        let pointerFrame = null;
-
-        hero.addEventListener("mousemove", (event) => {
-
-          if (window.innerWidth <= 900) {
-            return;
-          }
-
-          if (pointerFrame) {
-            cancelAnimationFrame(pointerFrame);
-          }
-
-          pointerFrame = requestAnimationFrame(() => {
-
-            const rect = hero.getBoundingClientRect();
-
-            const x =
-              ((event.clientX - rect.left) / rect.width) - 0.5;
-
-            const y =
-              ((event.clientY - rect.top) / rect.height) - 0.5;
-
-            const moveX = x * 12;
-            const moveY = y * 10;
-
-            heroPointer.style.marginLeft = `${moveX}px`;
-            heroPointer.style.marginTop = `${moveY}px`;
-
-          });
-
-        });
-
-        hero.addEventListener("mouseleave", () => {
-          heroPointer.style.marginLeft = "";
-          heroPointer.style.marginTop = "";
-        });
-
-      }
-
-
-      /* =====================================================
-         SERVICE POINTER — MOUSE POSITION
-         ===================================================== */
-
-      serviceItems.forEach((item) => {
-
-        const pointer = item.querySelector(".service-pointer");
-
-        if (!pointer) {
-          return;
-        }
-
-        item.addEventListener("mousemove", (event) => {
-
-          if (
-            window.innerWidth <= 900 ||
-            window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ) {
-            return;
-          }
-
-          const rect = item.getBoundingClientRect();
-
-          const relativeX =
-            (event.clientX - rect.left) / rect.width;
-
-          const rotation =
-            -12 + relativeX * 18;
-
-          pointer.style.transform =
-            `translateY(-50%) rotate(${rotation}deg) scale(1)`;
-
-        });
-
-      });
-
-
-      /* =====================================================
-         PROJECT POINTER — MOUSE RESPONSE
-         ===================================================== */
-
-      document.querySelectorAll(".project").forEach((project) => {
-
-        const pointer = project.querySelector(".project-pointer");
-        const visual = project.querySelector(".project-visual");
-
-        if (!pointer || !visual) {
-          return;
-        }
-
-        visual.addEventListener("mousemove", (event) => {
-
-          if (
-            window.matchMedia("(prefers-reduced-motion: reduce)").matches
-          ) {
-            return;
-          }
-
-          const rect = visual.getBoundingClientRect();
-
-          const x =
-            ((event.clientX - rect.left) / rect.width) - 0.5;
-
-          const y =
-            ((event.clientY - rect.top) / rect.height) - 0.5;
-
-          pointer.style.transform =
-            `translate(${x * 12}px, ${y * 12}px) rotate(${x * 14}deg)`;
-
-        });
-
-        visual.addEventListener("mouseleave", () => {
-          pointer.style.transform = "";
-        });
-
-      });
-
-
-      /* =====================================================
-         PARALLAX-LIKE HERO MOVEMENT
-         ===================================================== */
-
-      if (
-        !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-      ) {
-
-        const heroTitle = document.querySelector(".hero-title");
-
-        window.addEventListener(
-          "scroll",
-          () => {
-
-            if (window.scrollY > window.innerHeight) {
-              return;
-            }
-
-            const offset = window.scrollY * 0.08;
-
-            if (heroTitle) {
-              heroTitle.style.transform =
-                `translateY(${offset}px)`;
-            }
-
-          },
-          { passive: true }
         );
 
-      }
+    }
+);
 
-    })();
-  </script>
+
+/* =========================================================
+   ESCAPE KEY
+   ========================================================= */
+
+document.addEventListener(
+    "keydown",
+    (event) => {
+
+        if (
+            event.key === "Escape" &&
+            document.body.classList.contains(
+                "menu-open"
+            )
+        ) {
+
+            setMenu(false);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   PREVENT ACCIDENTAL HORIZONTAL SCROLL
+   ========================================================= */
+
+window.addEventListener(
+    "resize",
+    () => {
+
+        if (
+            window.innerWidth > 1000 &&
+            document.body.classList.contains(
+                "menu-open"
+            )
+        ) {
+
+            setMenu(false);
+
+        }
+
+    }
+);
+
+
+/* =========================================================
+   HERO POINTER MICRO-INTERACTION
+   ========================================================= */
+
+/*
+    On desktop, the hand subtly responds to
+    pointer movement.
+
+    This is intentionally very restrained.
+*/
+
+const hero =
+    document.querySelector(".hero");
+
+const pointerHand =
+    document.querySelector(".pointer-hand");
+
+
+if (
+    window.matchMedia(
+        "(pointer:fine)"
+    ).matches
+) {
+
+    hero.addEventListener(
+        "pointermove",
+        (event) => {
+
+            const rect =
+                hero.getBoundingClientRect();
+
+            const x =
+                (event.clientX - rect.left)
+                / rect.width;
+
+            const y =
+                (event.clientY - rect.top)
+                / rect.height;
+
+
+            const moveX =
+                (x - 0.5) * 12;
+
+            const moveY =
+                (y - 0.5) * 8;
+
+
+            pointerHand.style.translate =
+                `${moveX}px ${moveY}px`;
+
+        }
+    );
+
+
+    hero.addEventListener(
+        "pointerleave",
+        () => {
+
+            pointerHand.style.translate =
+                "0 0";
+
+        }
+    );
+
+}
+
+
+/* =========================================================
+   REDUCED MOTION
+   ========================================================= */
+
+const prefersReducedMotion =
+    window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    );
+
+
+if (prefersReducedMotion.matches) {
+
+    automaticSequence = false;
+
+}
+
+</script>
 
 </body>
 </html>
