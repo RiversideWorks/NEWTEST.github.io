@@ -3,257 +3,240 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BIG BOLD Hero Section - Updated</title>
-    
-    <!-- Fonts for the main text, side text, and dynamic font cycling -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@900&family=Playfair+Display:ital,wght@1,600&family=Courier+Prime:wght@700&family=Cinzel:wght@800&family=Abril+Fatface&display=swap" rel="stylesheet">
-
+    <title>Portfolio Section</title>
     <style>
-        /* =========================================
-           CSS STYLING
-           ========================================= */
-        body, html {
+        /* CSS Reset and Base Styles */
+        * {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100vh;
-            background-color: #101010; /* Deep custom black */
-            color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
             overflow: hidden;
         }
 
-        .hero-container {
+        /* Layout */
+        .container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        .left-panel {
+            width: 40%;
+            height: 100%;
+            padding: 40px 50px;
+            display: flex;
+            flex-direction: column;
             position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        /* The Big Bold Wordmark Container */
-        .wordmark {
-            display: flex;
-            align-items: center;
-            font-size: 14vw;
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: -0.02em;
-            text-transform: uppercase;
+        .right-panel {
+            width: 60%;
+            height: 100%;
+            background-color: #f5f5f5; /* Light background behind image */
         }
 
-        .letter {
-            position: relative;
-            z-index: 2;
-        }
-
-        /* The central container acting as the mask and the letter 'I' */
-        .mask-container {
-            position: relative;
-            height: 10.5vw; 
-            width: 2.8vw; 
-            margin: 0 0.8vw;
-            background-color: #ffffff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1;
-        }
-
-        /* The dynamic 'I' that cycles fonts (hidden initially) */
-        .dynamic-i {
-            position: absolute;
-            font-size: 14vw;
-            line-height: 1;
-            color: #ffffff;
-            opacity: 0; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        /* Right Panel Image */
+        #main-image {
             width: 100%;
             height: 100%;
+            object-fit: cover;
+            object-position: center;
+            transition: opacity 0.3s ease-in-out;
         }
 
-        /* The container for the flashing images */
-        .mask-inner {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            opacity: 0; 
+        /* Top Counter */
+        .top-counter {
+            text-align: right;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
         }
 
-        /* The accent mark */
-        .accent {
-            position: absolute;
-            top: 0;
-            right: 0;
-            font-size: 8vw;
-            line-height: 0;
-            color: #FF473A; /* Bold secondary accent color */
+        /* Navigation Menu */
+        .menu {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .menu-item {
+            font-size: 3.5rem;
+            font-weight: 600;
+            color: #333; /* Dark grey for inactive */
+            cursor: pointer;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+        }
+
+        /* Active State */
+        .menu-item.active {
+            color: #fff;
+        }
+
+        /* Superscript Number */
+        .menu-item .sup-num {
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-left: 8px;
+            margin-top: 12px;
             opacity: 0;
-            transform: translateY(0) rotate(15deg);
-            pointer-events: none;
-            z-index: 3;
+            transition: opacity 0.3s ease;
+            letter-spacing: 0;
         }
 
-        /* The contextual text that fades in */
-        .side-text {
-            position: absolute;
-            left: calc(100% + 4vw); 
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 1.5vw;
-            font-family: 'Playfair Display', serif;
-            font-style: italic;
-            opacity: 0;
-            white-space: nowrap;
-            line-height: 1.3;
-            color: #dddddd;
-            border-left: 2px solid #FF473A; /* Matching accent color */
-            padding-left: 1vw;
-            z-index: 0;
+        .menu-item.active .sup-num {
+            opacity: 1;
+        }
+
+        /* Bottom Description Text */
+        .description-box {
+            margin-top: auto; /* Pushes to bottom */
+            max-width: 320px;
+            padding-bottom: 20px;
+        }
+
+        .desc-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            letter-spacing: -0.2px;
+        }
+
+        .desc-body {
+            font-size: 0.9rem;
+            color: #888;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
 
-    <!-- =========================================
-         HTML STRUCTURE
-         ========================================= -->
-    <div class="hero-container">
-        <div class="wordmark">
-            <div class="letter">S</div>
-            <div class="letter">K</div>
+    <div class="container">
+        <!-- Left Column -->
+        <div class="left-panel">
+            <div class="top-counter" id="counter">2 / 3</div>
             
-            <div class="mask-container" id="mask">
-                <div class="mask-inner" id="mask-inner"></div>
-                <div class="dynamic-i" id="dynamic-i">I</div>
-                <div class="accent" id="accent">´</div>
+            <div class="menu" id="menu-container">
+                <!-- Menu items generated by JS -->
             </div>
-            
-            <div class="letter">C</div>
-            <div class="letter">A</div>
+
+            <div class="description-box">
+                <div class="desc-title" id="desc-title">Setting a Style</div>
+                <div class="desc-body" id="desc-body">
+                    Not sure which direction to take your brand in? We can work together to create something which reflects your brand and looks beautiful.
+                </div>
+            </div>
         </div>
-        
-        <div class="side-text" id="side-text">
-            Creative Developer<br>
-            Open Source Contributor<br>
-            \ GitHub \
+
+        <!-- Right Column -->
+        <div class="right-panel">
+            <img id="main-image" src="image_215fe1.png" alt="Showcase Image">
         </div>
     </div>
 
-    <!-- =========================================
-         JAVASCRIPT & GSAP ANIMATION
-         ========================================= -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    
     <script>
-        // Array of 11 images to ensure a full 5.5-second runtime (0.5s per image)
-        const images = [
-            "https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80", 
-            "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=600&q=80", 
-            "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80", 
-            "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1537432376769-00f5c2f4c8d2?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1504639725590-34d0984388bd?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1607799279861-4dddf9657b85?auto=format&fit=crop&w=600&q=80",
-            "https://images.unsplash.com/photo-1627398225058-f4f4087336ef?auto=format&fit=crop&w=600&q=80"
+        // Data structure holding all the content variations
+        const sectionData = [
+            {
+                id: "01",
+                heading: "3D design",
+                title: "Bringing Concepts to Life",
+                text: "Explore new dimensions. We craft immersive 3D elements that elevate your brand narrative and create stunning visual impact.",
+                image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop" // Placeholder image for 3D Design
+            },
+            {
+                id: "02",
+                heading: "Art direction",
+                title: "Setting a Style",
+                text: "Not sure which direction to take your brand in? We can work together to create something which reflects your brand and looks beautiful.",
+                image: "image_215fe1.png" // Exact requested filename
+            },
+            {
+                id: "03",
+                heading: "Motion",
+                title: "Moving Experiences",
+                text: "Add rhythm and pacing to your storytelling. Our motion graphics breathe life into static concepts, keeping audiences engaged.",
+                image: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2000&auto=format&fit=crop" // Placeholder image for Motion
+            }
         ];
 
-        // Array of fonts to cycle through
-        const fontsToCycle = [
-            "'Playfair Display', serif", 
-            "'Courier Prime', monospace", 
-            "'Cinzel', serif", 
-            "'Abril Fatface', serif", 
-            "'Georgia', serif", 
-            "'Inter', sans-serif" // Resolves back to the original font
-        ];
+        // DOM Elements
+        const menuContainer = document.getElementById('menu-container');
+        const mainImage = document.getElementById('main-image');
+        const descTitle = document.getElementById('desc-title');
+        const descBody = document.getElementById('desc-body');
+        const counter = document.getElementById('counter');
 
-        const maskContainer = document.getElementById('mask');
-        const maskInner = document.getElementById('mask-inner');
-        const dynamicI = document.getElementById('dynamic-i');
-        const accent = document.getElementById('accent');
-        const sideText = document.getElementById('side-text');
+        let currentIndex = 1; // Default to "Art direction" (index 1) to match your screenshot
 
-        const tl = gsap.timeline({ repeat: -1, repeatDelay: 1.5 });
+        // Function to initialize the menu
+        function initMenu() {
+            sectionData.forEach((item, index) => {
+                const menuItem = document.createElement('div');
+                menuItem.className = `menu-item ${index === currentIndex ? 'active' : ''}`;
+                menuItem.innerHTML = `${item.heading} <span class="sup-num">(${item.id})</span>`;
+                
+                // Click Event
+                menuItem.addEventListener('click', () => {
+                    updateSection(index);
+                });
 
-        // Step 1: Smooth, slow expansion (1.5 seconds)
-        tl.to(maskContainer, {
-            width: "35vw",
-            duration: 1.5,
-            ease: "power2.inOut"
-        });
+                menuContainer.appendChild(menuItem);
+            });
+            
+            // Set initial content
+            updateContent(currentIndex);
+        }
 
-        tl.to(maskInner, { opacity: 1, duration: 0.3 }, "-=0.3");
+        // Function to handle the click and update the UI
+        function updateSection(index) {
+            if (index === currentIndex) return; // Do nothing if clicking the already active item
 
-        // Step 2: 5.5 Seconds of Image Flashing (11 images x 0.5 seconds each)
-        images.forEach((img) => {
-            tl.set(maskInner, { backgroundImage: `url(${img})` }, "+=0.5");
-        });
+            currentIndex = index;
 
-        tl.to(maskInner, { opacity: 0, duration: 0.3 }, "+=0.5");
+            // Update Active Classes
+            const menuItems = document.querySelectorAll('.menu-item');
+            menuItems.forEach((item, i) => {
+                if (i === currentIndex) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
 
-        // Step 3: Smooth, slow contraction (1.5 seconds)
-        tl.to(maskContainer, {
-            width: "2.8vw", 
-            duration: 1.5,
-            ease: "power2.inOut"
-        }, "-=0.3");
+            // Fade out effect for image
+            mainImage.style.opacity = 0;
+            
+            setTimeout(() => {
+                updateContent(currentIndex);
+                mainImage.style.opacity = 1; // Fade back in
+            }, 200); // Small delay to sync with CSS transition
+        }
 
-        // Step 4: Switch from white block to text to allow font cycling
-        tl.add("fontCycleStart");
-        tl.set(maskContainer, { backgroundColor: "transparent" }, "fontCycleStart");
-        tl.set(dynamicI, { opacity: 1 }, "fontCycleStart");
+        // Function to swap out text and image data
+        function updateContent(index) {
+            const data = sectionData[index];
+            
+            mainImage.src = data.image;
+            descTitle.textContent = data.title;
+            descBody.textContent = data.text;
+            counter.textContent = `${index + 1} / ${sectionData.length}`;
+        }
 
-        // Step 5: Side text moves in VERY slowly (3.5 seconds)
-        tl.to(sideText, {
-            opacity: 1,
-            x: "2vw", 
-            duration: 3.5,
-            ease: "power1.out"
-        }, "fontCycleStart");
-
-        // Step 6: Cycle fonts while the text is moving in
-        // Distribute the font changes evenly across the 3.5-second text animation
-        fontsToCycle.forEach((fontFamily, index) => {
-            let delay = index * 0.5; // Change font every 0.5s
-            tl.set(dynamicI, { fontFamily: fontFamily }, `fontCycleStart+=${delay}`);
-        });
-
-        // Step 7: Pop the accent mark up just as the text finishes arriving
-        tl.to(accent, {
-            opacity: 1,
-            y: "-3.5vw", 
-            x: "1.5vw", 
-            duration: 0.6,
-            ease: "back.out(1.7)" 
-        }, "fontCycleStart+=3.2");
-
-        // Step 8: Hold state, then reset for continuous loop
-        tl.to([accent, sideText], {
-            opacity: 0,
-            duration: 0.6,
-            delay: 4 
-        });
-
-        tl.set(accent, { y: 0, x: 0 });
-        tl.set(sideText, { x: 0 });
-        tl.set(maskContainer, { backgroundColor: "#ffffff" });
-        tl.set(dynamicI, { opacity: 0, fontFamily: "'Inter', sans-serif" });
-
+        // Run initialization on load
+        initMenu();
     </script>
 </body>
 </html>
