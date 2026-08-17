@@ -17,7 +17,7 @@
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             background-color: #000;
             color: #fff;
-            overflow: hidden;
+            overflow: hidden; /* Prevents scrollbars for a clean app-like feel */
         }
 
         /* Layout */
@@ -78,6 +78,8 @@
             align-items: flex-start;
             letter-spacing: -1.5px;
             line-height: 1.1;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent; /* Removes blue tap highlight on mobile */
         }
 
         /* Active State */
@@ -118,6 +120,81 @@
             font-size: 0.9rem;
             color: #888;
             line-height: 1.5;
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN (Tablets & Mobile)
+           ========================================= */
+
+        @media (max-width: 1024px) {
+            .menu-item {
+                font-size: 2.8rem;
+            }
+            .left-panel {
+                width: 50%;
+                padding: 30px 40px;
+            }
+            .right-panel {
+                width: 50%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column; /* Stack vertically on mobile */
+            }
+
+            .left-panel {
+                width: 100%;
+                height: 55%; /* Give slightly more than half to the text/menu */
+                padding: 25px 20px;
+            }
+
+            .right-panel {
+                width: 100%;
+                height: 45%;
+            }
+
+            .menu-item {
+                font-size: 2.2rem;
+                letter-spacing: -1px;
+            }
+
+            .menu-item .sup-num {
+                margin-top: 6px; /* Adjust superscript alignment for smaller text */
+            }
+
+            .description-box {
+                max-width: 100%; /* Utilize full width on mobile */
+                padding-bottom: 10px;
+            }
+
+            .desc-body {
+                font-size: 0.85rem;
+            }
+            
+            .top-counter {
+                margin-bottom: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Adjustments for very small phones */
+            .left-panel {
+                height: 60%;
+            }
+            .right-panel {
+                height: 40%;
+            }
+            .menu-item {
+                font-size: 1.8rem;
+            }
+            .desc-body {
+                display: -webkit-box;
+                -webkit-line-clamp: 3; /* Limit to 3 lines to prevent overflow */
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
         }
     </style>
 </head>
