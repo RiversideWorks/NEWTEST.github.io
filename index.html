@@ -315,5 +315,304 @@
         // Run initialization on load
         initMenu();
     </script>
+
+    -------------------NEW-----------------
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Section - Smooth Scroll</title>
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #ffffff;
+            color: #111;
+        }
+
+        /* Layout Container */
+        .team-section {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            align-items: center;
+        }
+
+        /* Left Panel - Text Content */
+        .text-panel {
+            width: 50%;
+            padding: 0 8%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .text-panel h2 {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            font-weight: 500;
+            margin-bottom: 24px;
+            letter-spacing: -1px;
+            max-width: 500px;
+        }
+
+        .text-panel p {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            color: #555;
+            max-width: 450px;
+        }
+
+        /* Right Panel - Scrolling Gallery */
+        .gallery-panel {
+            width: 50%;
+            height: 100vh;
+            display: flex;
+            gap: 20px;
+            padding: 0 20px;
+            overflow: hidden;
+            /* Creates the fade effect at top and bottom */
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+            mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+        }
+
+        .column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .scroll-track {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        /* Card Styles */
+        .card {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            border-radius: 16px;
+            overflow: hidden;
+            background-color: #eee;
+            flex-shrink: 0;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Card Gradient Overlay & Text */
+        .card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 30px 20px 20px 20px;
+            background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .person-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .person-details p {
+            font-size: 0.75rem;
+            color: #ddd;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 10px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0.8;
+        }
+
+        /* Scrolling Animations */
+        @keyframes scrollDown {
+            0% { transform: translateY(-50%); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes scrollUp {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-50%); }
+        }
+
+        /* 
+           Animation applied to the tracks. 
+           Height is essentially 200% because JS duplicates the content.
+           Moving by 50% shifts exactly one "set" of cards.
+        */
+        .track-down {
+            animation: scrollDown 25s linear infinite;
+        }
+
+        .track-up {
+            animation: scrollUp 25s linear infinite;
+        }
+
+        /* Pause animation on hover for better UX */
+        .gallery-panel:hover .track-down,
+        .gallery-panel:hover .track-up {
+            animation-play-state: paused;
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN (Tablets & Mobile)
+           ========================================= */
+
+        @media (max-width: 1024px) {
+            .text-panel h2 {
+                font-size: 2.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .team-section {
+                flex-direction: column;
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .text-panel {
+                width: 100%;
+                padding: 60px 5% 40px 5%;
+                text-align: center;
+                align-items: center;
+            }
+
+            .gallery-panel {
+                width: 100%;
+                height: 60vh; /* Fixed height to allow scrolling mask to work on mobile */
+                padding: 0 10px;
+            }
+
+            .card {
+                border-radius: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .text-panel h2 {
+                font-size: 2.2rem;
+            }
+            
+            .text-panel p {
+                font-size: 0.95rem;
+            }
+
+            .gallery-panel {
+                height: 65vh;
+            }
+            
+            .card-info {
+                padding: 20px 15px 15px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="team-section">
+        <!-- Left Text Content -->
+        <div class="text-panel">
+            <h2>The people behind every decision we ship</h2>
+            <p>Twelve disciplines, one studio floor, and no handoffs the people who sketch it are the people who ship it.</p>
+        </div>
+
+        <!-- Right Scrolling Galleries -->
+        <div class="gallery-panel">
+            <!-- Left Column: Scrolls Downwards -->
+            <div class="column">
+                <div class="scroll-track track-down" id="track-left">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+
+            <!-- Right Column: Scrolls Upwards -->
+            <div class="column">
+                <div class="scroll-track track-up" id="track-right">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Mock data for the two columns
+        // Referencing the requested image exactly as "image_07dbd5.jpg"
+        const leftColumnData = [
+            { name: "Owen Castellanos", role: "Motion design", image: "image_07dbd5.jpg", icons: ["X", "in"] },
+            { name: "Hana Iwaki", role: "Art direction", image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=60", icons: ["X", "in"] },
+            { name: "Gabriel Nkemdi", role: "Research lead", image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=60", icons: ["in", "web"] }
+        ];
+
+        const rightColumnData = [
+            { name: "Priya Raghunathan", role: "Brand strategy", image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=500&auto=format&fit=crop&q=60", icons: ["in", "X"] },
+            { name: "Sylvie Renard", role: "Copy and editorial", image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=60", icons: ["X", "web"] },
+            { name: "Marco Rossi", role: "Lead Developer", image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=60", icons: ["in"] }
+        ];
+
+        // Function to generate the HTML for a single card
+        function createCardHTML(person) {
+            const iconsHTML = person.icons.map(icon => `<span>${icon === 'web' ? '🌐' : icon}</span>`).join(' ');
+            
+            return `
+                <div class="card">
+                    <img src="${person.image}" alt="${person.name}">
+                    <div class="card-info">
+                        <div class="person-details">
+                            <h4>${person.name}</h4>
+                            <p>${person.role}</p>
+                        </div>
+                        <div class="social-icons">
+                            ${iconsHTML}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Function to populate a track and duplicate its content for infinite scrolling
+        function populateTrack(trackId, data) {
+            const track = document.getElementById(trackId);
+            
+            // Generate HTML for the base set of cards
+            const cardsHTML = data.map(createCardHTML).join('');
+            
+            // Inject the cards TWICE so the CSS transform translate(-50%) creates a seamless loop
+            track.innerHTML = cardsHTML + cardsHTML;
+        }
+
+        // Initialize the tracks
+        populateTrack('track-left', leftColumnData);
+        populateTrack('track-right', rightColumnData);
+
+    </script>
+</body>
+</html>
+
 </body>
 </html>
