@@ -1050,3 +1050,266 @@ NEWNEW
     </script>
 </body>
 </html>
+NEWNEWNEW
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive 3D Pop Out Cutout Cards</title>
+    <style>
+        /* CSS Reset & General Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #eef2f5;
+            color: #1a1a1a;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* Header Section */
+        .header-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header-title h2 {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        /* Cards Grid Layout */
+        .cards-grid {
+            display: flex;
+            gap: 40px;
+            justify-content: center;
+            align-items: flex-end;
+            max-width: 1000px;
+            width: 100%;
+        }
+
+        /* Perspective Wrapper */
+        .card-perspective-wrapper {
+            perspective: 1000px;
+            flex: 1;
+            max-width: 380px;
+        }
+
+        /* Main 3D Card Container */
+        .card {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            border-radius: 24px;
+            transform-style: preserve-3d;
+            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+        }
+
+        /* Background Card Frame (Clipped Image & Text) */
+        .card-bg-frame {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 78%; /* Leaves top space for cutout pop-out */
+            border-radius: 24px;
+            overflow: hidden;
+            background: #ffffff;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transform: translateZ(0px);
+            transition: box-shadow 0.4s ease;
+        }
+
+        .card:hover .card-bg-frame {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .card-bg-image {
+            width: 100%;
+            height: 65%;
+            object-fit: cover;
+        }
+
+        /* Bottom Description Content */
+        .card-content {
+            padding: 18px 22px;
+            background: #ffffff;
+            z-index: 2;
+        }
+
+        .card-content h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #111;
+            margin-bottom: 4px;
+        }
+
+        .card-content p {
+            font-size: 0.85rem;
+            color: #777;
+            line-height: 1.4;
+        }
+
+        /* Foreground Cutout Layer (Breaks Boundary) */
+        .card-cutout-wrapper {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 85%;
+            pointer-events: none;
+            z-index: 3;
+            transform: translateZ(30px); /* 3D depth pop */
+            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
+        }
+
+        .card-cutout-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            object-position: bottom center;
+            /* Casts shadow onto background layer */
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
+            transition: filter 0.4s ease;
+        }
+
+        /* Hover Elevation Effects */
+        .card:hover .card-cutout-wrapper {
+            transform: translateZ(50px) translateY(-12px) scale(1.05);
+        }
+
+        .card:hover .card-cutout-image {
+            filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.35));
+        }
+
+        /* =========================================
+           RESPONSIVE DESIGN (Mobile & Tablets)
+           ========================================= */
+        @media (max-width: 768px) {
+            .cards-grid {
+                flex-direction: column;
+                align-items: center;
+                gap: 50px;
+            }
+
+            .card-perspective-wrapper {
+                width: 100%;
+                max-width: 340px;
+            }
+
+            .card {
+                height: 380px;
+            }
+
+            .header-title h2 {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Section Header -->
+    <div class="header-title">
+        <h2>Hover your cursor over the cards ↘</h2>
+    </div>
+
+    <!-- Interactive Grid -->
+    <div class="cards-grid">
+
+        <!-- Card 1: Skateboarder -->
+        <div class="card-perspective-wrapper">
+            <div class="card" data-tilt>
+                
+                <!-- Background Base Frame -->
+                <div class="card-bg-frame">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" class="card-bg-image" alt="Beach Sky Background">
+                    <div class="card-content">
+                        <h3>Skateboarder</h3>
+                        <p>3D Pop-out effect with layered cutout and dynamic spatial depth.</p>
+                    </div>
+                </div>
+
+                <!-- Transparent Foreground Cutout -->
+                <div class="card-cutout-wrapper">
+                    <img src="https://pngimg.com/uploads/skateboard/skateboard_PNG10771.png" class="card-cutout-image" alt="Skateboarder Cutout">
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Card 2: Surfer / Ocean -->
+        <div class="card-perspective-wrapper">
+            <div class="card" data-tilt>
+                
+                <!-- Background Base Frame -->
+                <div class="card-bg-frame">
+                    <img src="https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=800&q=80" class="card-bg-image" alt="Ocean Sunset Background">
+                    <div class="card-content">
+                        <h3>Surfer Action</h3>
+                        <p>Interactive tilt perspective responding seamlessly to cursor tracking.</p>
+                    </div>
+                </div>
+
+                <!-- Transparent Foreground Cutout -->
+                <div class="card-cutout-wrapper">
+                    <img src="https://pngimg.com/uploads/surfing/surfing_PNG24.png" class="card-cutout-image" alt="Surfer Cutout">
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Interactive 3D Tilt Script -->
+    <script>
+        const cards = document.querySelectorAll('[data-tilt]');
+
+        cards.forEach(card => {
+            let transitionTimeout;
+
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left; // Mouse X position inside card
+                const y = e.clientY - rect.top;  // Mouse Y position inside card
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                // Rotational angles calculation
+                const rotateX = ((y - centerY) / centerY) * -14; // Pitch
+                const rotateY = ((x - centerX) / centerX) * 14;  // Yaw
+
+                // Disable transition during movement for real-time responsiveness
+                card.style.transition = 'none';
+                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+            });
+
+            // Smooth Reset on Mouse Leave
+            card.addEventListener('mouseleave', () => {
+                card.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
+                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+            });
+        });
+    </script>
+</body>
+</html>
