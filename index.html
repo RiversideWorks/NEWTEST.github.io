@@ -23,13 +23,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 60px 20px;
         }
 
         /* Header */
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
         }
 
         .header p {
@@ -47,7 +47,7 @@
         }
 
         /* =========================================
-           2. CARDS CONTAINER & STRICT 2D POP-UP
+           2. CARDS CONTAINER & FRAME BASE
            ========================================= */
         .cards-container {
             display: flex;
@@ -65,27 +65,44 @@
 
         .card {
             position: relative;
-            background: #e2e2e5;
+            background-color: #e2e2e5; /* Base default frame color */
             border: 1px solid rgba(0, 0, 0, 0.08);
             border-radius: 20px;
             padding: 12px;
             cursor: pointer;
             overflow: visible; /* Allows cutout to break top boundary */
-            /* Completely flat 2D transform (No 3D perspective or backward tilt) */
             transform: translateY(0);
-            transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease;
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+                        box-shadow 0.4s ease, 
+                        background 0.4s ease, 
+                        color 0.4s ease;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
 
-        /* Card moves strictly STRAIGHT UPWARD on hover */
-        .card:hover {
-            transform: translateY(-14px);
-            box-shadow: 0 22px 42px rgba(0, 0, 0, 0.12);
+        /* Gradient Frame Overlays for Card 1 & Card 2 */
+        .card-1::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
         }
 
-        /* =========================================
-           3. COLORED GRADIENT SPOTLIGHT (Cursor Tracking)
-           ========================================= */
+        .card-2::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 20px;
+            background: linear-gradient(135deg, #eab308 0%, #f97316 50%, #10b981 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            z-index: 1;
+        }
+
+        /* Desktop Cursor Spotlight */
         .card-glow {
             position: absolute;
             inset: 0;
@@ -96,34 +113,28 @@
             z-index: 2;
         }
 
-        /* Card 1 Multi-Color Spotlight (Cyan / Purple / Pink) */
-        .card-1 .card-glow {
-            background: radial-gradient(
-                circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(56, 189, 248, 0.65) 0%,
-                rgba(168, 85, 247, 0.45) 45%,
-                rgba(236, 72, 153, 0.25) 70%,
-                transparent 100%
-            );
-        }
-
-        /* Card 2 Multi-Color Spotlight (Yellow / Orange / Mint) */
-        .card-2 .card-glow {
-            background: radial-gradient(
-                circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(250, 204, 21, 0.7) 0%,
-                rgba(249, 115, 22, 0.5) 45%,
-                rgba(16, 185, 129, 0.25) 70%,
-                transparent 100%
-            );
-        }
-
-        .card:hover .card-glow {
-            opacity: 1;
+        @media (min-width: 721px) {
+            .card-1 .card-glow {
+                background: radial-gradient(circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.65) 0%, rgba(168, 85, 247, 0.45) 45%, rgba(236, 72, 153, 0.25) 70%, transparent 100%);
+            }
+            .card-2 .card-glow {
+                background: radial-gradient(circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(250, 204, 21, 0.7) 0%, rgba(249, 115, 22, 0.5) 45%, rgba(16, 185, 129, 0.25) 70%, transparent 100%);
+            }
+            .card:hover {
+                transform: translateY(-14px);
+                box-shadow: 0 22px 42px rgba(0, 0, 0, 0.12);
+            }
+            .card:hover .card-glow {
+                opacity: 1;
+            }
+            .card:hover .cutout-layer {
+                transform: translateY(-32px) scale(1.12);
+                filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.28));
+            }
         }
 
         /* =========================================
-           4. STAGE & STRAIGHT POP-OUT CUTOUT
+           3. STAGE & POP-OUT CUTOUT
            ========================================= */
         .card-image-stage {
             position: relative;
@@ -131,9 +142,10 @@
             height: 220px;
             border-radius: 14px;
             overflow: visible;
+            z-index: 3;
         }
 
-        /* Background Layer */
+        /* Background Layer (Sky/Ocean Image) */
         .bg-layer {
             position: absolute;
             inset: 0;
@@ -151,7 +163,7 @@
             display: block;
         }
 
-        /* Cutout Layer (Pops Straight Up out of the Top Border) */
+        /* Cutout Layer (Pops Straight Up out of Top Border) */
         .cutout-layer {
             position: absolute;
             inset: 0;
@@ -160,14 +172,8 @@
             z-index: 4;
             pointer-events: none;
             transform: translateY(0) scale(1);
-            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
             filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.15));
-        }
-
-        /* Subject pops higher straight UPWARD (No backward angle) */
-        .card:hover .cutout-layer {
-            transform: translateY(-32px) scale(1.12);
-            filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.28));
         }
 
         .cutout-layer svg {
@@ -176,11 +182,12 @@
             overflow: visible;
         }
 
-        /* Typography */
+        /* Typography Inside Frame */
         .card-body {
             position: relative;
             z-index: 5;
             padding: 14px 6px 6px 6px;
+            transition: color 0.4s ease;
         }
 
         .card-body h3 {
@@ -188,23 +195,51 @@
             font-weight: 700;
             color: #111;
             margin-bottom: 4px;
+            transition: color 0.4s ease;
         }
 
         .card-body p {
             font-size: 0.8rem;
             color: #666;
             line-height: 1.35;
+            transition: color 0.4s ease;
         }
 
-        /* Mobile Breakpoint */
+        /* =========================================
+           4. MOBILE SCROLL TRIGGERED POP-UP & GRADIENT
+           ========================================= */
         @media (max-width: 720px) {
             .cards-container {
                 flex-direction: column;
                 align-items: center;
-                gap: 40px;
+                gap: 60px;
             }
+
             .card-wrapper {
                 width: 100%;
+            }
+
+            /* Active class applied by Intersection Observer on mobile scroll */
+            .card.scroll-active {
+                transform: translateY(-16px);
+                box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
+            }
+
+            /* Fill card outer frame background with gradient */
+            .card.scroll-active::before {
+                opacity: 1;
+            }
+
+            /* Make text white for ultra contrast against active gradient frame */
+            .card.scroll-active .card-body h3,
+            .card.scroll-active .card-body p {
+                color: #ffffff;
+            }
+
+            /* Pop elements out on scroll */
+            .card.scroll-active .cutout-layer {
+                transform: translateY(-34px) scale(1.12);
+                filter: drop-shadow(0 20px 26px rgba(0, 0, 0, 0.32));
             }
         }
     </style>
@@ -213,7 +248,7 @@
 
     <!-- Header -->
     <div class="header">
-        <p>Hover your cursor<br>over the card.</p>
+        <p>Scroll down to see cards<br>interact on mobile devices.</p>
         <span class="arrow">↓</span>
     </div>
 
@@ -308,23 +343,44 @@
 
     </div>
 
-    <!-- Script ONLY updates CSS variables for cursor tracking gradient spotlight -->
+    <!-- INTERACTION SCRIPT -->
     <script>
         const cards = document.querySelectorAll('.card');
 
+        // 1. Desktop Cursor Spotlight Tracking
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-
-                const mouseXPercent = (x / rect.width) * 100;
-                const mouseYPercent = (y / rect.height) * 100;
-                
-                card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
-                card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
+                if (window.innerWidth > 720) {
+                    const rect = card.getBoundingClientRect();
+                    const mouseXPercent = ((e.clientX - rect.left) / rect.width) * 100;
+                    const mouseYPercent = ((e.clientY - rect.top) / rect.height) * 100;
+                    
+                    card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
+                    card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
+                }
             });
         });
+
+        // 2. Mobile Intersection Observer (Triggers pop-up and gradient fill on scroll)
+        const observerOptions = {
+            root: null,
+            rootMargin: '-15% 0px -15% 0px', // Triggers when card enters middle 70% of screen
+            threshold: 0.5
+        };
+
+        const mobileObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (window.innerWidth <= 720) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('scroll-active');
+                    } else {
+                        entry.target.classList.remove('scroll-active');
+                    }
+                }
+            });
+        }, observerOptions);
+
+        cards.forEach(card => mobileObserver.observe(card));
     </script>
 </body>
 </html>
