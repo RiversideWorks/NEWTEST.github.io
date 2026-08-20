@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Pop-Out Interactive Cutout Cards</title>
+    <title>Pop-Out Interactive Cutout Cards</title>
     <style>
         /* =========================================
-           1. RESET & CLEAN BACKDROP
+           1. RESET & FLAT BACKDROP
            ========================================= */
         * {
             margin: 0;
@@ -47,7 +47,7 @@
         }
 
         /* =========================================
-           2. CARDS CONTAINER & POP-UP BEHAVIOR
+           2. CARDS CONTAINER & STRICT 2D POP-UP
            ========================================= */
         .cards-container {
             display: flex;
@@ -70,20 +70,21 @@
             border-radius: 20px;
             padding: 12px;
             cursor: pointer;
-            overflow: visible; /* Allows cutout to pop past top border */
-            /* Strictly Pop Up upwards on hover (No side 3D tilting) */
+            overflow: visible; /* Allows cutout to break top boundary */
+            /* Completely flat 2D transform (No 3D perspective or backward tilt) */
+            transform: translateY(0);
             transition: transform 0.35s cubic-bezier(0.25, 1, 0.5, 1), box-shadow 0.35s ease;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
 
-        /* Card strictly shifts upward on hover */
+        /* Card moves strictly STRAIGHT UPWARD on hover */
         .card:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+            transform: translateY(-14px);
+            box-shadow: 0 22px 42px rgba(0, 0, 0, 0.12);
         }
 
         /* =========================================
-           3. COLORED GRADIENT SPOTLIGHT (Tracks Cursor)
+           3. COLORED GRADIENT SPOTLIGHT (Cursor Tracking)
            ========================================= */
         .card-glow {
             position: absolute;
@@ -95,22 +96,22 @@
             z-index: 2;
         }
 
-        /* Vibrant Multi-Color Gradient Spotlight for Card 1 (Cyan / Purple / Pink) */
+        /* Card 1 Multi-Color Spotlight (Cyan / Purple / Pink) */
         .card-1 .card-glow {
             background: radial-gradient(
-                circle 200px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(56, 189, 248, 0.6) 0%,
+                circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(56, 189, 248, 0.65) 0%,
                 rgba(168, 85, 247, 0.45) 45%,
                 rgba(236, 72, 153, 0.25) 70%,
                 transparent 100%
             );
         }
 
-        /* Vibrant Multi-Color Gradient Spotlight for Card 2 (Yellow / Orange / Mint) */
+        /* Card 2 Multi-Color Spotlight (Yellow / Orange / Mint) */
         .card-2 .card-glow {
             background: radial-gradient(
-                circle 200px at var(--mouse-x, 50%) var(--mouse-y, 50%),
-                rgba(250, 204, 21, 0.65) 0%,
+                circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(250, 204, 21, 0.7) 0%,
                 rgba(249, 115, 22, 0.5) 45%,
                 rgba(16, 185, 129, 0.25) 70%,
                 transparent 100%
@@ -122,7 +123,7 @@
         }
 
         /* =========================================
-           4. STAGE & POP-OUT CUTOUT
+           4. STAGE & STRAIGHT POP-OUT CUTOUT
            ========================================= */
         .card-image-stage {
             position: relative;
@@ -132,7 +133,7 @@
             overflow: visible;
         }
 
-        /* Clipped Background Layer */
+        /* Background Layer */
         .bg-layer {
             position: absolute;
             inset: 0;
@@ -150,7 +151,7 @@
             display: block;
         }
 
-        /* Foreground Cutout Layer (Pops Up and Out of Top Border) */
+        /* Cutout Layer (Pops Straight Up out of the Top Border) */
         .cutout-layer {
             position: absolute;
             inset: 0;
@@ -158,15 +159,15 @@
             height: 100%;
             z-index: 4;
             pointer-events: none;
-            transform-origin: bottom center;
+            transform: translateY(0) scale(1);
             transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
             filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.15));
         }
 
-        /* Subject pops higher upwards when hovered */
+        /* Subject pops higher straight UPWARD (No backward angle) */
         .card:hover .cutout-layer {
-            transform: translateY(-28px) scale(1.1);
-            filter: drop-shadow(0 16px 22px rgba(0, 0, 0, 0.28));
+            transform: translateY(-32px) scale(1.12);
+            filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.28));
         }
 
         .cutout-layer svg {
@@ -222,11 +223,9 @@
         <!-- CARD 1: Skateboarder -->
         <div class="card-wrapper">
             <div class="card card-1">
-                <!-- Colored Gradient Glow Layer -->
                 <div class="card-glow"></div>
                 
                 <div class="card-image-stage">
-                    <!-- Background Layer (Sky) -->
                     <div class="bg-layer">
                         <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
                             <defs>
@@ -242,7 +241,6 @@
                         </svg>
                     </div>
 
-                    <!-- Cutout Layer (Jumping Skater Pops Up) -->
                     <div class="cutout-layer">
                         <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
                             <g transform="translate(130, 25) scale(0.78)">
@@ -269,11 +267,9 @@
         <!-- CARD 2: Soda Can -->
         <div class="card-wrapper">
             <div class="card card-2">
-                <!-- Colored Gradient Glow Layer -->
                 <div class="card-glow"></div>
                 
                 <div class="card-image-stage">
-                    <!-- Background Layer (Ocean) -->
                     <div class="bg-layer">
                         <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
                             <defs>
@@ -289,7 +285,6 @@
                         </svg>
                     </div>
 
-                    <!-- Cutout Layer (Floating Drink Can Pops Up) -->
                     <div class="cutout-layer">
                         <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
                             <g transform="translate(180, 45) rotate(-12)">
@@ -313,7 +308,7 @@
 
     </div>
 
-    <!-- Script ONLY tracks cursor for the multi-colored gradient spotlight -->
+    <!-- Script ONLY updates CSS variables for cursor tracking gradient spotlight -->
     <script>
         const cards = document.querySelectorAll('.card');
 
@@ -326,7 +321,6 @@
                 const mouseXPercent = (x / rect.width) * 100;
                 const mouseYPercent = (y / rect.height) * 100;
                 
-                // Dynamically move the colored spotlight center
                 card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
                 card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
             });
