@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive 3D Pop Out Cutout Cards</title>
+    <title>3D Pop-Out Interactive Cutout Cards</title>
     <style>
-        /* CSS Reset & General Styles */
+        /* =========================================
+           RESET & CANVAS BACKDROP (3D Grid)
+           ========================================= */
         * {
             margin: 0;
             padding: 0;
@@ -14,247 +16,347 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #eef2f5;
-            color: #1a1a1a;
+            background-color: #ebebeb;
+            color: #222;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
-            padding: 40px 20px;
+            justify-content: center;
+            overflow-x: hidden;
+            position: relative;
+            perspective: 1000px;
         }
 
-        /* Header Section */
-        .header-title {
+        /* Perspective Grid Background */
+        .grid-backdrop {
+            position: absolute;
+            width: 200vw;
+            height: 200vh;
+            top: -50vh;
+            left: -50vw;
+            background-size: 50px 50px;
+            background-image: 
+                linear-gradient(to right, rgba(0, 0, 0, 0.07) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0, 0, 0, 0.07) 1px, transparent 1px);
+            transform: rotateX(40deg) scale(1.2);
+            transform-origin: center center;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* =========================================
+           HEADER TEXT
+           ========================================= */
+        .header {
+            position: relative;
+            z-index: 10;
             text-align: center;
-            margin-bottom: 50px;
+            margin-bottom: 40px;
         }
 
-        .header-title h2 {
-            font-size: 1.1rem;
+        .header p {
+            font-size: 0.95rem;
+            color: #333;
             font-weight: 500;
-            color: #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+            line-height: 1.3;
         }
 
-        /* Cards Grid Layout */
-        .cards-grid {
+        .header .arrow {
+            display: block;
+            margin-top: 6px;
+            font-size: 1.1rem;
+            color: #555;
+        }
+
+        /* =========================================
+           CARDS CONTAINER & LAYOUT
+           ========================================= */
+        .cards-container {
+            position: relative;
+            z-index: 10;
             display: flex;
-            gap: 40px;
+            gap: 24px;
             justify-content: center;
-            align-items: flex-end;
-            max-width: 1000px;
+            align-items: center;
+            padding: 0 20px;
+            max-width: 900px;
             width: 100%;
         }
 
-        /* Perspective Wrapper */
-        .card-perspective-wrapper {
+        /* Main Card Wrapper */
+        .card-wrapper {
             perspective: 1000px;
             flex: 1;
             max-width: 380px;
         }
 
-        /* Main 3D Card Container */
         .card {
             position: relative;
-            width: 100%;
-            height: 420px;
-            border-radius: 24px;
-            transform-style: preserve-3d;
-            transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+            background: #dedede;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            border-radius: 20px;
+            padding: 12px;
             cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.15s ease-out, box-shadow 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            overflow: visible; /* Allows subject to pop out top border */
         }
 
-        /* Background Card Frame (Clipped Image & Text) */
-        .card-bg-frame {
+        /* Hover Radial Light/Glow (Tracks Cursor) */
+        .card-glow {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 78%; /* Leaves top space for cutout pop-out */
-            border-radius: 24px;
-            overflow: hidden;
-            background: #ffffff;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transform: translateZ(0px);
-            transition: box-shadow 0.4s ease;
-        }
-
-        .card:hover .card-bg-frame {
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.08);
-        }
-
-        .card-bg-image {
-            width: 100%;
-            height: 65%;
-            object-fit: cover;
-        }
-
-        /* Bottom Description Content */
-        .card-content {
-            padding: 18px 22px;
-            background: #ffffff;
+            inset: 0;
+            border-radius: 20px;
+            background: radial-gradient(circle 180px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.85), transparent 80%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
             z-index: 2;
         }
 
-        .card-content h3 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 4px;
+        .card:hover .card-glow {
+            opacity: 1;
         }
 
-        .card-content p {
-            font-size: 0.85rem;
-            color: #777;
-            line-height: 1.4;
-        }
-
-        /* Foreground Cutout Layer (Breaks Boundary) */
-        .card-cutout-wrapper {
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* Image Stage Area */
+        .card-image-stage {
+            position: relative;
             width: 100%;
-            height: 85%;
-            pointer-events: none;
-            z-index: 3;
-            transform: translateZ(30px); /* 3D depth pop */
-            transition: transform 0.4s cubic-bezier(0.23, 1, 0.32, 1), filter 0.4s ease;
+            height: 220px;
+            border-radius: 14px;
+            overflow: visible; /* Allows cutout to break top boundary */
         }
 
-        .card-cutout-image {
+        /* Clipped Background Image */
+        .bg-layer {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            object-fit: contain;
-            object-position: bottom center;
-            /* Casts shadow onto background layer */
-            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.2));
-            transition: filter 0.4s ease;
+            border-radius: 14px;
+            overflow: hidden;
+            z-index: 3;
         }
 
-        /* Hover Elevation Effects */
-        .card:hover .card-cutout-wrapper {
-            transform: translateZ(50px) translateY(-12px) scale(1.05);
+        .bg-layer img, .bg-layer svg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
         }
 
-        .card:hover .card-cutout-image {
-            filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.35));
+        /* Pop-Out Foreground Cutout Layer */
+        .cutout-layer {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 4;
+            pointer-events: none;
+            transform-origin: bottom center;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.35s ease;
+            filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.15));
+        }
+
+        /* Hover Behavior: Cutout Pops Up & Out */
+        .card:hover .cutout-layer {
+            transform: translateY(-28px) scale(1.12);
+            filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.3));
+        }
+
+        .cutout-layer svg {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
         }
 
         /* =========================================
-           RESPONSIVE DESIGN (Mobile & Tablets)
+           CARD CONTENT TYPOGRAPHY
            ========================================= */
-        @media (max-width: 768px) {
-            .cards-grid {
+        .card-body {
+            position: relative;
+            z-index: 5;
+            padding: 14px 6px 6px 6px;
+        }
+
+        .card-body h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+        }
+
+        .card-body p {
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.35;
+        }
+
+        /* Responsive Breakpoint */
+        @media (max-width: 720px) {
+            .cards-container {
                 flex-direction: column;
                 align-items: center;
-                gap: 50px;
+                gap: 40px;
             }
-
-            .card-perspective-wrapper {
+            .card-wrapper {
                 width: 100%;
-                max-width: 340px;
-            }
-
-            .card {
-                height: 380px;
-            }
-
-            .header-title h2 {
-                font-size: 1rem;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Section Header -->
-    <div class="header-title">
-        <h2>Hover your cursor over the cards ↘</h2>
+    <!-- Perspective Studio Backdrop Grid -->
+    <div class="grid-backdrop"></div>
+
+    <!-- Header -->
+    <div class="header">
+        <p>Hover your cursor<br>over the card.</p>
+        <span class="arrow">↓</span>
     </div>
 
-    <!-- Interactive Grid -->
-    <div class="cards-grid">
+    <!-- Cards Section -->
+    <div class="cards-container">
 
-        <!-- Card 1: Skateboarder -->
-        <div class="card-perspective-wrapper">
-            <div class="card" data-tilt>
+        <!-- CARD 1: Skateboarder -->
+        <div class="card-wrapper">
+            <div class="card">
+                <div class="card-glow"></div>
                 
-                <!-- Background Base Frame -->
-                <div class="card-bg-frame">
-                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80" class="card-bg-image" alt="Beach Sky Background">
-                    <div class="card-content">
-                        <h3>Skateboarder</h3>
-                        <p>3D Pop-out effect with layered cutout and dynamic spatial depth.</p>
+                <div class="card-image-stage">
+                    <!-- Background Layer (Clouds & Sky) -->
+                    <div class="bg-layer">
+                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
+                            <defs>
+                                <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#7ca0c7"/>
+                                    <stop offset="40%" stop-color="#b2c8de"/>
+                                    <stop offset="100%" stop-color="#d9cfc1"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="400" height="280" fill="url(#skyGrad)"/>
+                            <!-- Clouds -->
+                            <path d="M 50,180 Q 80,140 130,160 Q 180,130 230,160 Q 270,140 320,170 Q 360,160 380,190 L 400,280 L 0,280 Z" fill="rgba(255,255,255,0.4)"/>
+                            <path d="M 20,200 Q 70,170 120,190 Q 190,160 260,195 Q 310,180 370,210 L 400,280 L 0,280 Z" fill="rgba(255,255,255,0.6)"/>
+                        </svg>
+                    </div>
+
+                    <!-- Cutout Layer (Skater - Extends Out on Hover) -->
+                    <div class="cutout-layer">
+                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
+                            <!-- Silhouette Vector Skateboarder -->
+                            <g transform="translate(130, 30) scale(0.75)">
+                                <!-- Skateboard -->
+                                <path d="M 10 210 Q 70 230 130 180" stroke="#111" stroke-width="8" stroke-linecap="round" fill="none"/>
+                                <circle cx="35" cy="212" r="6" fill="#444"/>
+                                <circle cx="105" cy="190" r="6" fill="#444"/>
+                                <!-- Skater Legs -->
+                                <path d="M 45 160 L 35 205 M 95 135 L 110 180" stroke="#2b303a" stroke-width="16" stroke-linecap="round"/>
+                                <!-- Torso -->
+                                <path d="M 50 100 L 80 145" stroke="#222" stroke-width="22" stroke-linecap="round"/>
+                                <!-- Arms -->
+                                <path d="M 50 100 L 10 75 M 65 105 L 115 90" stroke="#222" stroke-width="10" stroke-linecap="round"/>
+                                <!-- Head & Cap -->
+                                <circle cx="45" cy="80" r="12" fill="#d0a880"/>
+                                <path d="M 30 75 Q 45 65 60 78" stroke="#111" stroke-width="8" stroke-linecap="round"/>
+                            </g>
+                        </svg>
                     </div>
                 </div>
 
-                <!-- Transparent Foreground Cutout -->
-                <div class="card-cutout-wrapper">
-                    <img src="https://pngimg.com/uploads/skateboard/skateboard_PNG10771.png" class="card-cutout-image" alt="Skateboarder Cutout">
+                <div class="card-body">
+                    <h3>Skateboarder</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit</p>
                 </div>
-
             </div>
         </div>
 
-        <!-- Card 2: Surfer / Ocean -->
-        <div class="card-perspective-wrapper">
-            <div class="card" data-tilt>
+        <!-- CARD 2: Soda Can / Lorem Ipsum -->
+        <div class="card-wrapper">
+            <div class="card">
+                <div class="card-glow"></div>
                 
-                <!-- Background Base Frame -->
-                <div class="card-bg-frame">
-                    <img src="https://images.unsplash.com/photo-1509233725247-49e657c54213?auto=format&fit=crop&w=800&q=80" class="card-bg-image" alt="Ocean Sunset Background">
-                    <div class="card-content">
-                        <h3>Surfer Action</h3>
-                        <p>Interactive tilt perspective responding seamlessly to cursor tracking.</p>
+                <div class="card-image-stage">
+                    <!-- Background Layer (Ocean & Rocks) -->
+                    <div class="bg-layer">
+                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
+                            <defs>
+                                <linearGradient id="seaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#a4c2c2"/>
+                                    <stop offset="50%" stop-color="#5a8f91"/>
+                                    <stop offset="100%" stop-color="#2c5e63"/>
+                                </linearGradient>
+                            </defs>
+                            <rect width="400" height="280" fill="url(#seaGrad)"/>
+                            <!-- Rocky Outcrop Right -->
+                            <path d="M 280 280 L 290 160 L 330 130 L 400 150 L 400 280 Z" fill="#3a3835"/>
+                            <path d="M 310 280 L 330 180 L 370 160 L 400 190 L 400 280 Z" fill="#262422"/>
+                        </svg>
+                    </div>
+
+                    <!-- Cutout Layer (Floating Soda Can) -->
+                    <div class="cutout-layer">
+                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
+                            <!-- Floating Red Drink Can -->
+                            <g transform="translate(180, 50) rotate(-12)">
+                                <!-- Can Body -->
+                                <rect x="0" y="20" width="55" height="100" rx="10" fill="#c02626"/>
+                                <!-- Can Top Rim -->
+                                <ellipse cx="27.5" cy="20" rx="27.5" ry="6" fill="#d1d5db"/>
+                                <ellipse cx="27.5" cy="20" rx="22" ry="4" fill="#9ca3af"/>
+                                <!-- Can Label Text/Graphic -->
+                                <rect x="0" y="45" width="55" height="45" fill="#a11d1d"/>
+                                <text x="27.5" y="72" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 27.5 72)">ESCUDO</text>
+                                <!-- Can Highlight -->
+                                <rect x="6" y="20" width="8" height="100" fill="rgba(255,255,255,0.25)"/>
+                            </g>
+                        </svg>
                     </div>
                 </div>
 
-                <!-- Transparent Foreground Cutout -->
-                <div class="card-cutout-wrapper">
-                    <img src="https://pngimg.com/uploads/surfing/surfing_PNG24.png" class="card-cutout-image" alt="Surfer Cutout">
+                <div class="card-body">
+                    <h3>Lorem Ipsum</h3>
+                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit</p>
                 </div>
-
             </div>
         </div>
 
     </div>
 
-    <!-- Interactive 3D Tilt Script -->
+    <!-- =========================================
+       INTERACTIVE TILT & LIGHT-TRACKING SCRIPT
+       ========================================= -->
     <script>
-        const cards = document.querySelectorAll('[data-tilt]');
+        const cards = document.querySelectorAll('.card');
 
         cards.forEach(card => {
-            let transitionTimeout;
-
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left; // Mouse X position inside card
-                const y = e.clientY - rect.top;  // Mouse Y position inside card
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
 
+                // Calculate mouse percentage inside card for gradient light
+                const mouseXPercent = (x / rect.width) * 100;
+                const mouseYPercent = (y / rect.height) * 100;
+                
+                card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
+                card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
+
+                // 3D Perspective Tilt calculation
                 const centerX = rect.width / 2;
                 const centerY = rect.height / 2;
+                
+                const rotateX = ((y - centerY) / centerY) * -10;
+                const rotateY = ((x - centerX) / centerX) * 10;
 
-                // Rotational angles calculation
-                const rotateX = ((y - centerY) / centerY) * -14; // Pitch
-                const rotateY = ((x - centerX) / centerX) * 14;  // Yaw
-
-                // Disable transition during movement for real-time responsiveness
-                card.style.transition = 'none';
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`;
             });
 
-            // Smooth Reset on Mouse Leave
             card.addEventListener('mouseleave', () => {
-                card.style.transition = 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)';
-                card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+                card.style.transform = 'rotateX(0deg) rotateY(0deg) translateY(0px)';
             });
         });
     </script>
