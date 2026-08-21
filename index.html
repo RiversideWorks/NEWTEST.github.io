@@ -384,3 +384,1360 @@
     </script>
 </body>
 </html>
+
+NEWNEW
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Noise Background Test</title>
+
+    <style>
+
+        /* =========================================================
+           01. ROOT VARIABLES
+        ========================================================= */
+
+        :root {
+            --black: #101010;
+            --black-soft: #171717;
+
+            --white: #ffffff;
+            --off-white: #f7f5f1;
+
+            --text-dark: #111111;
+            --text-light: #ffffff;
+
+            --text-muted-dark: #6f6a66;
+            --text-muted-light: #bcb8b3;
+
+            --accent: #ff473a;
+
+            --container: 1400px;
+
+            --noise-opacity: 0.055;
+
+            --font:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+        }
+
+
+        /* =========================================================
+           02. RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+
+        body {
+            font-family: var(--font);
+            background: var(--black);
+            color: var(--white);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+
+        button {
+            font: inherit;
+        }
+
+
+        /* =========================================================
+           03. NOISE SYSTEM
+           
+           The SVG filter below generates the grain texture.
+
+           The noise layer:
+           - Covers the complete viewport
+           - Does not affect layout
+           - Does not block clicks
+           - Sits above the page content
+           - Has very low opacity
+        ========================================================= */
+
+        .noise-layer {
+            position: fixed;
+            inset: -20%;
+            width: 140%;
+            height: 140%;
+
+            pointer-events: none;
+
+            z-index: 9999;
+
+            opacity: var(--noise-opacity);
+
+            overflow: hidden;
+
+            mix-blend-mode: screen;
+
+            animation: noiseMove 0.35s steps(2) infinite;
+        }
+
+
+        .noise-layer svg {
+            width: 100%;
+            height: 100%;
+
+            display: block;
+
+            filter: url("#noiseFilter");
+        }
+
+
+        .noise-layer rect {
+            width: 100%;
+            height: 100%;
+        }
+
+
+        /*
+         * Very subtle movement.
+         *
+         * steps() is intentional here.
+         * It produces film-grain style movement rather
+         * than a smooth blurry animation.
+         */
+
+        @keyframes noiseMove {
+
+            0% {
+                transform: translate3d(0, 0, 0);
+            }
+
+            20% {
+                transform: translate3d(-2%, 1%, 0);
+            }
+
+            40% {
+                transform: translate3d(1%, -2%, 0);
+            }
+
+            60% {
+                transform: translate3d(2%, 2%, 0);
+            }
+
+            80% {
+                transform: translate3d(-1%, -1%, 0);
+            }
+
+            100% {
+                transform: translate3d(0, 0, 0);
+            }
+        }
+
+
+        /*
+         * Respect users who have requested reduced motion.
+         */
+
+        @media (prefers-reduced-motion: reduce) {
+
+            .noise-layer {
+                animation: none;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+
+        /* =========================================================
+           04. CONTAINER
+        ========================================================= */
+
+        .container {
+            width: min(
+                calc(100% - 80px),
+                var(--container)
+            );
+
+            margin-inline: auto;
+        }
+
+
+        /* =========================================================
+           05. NAVIGATION
+        ========================================================= */
+
+        .navbar {
+            position: absolute;
+
+            top: 0;
+            left: 0;
+
+            width: 100%;
+
+            z-index: 20;
+
+            padding: 28px 0;
+        }
+
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+
+        .logo {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 36px;
+
+            font-size: 14px;
+            font-weight: 600;
+
+            color: rgba(255, 255, 255, 0.72);
+        }
+
+
+        .nav-links a {
+            transition:
+                color 0.25s ease,
+                opacity 0.25s ease;
+        }
+
+
+        .nav-links a:hover {
+            color: #ffffff;
+        }
+
+
+        .nav-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 44px;
+
+            padding: 0 20px;
+
+            border-radius: 999px;
+
+            background: #ffffff;
+            color: #101010;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease;
+        }
+
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+        }
+
+
+        /* =========================================================
+           06. HERO
+        ========================================================= */
+
+        .hero {
+            position: relative;
+
+            min-height: 100vh;
+
+            display: flex;
+            align-items: center;
+
+            background:
+                radial-gradient(
+                    circle at 80% 20%,
+                    rgba(255, 71, 58, 0.10),
+                    transparent 35%
+                ),
+                var(--black);
+
+            overflow: hidden;
+        }
+
+
+        .hero::after {
+            content: "";
+
+            position: absolute;
+
+            width: 500px;
+            height: 500px;
+
+            right: -150px;
+            bottom: -200px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 71, 58, 0.06);
+
+            filter: blur(80px);
+
+            pointer-events: none;
+        }
+
+
+        .hero-content {
+            position: relative;
+
+            z-index: 5;
+
+            max-width: 850px;
+
+            padding: 140px 0 100px;
+        }
+
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+
+            gap: 8px;
+
+            margin-bottom: 26px;
+
+            padding: 8px 12px;
+
+            border: 1px solid rgba(255, 255, 255, 0.12);
+
+            border-radius: 999px;
+
+            background: rgba(255, 255, 255, 0.05);
+
+            color: #ff8179;
+
+            font-size: 12px;
+            font-weight: 700;
+
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+
+        .eyebrow-dot {
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background: var(--accent);
+        }
+
+
+        .hero h1 {
+            max-width: 900px;
+
+            font-size: clamp(
+                3.5rem,
+                8vw,
+                7.8rem
+            );
+
+            line-height: 0.92;
+
+            letter-spacing: -0.075em;
+
+            font-weight: 800;
+        }
+
+
+        .hero h1 span {
+            color: #77736f;
+        }
+
+
+        .hero-description {
+            max-width: 600px;
+
+            margin-top: 32px;
+
+            color: var(--text-muted-light);
+
+            font-size: 18px;
+
+            line-height: 1.7;
+        }
+
+
+        .hero-buttons {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            margin-top: 38px;
+
+            flex-wrap: wrap;
+        }
+
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 52px;
+
+            padding: 0 24px;
+
+            border-radius: 999px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            transition:
+                transform 0.25s ease,
+                background 0.25s ease,
+                border-color 0.25s ease;
+        }
+
+
+        .button:hover {
+            transform: translateY(-2px);
+        }
+
+
+        .button-primary {
+            background: #ffffff;
+            color: #101010;
+        }
+
+
+        .button-secondary {
+            border: 1px solid rgba(255, 255, 255, 0.18);
+
+            background: rgba(255, 255, 255, 0.04);
+
+            color: #ffffff;
+
+            backdrop-filter: blur(10px);
+        }
+
+
+        /* =========================================================
+           07. HERO DECORATIVE SHAPE
+        ========================================================= */
+
+        .hero-shape {
+            position: absolute;
+
+            right: 7%;
+            top: 50%;
+
+            width: 280px;
+            height: 280px;
+
+            transform: translateY(-50%);
+
+            border-radius: 40% 60% 55% 45% / 50% 40% 60% 50%;
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.08),
+                    rgba(255, 255, 255, 0.015)
+                );
+
+            backdrop-filter: blur(10px);
+
+            animation: floatingShape 7s ease-in-out infinite;
+        }
+
+
+        @keyframes floatingShape {
+
+            0%,
+            100% {
+                transform:
+                    translateY(-50%)
+                    rotate(0deg);
+            }
+
+            50% {
+                transform:
+                    translateY(-54%)
+                    rotate(8deg);
+            }
+        }
+
+
+        /* =========================================================
+           08. WHITE SECTION
+        ========================================================= */
+
+        .section-white {
+            position: relative;
+
+            background: var(--white);
+
+            color: var(--text-dark);
+
+            padding: 130px 0;
+        }
+
+
+        .section-header {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 80px;
+
+            align-items: end;
+
+            margin-bottom: 80px;
+        }
+
+
+        .section-label {
+            margin-bottom: 18px;
+
+            color: var(--accent);
+
+            font-size: 12px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+
+        .section-title {
+            max-width: 700px;
+
+            font-size: clamp(
+                2.8rem,
+                5vw,
+                5.2rem
+            );
+
+            line-height: 0.98;
+
+            letter-spacing: -0.065em;
+
+            font-weight: 800;
+        }
+
+
+        .section-description {
+            max-width: 480px;
+
+            color: var(--text-muted-dark);
+
+            font-size: 17px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =========================================================
+           09. CARDS
+        ========================================================= */
+
+        .cards {
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+
+        .card {
+            position: relative;
+
+            min-height: 360px;
+
+            padding: 32px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            border-radius: 18px;
+
+            background: #f4f1ec;
+
+            overflow: hidden;
+
+            transition:
+                transform 0.35s ease;
+        }
+
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+
+        .card-number {
+            font-size: 13px;
+
+            color: #8b8580;
+
+            font-weight: 700;
+        }
+
+
+        .card h3 {
+            margin-top: auto;
+
+            font-size: 32px;
+
+            line-height: 1;
+
+            letter-spacing: -0.04em;
+        }
+
+
+        .card p {
+            margin-top: 16px;
+
+            color: var(--text-muted-dark);
+
+            font-size: 15px;
+
+            line-height: 1.6;
+        }
+
+
+        .card-circle {
+            position: absolute;
+
+            right: -80px;
+            top: -80px;
+
+            width: 220px;
+            height: 220px;
+
+            border-radius: 50%;
+
+            background: rgba(255, 71, 58, 0.09);
+        }
+
+
+        /* =========================================================
+           10. OFF-WHITE SECTION
+        ========================================================= */
+
+        .section-offwhite {
+            position: relative;
+
+            background: var(--off-white);
+
+            color: var(--text-dark);
+
+            padding: 130px 0;
+        }
+
+
+        .large-panel {
+            min-height: 520px;
+
+            display: grid;
+
+            grid-template-columns: 1.1fr 0.9fr;
+
+            border-radius: 24px;
+
+            overflow: hidden;
+
+            background: #171717;
+
+            color: #ffffff;
+        }
+
+
+        .panel-content {
+            padding: 70px;
+
+            display: flex;
+            flex-direction: column;
+
+            justify-content: center;
+        }
+
+
+        .panel-content h2 {
+            max-width: 650px;
+
+            font-size: clamp(
+                3rem,
+                5vw,
+                5.5rem
+            );
+
+            line-height: 0.95;
+
+            letter-spacing: -0.065em;
+        }
+
+
+        .panel-content p {
+            max-width: 520px;
+
+            margin-top: 28px;
+
+            color: #aaa5a0;
+
+            line-height: 1.7;
+        }
+
+
+        .panel-visual {
+            position: relative;
+
+            min-height: 400px;
+
+            background:
+                radial-gradient(
+                    circle at 50% 50%,
+                    rgba(255, 71, 58, 0.25),
+                    transparent 40%
+                ),
+                #202020;
+        }
+
+
+        .panel-orb {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            width: 230px;
+            height: 230px;
+
+            transform: translate(-50%, -50%);
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255, 255, 255, 0.16);
+
+            background:
+                radial-gradient(
+                    circle at 30% 25%,
+                    rgba(255, 255, 255, 0.2),
+                    transparent 35%
+                ),
+                rgba(255, 255, 255, 0.03);
+
+            box-shadow:
+                0 0 100px rgba(255, 71, 58, 0.12);
+        }
+
+
+        /* =========================================================
+           11. FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 50px 0;
+
+            background: var(--black);
+
+            color: #ffffff;
+        }
+
+
+        .footer-inner {
+            display: flex;
+
+            justify-content: space-between;
+
+            gap: 30px;
+
+            color: #77736f;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================================
+           12. RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 1000px) {
+
+            .container {
+                width: min(
+                    calc(100% - 48px),
+                    var(--container)
+                );
+            }
+
+
+            .nav-links {
+                display: none;
+            }
+
+
+            .hero-shape {
+                right: -100px;
+
+                opacity: 0.5;
+            }
+
+
+            .section-header {
+                grid-template-columns: 1fr;
+
+                gap: 30px;
+            }
+
+
+            .cards {
+                grid-template-columns: 1fr;
+            }
+
+
+            .large-panel {
+                grid-template-columns: 1fr;
+            }
+
+
+            .panel-visual {
+                min-height: 400px;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .container {
+                width: min(
+                    calc(100% - 32px),
+                    var(--container)
+                );
+            }
+
+
+            .navbar {
+                padding: 20px 0;
+            }
+
+
+            .nav-button {
+                min-height: 40px;
+
+                padding: 0 15px;
+
+                font-size: 12px;
+            }
+
+
+            .hero-content {
+                padding-top: 130px;
+            }
+
+
+            .hero h1 {
+                font-size: clamp(
+                    3.1rem,
+                    16vw,
+                    5rem
+                );
+            }
+
+
+            .hero-description {
+                font-size: 16px;
+            }
+
+
+            .hero-shape {
+                width: 180px;
+                height: 180px;
+
+                right: -70px;
+                top: 70%;
+            }
+
+
+            .section-white,
+            .section-offwhite {
+                padding: 90px 0;
+            }
+
+
+            .section-title {
+                font-size: 3rem;
+            }
+
+
+            .card {
+                min-height: 300px;
+            }
+
+
+            .panel-content {
+                padding: 40px 28px;
+            }
+
+
+            .panel-content h2 {
+                font-size: 3rem;
+            }
+
+
+            .panel-visual {
+                min-height: 300px;
+            }
+
+
+            .footer-inner {
+                flex-direction: column;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- =========================================================
+         NOISE OVERLAY
+
+         The SVG filter creates procedural noise.
+
+         feTurbulence:
+         - baseFrequency controls grain size
+         - numOctaves controls complexity
+         - seed keeps the pattern consistent
+
+         The overlay is intentionally subtle.
+    ========================================================== -->
+
+    <div class="noise-layer" aria-hidden="true">
+
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="100%"
+            height="100%"
+            preserveAspectRatio="none"
+        >
+
+            <filter
+                id="noiseFilter"
+                x="0%"
+                y="0%"
+                width="100%"
+                height="100%"
+            >
+
+                <feTurbulence
+                    type="fractalNoise"
+                    baseFrequency="0.75"
+                    numOctaves="2"
+                    seed="7"
+                    stitchTiles="stitch"
+                />
+
+            </filter>
+
+
+            <rect
+                width="100%"
+                height="100%"
+                filter="url(#noiseFilter)"
+            />
+
+        </svg>
+
+    </div>
+
+
+
+    <!-- =========================================================
+         NAVIGATION
+    ========================================================== -->
+
+    <header class="navbar">
+
+        <div class="container nav-inner">
+
+            <a href="#" class="logo">
+                STUDIO.
+            </a>
+
+
+            <nav class="nav-links">
+
+                <a href="#about">
+                    About
+                </a>
+
+                <a href="#services">
+                    Services
+                </a>
+
+                <a href="#contact">
+                    Contact
+                </a>
+
+            </nav>
+
+
+            <a
+                href="#contact"
+                class="nav-button"
+            >
+                Let's Talk
+            </a>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <main>
+
+        <section class="hero">
+
+            <div class="container">
+
+                <div class="hero-content">
+
+                    <div class="eyebrow">
+
+                        <span class="eyebrow-dot"></span>
+
+                        Noise Effect Test
+
+                    </div>
+
+
+                    <h1>
+
+                        Digital design
+                        <span>with texture.</span>
+
+                    </h1>
+
+
+                    <p class="hero-description">
+
+                        This is a test page for evaluating a subtle
+                        procedural grain and noise effect on a
+                        GitHub Pages website.
+
+                    </p>
+
+
+                    <div class="hero-buttons">
+
+                        <a
+                            href="#about"
+                            class="button button-primary"
+                        >
+                            Explore Page
+                        </a>
+
+
+                        <a
+                            href="#services"
+                            class="button button-secondary"
+                        >
+                            View Sections
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div
+                class="hero-shape"
+                aria-hidden="true"
+            ></div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             WHITE SECTION
+        ====================================================== -->
+
+        <section
+            class="section-white"
+            id="about"
+        >
+
+            <div class="container">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <div class="section-label">
+                            01 / About
+                        </div>
+
+
+                        <h2 class="section-title">
+                            Does the grain feel natural?
+                        </h2>
+
+                    </div>
+
+
+                    <p class="section-description">
+
+                        Use this section to test how the noise behaves
+                        when placed over a bright background. Ideally,
+                        the grain should remain visible without becoming
+                        distracting.
+
+                    </p>
+
+                </div>
+
+
+                <div class="cards">
+
+                    <article class="card">
+
+                        <div class="card-number">
+                            01
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Subtle
+                            </h3>
+
+                            <p>
+                                The noise should enhance the surface
+                                rather than become the visual focus.
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="card-circle"
+                            aria-hidden="true"
+                        ></div>
+
+                    </article>
+
+
+                    <article class="card">
+
+                        <div class="card-number">
+                            02
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Organic
+                            </h3>
+
+                            <p>
+                                Procedural grain creates a slightly
+                                imperfect, tactile appearance.
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="card-circle"
+                            aria-hidden="true"
+                        ></div>
+
+                    </article>
+
+
+                    <article class="card">
+
+                        <div class="card-number">
+                            03
+                        </div>
+
+                        <div>
+
+                            <h3>
+                                Smooth
+                            </h3>
+
+                            <p>
+                                The animation is intentionally minimal
+                                to keep scrolling and interaction smooth.
+                            </p>
+
+                        </div>
+
+                        <div
+                            class="card-circle"
+                            aria-hidden="true"
+                        ></div>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             OFF-WHITE SECTION
+        ====================================================== -->
+
+        <section
+            class="section-offwhite"
+            id="services"
+        >
+
+            <div class="container">
+
+                <div class="section-header">
+
+                    <div>
+
+                        <div class="section-label">
+                            02 / Services
+                        </div>
+
+
+                        <h2 class="section-title">
+                            Test it against complex surfaces.
+                        </h2>
+
+                    </div>
+
+
+                    <p class="section-description">
+
+                        This darker panel lets you evaluate whether
+                        the noise remains subtle when used over
+                        gradients, shapes and large visual areas.
+
+                    </p>
+
+                </div>
+
+
+                <div class="large-panel">
+
+                    <div class="panel-content">
+
+                        <h2>
+                            Texture without distraction.
+                        </h2>
+
+
+                        <p>
+                            A good grain effect should be something
+                            you notice when you look closely — not
+                            something that immediately demands your
+                            attention.
+                        </p>
+
+                    </div>
+
+
+                    <div
+                        class="panel-visual"
+                        aria-hidden="true"
+                    >
+
+                        <div class="panel-orb"></div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer id="contact">
+
+        <div class="container">
+
+            <div class="footer-inner">
+
+                <span>
+                    NOISE TEST PAGE
+                </span>
+
+                <span>
+                    GitHub Pages / HTML + CSS / No JavaScript
+                </span>
+
+            </div>
+
+        </div>
+
+    </footer>
+
+
+</body>
+</html>
