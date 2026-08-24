@@ -384,3 +384,372 @@
     </script>
 </body>
 </html>
+NEWNEW
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Action Menu</title>
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    /* -------------------------------------------------------------
+       1. GLOBAL RESET & BASE STYLES
+    ------------------------------------------------------------- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #84a0f4;
+      background-image: linear-gradient(to top, #84a0f4 0%, #c2e9fb 100%);
+      font-family: "Montserrat", sans-serif;
+      overflow-x: hidden;
+      padding: 16px;
+    }
+
+    /* -------------------------------------------------------------
+       2. LIST CONTAINER & ACTION BUTTON
+    ------------------------------------------------------------- */
+    .list-container {
+      position: relative;
+    }
+
+    .more-button {
+      background-color: #5c67ff;
+      box-shadow: 0px 0px 0px 4px rgba(92, 103, 255, 0.3);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      transition: all 0.2s ease-in;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      position: relative;
+      z-index: 10;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .more-button:hover, 
+    .more-button:focus-visible {
+      box-shadow: 0px 0px 0px 8px rgba(92, 103, 255, 0.3);
+      background-color: #4854ff;
+    }
+
+    .more-button:focus-visible {
+      outline: 2px solid #1c3991;
+      outline-offset: 4px;
+    }
+
+    /* Hamburger Line Transforms */
+    .menu-icon-wrapper {
+      border-radius: 2px;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 330ms ease-out;
+    }
+
+    .menu-icon-line {
+      background-color: #fff;
+      border-radius: 2px;
+      width: 100%;
+      height: 2px;
+    }
+
+    .menu-icon-line.half {
+      width: 50%;
+    }
+
+    .menu-icon-line.first {
+      transition: transform 300ms cubic-bezier(0.52, -0.8, 0.52, 0.52);
+      transform-origin: right;
+    }
+
+    .menu-icon-line.last {
+      align-self: flex-end;
+      transition: transform 300ms cubic-bezier(0.52, -0.8, 0.52, 0.52);
+      transform-origin: left;
+    }
+
+    /* -------------------------------------------------------------
+       3. DROPDOWN MENU & ANIMATIONS
+    ------------------------------------------------------------- */
+    .more-button-list {
+      background-color: #fff;
+      border-radius: 12px;
+      list-style-type: none;
+      width: 150px;
+      box-shadow: 0px 10px 25px rgba(28, 57, 145, 0.15);
+      padding: 6px;
+      position: absolute;
+      right: 0;
+      top: 60px; /* Positioned directly below button for responsive safety */
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(0.8);
+      transform-origin: top right;
+      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+      z-index: 9;
+    }
+
+    .more-button-list-item {
+      display: flex;
+      align-items: center;
+      color: #1c3991;
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      transition: background-color 0.2s ease, color 0.2s ease;
+      opacity: 0;
+      transform: translateX(-10px);
+    }
+
+    .more-button-list-item:hover {
+      color: #5c67ff;
+      background-color: rgba(132, 160, 244, 0.1);
+    }
+
+    .more-button-list-item:after {
+      content: "";
+      position: absolute;
+      height: 1px;
+      width: calc(100% - 24px);
+      left: 12px;
+      bottom: 0;
+      background-color: rgba(132, 160, 244, 0.15);
+    }
+
+    .more-button-list-item:last-child:after {
+      display: none;
+    }
+
+    .more-button-list-item svg {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .more-button-list-item span {
+      display: inline-block;
+      line-height: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-left: 10px;
+    }
+
+    /* Active State Animations */
+    .list-container.active .more-button-list {
+      opacity: 1;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    .list-container.active .more-button {
+      animation: onePulse 0.6s forwards linear;
+    }
+
+    .list-container.active .menu-icon-wrapper {
+      transform: rotate(-45deg);
+    }
+
+    .list-container.active .menu-icon-line.first {
+      transform: rotate(-90deg) translateX(1px);
+    }
+
+    .list-container.active .menu-icon-line.last {
+      transform: rotate(-90deg) translateX(-1px);
+    }
+
+    .list-container.active .more-button-list-item {
+      animation: fadeInItem 0.4s forwards ease-out;
+    }
+
+    .list-container.active .more-button-list-item:nth-child(1) { animation-delay: 0.1s; }
+    .list-container.active .more-button-list-item:nth-child(2) { animation-delay: 0.2s; }
+    .list-container.active .more-button-list-item:nth-child(3) { animation-delay: 0.3s; }
+    .list-container.active .more-button-list-item:nth-child(4) { animation-delay: 0.4s; }
+
+    @keyframes onePulse {
+      0% { box-shadow: 0px 0px 0px 0px rgba(92, 103, 255, 0.3); }
+      50% { box-shadow: 0px 0px 0px 12px rgba(92, 103, 255, 0.1); }
+      100% { box-shadow: 0px 0px 0px 4px rgba(92, 103, 255, 0.3); }
+    }
+
+    @keyframes fadeInItem {
+      to {
+        transform: translateX(0px);
+        opacity: 1;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       4. FOOTER & SOCIAL LINKS
+    ------------------------------------------------------------- */
+    .socials {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      z-index: 5;
+    }
+
+    .social-link {
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(4px);
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .social-link:hover,
+    .social-link:focus-visible {
+      background-color: #fff;
+      color: #5c67ff;
+      transform: translateY(-2px);
+    }
+
+    /* -------------------------------------------------------------
+       5. RESPONSIVE BREAKPOINTS
+    ------------------------------------------------------------- */
+    @media (max-width: 480px) {
+      .more-button-list {
+        right: 50%;
+        transform-origin: top center;
+        transform: translateX(50%) scale(0.8);
+      }
+
+      .list-container.active .more-button-list {
+        transform: translateX(50%) scale(1);
+      }
+
+      .socials {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Main Action Menu Component -->
+  <div class="list-container">
+    <button class="more-button" aria-label="Toggle Menu" aria-expanded="false" aria-controls="menu-list">
+      <div class="menu-icon-wrapper">
+        <div class="menu-icon-line half first"></div>
+        <div class="menu-icon-line"></div>
+        <div class="menu-icon-line half last"></div>
+      </div>
+    </button>
+    
+    <ul class="more-button-list" id="menu-list" role="menu">
+      <li class="more-button-list-item" role="menuitem" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
+          <circle cx="12" cy="12" r="3"/>
+          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
+        </svg>
+        <span>Settings</span>
+      </li>
+      <li class="more-button-list-item" role="menuitem" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
+        </svg>
+        <span>Copy</span>
+      </li>
+      <li class="more-button-list-item" role="menuitem" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share">
+          <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/>
+        </svg>
+        <span>Share</span>
+      </li>
+      <li class="more-button-list-item" role="menuitem" tabindex="0">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
+          <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
+        </svg>
+        <span>Delete</span>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Social Media Floating Links -->
+  <footer class="socials">
+    <a class="social-link" href="https://twitter.com/aybukeceylan" target="_blank" rel="noopener noreferrer" aria-label="Twitter Profile">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter">
+        <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
+      </svg>
+    </a>
+    <a class="social-link" href="https://www.linkedin.com/in/ayb%C3%BCkeceylan/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin">
+        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+        <rect x="2" y="9" width="4" height="12"/>
+        <circle cx="4" cy="4" r="2"/>
+      </svg>
+    </a>
+  </footer>
+
+  <!-- JavaScript Integration -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const listContainer = document.querySelector('.list-container');
+      const moreButton = document.querySelector('.more-button');
+
+      // Toggle Menu Functionality
+      function toggleMenu(state) {
+        const isActive = state !== undefined ? state : !listContainer.classList.contains('active');
+        listContainer.classList.toggle('active', isActive);
+        moreButton.setAttribute('aria-expanded', isActive ? 'true' : 'false');
+      }
+
+      moreButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleMenu();
+      });
+
+      // Close menu when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!listContainer.contains(e.target) && listContainer.classList.contains('active')) {
+          toggleMenu(false);
+        }
+      });
+
+      // Close menu on ESC key press
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && listContainer.classList.contains('active')) {
+          toggleMenu(false);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
