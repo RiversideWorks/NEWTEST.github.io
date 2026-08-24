@@ -1,405 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pop-Out Interactive Cutout Cards</title>
-    <style>
-        /* =========================================
-           1. RESET & FLAT BACKDROP
-           ========================================= */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #ededef;
-            color: #1a1a1a;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 20px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-
-        .header p {
-            font-size: 0.95rem;
-            color: #222;
-            font-weight: 500;
-            line-height: 1.4;
-        }
-
-        .header .arrow {
-            display: block;
-            margin-top: 6px;
-            font-size: 1.1rem;
-            color: #444;
-        }
-
-        /* =========================================
-           2. CARDS CONTAINER & FRAME BASE
-           ========================================= */
-        .cards-container {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-            align-items: flex-end;
-            max-width: 860px;
-            width: 100%;
-        }
-
-        .card-wrapper {
-            flex: 1;
-            max-width: 380px;
-        }
-
-        .card {
-            position: relative;
-            background-color: #e2e2e5; /* Base default frame color */
-            border: 1px solid rgba(0, 0, 0, 0.08);
-            border-radius: 20px;
-            padding: 12px;
-            cursor: pointer;
-            overflow: visible; /* Allows cutout to break top boundary */
-            transform: translateY(0);
-            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
-                        box-shadow 0.4s ease, 
-                        background 0.4s ease, 
-                        color 0.4s ease;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
-        }
-
-        /* Gradient Frame Overlays for Card 1 & Card 2 */
-        .card-1::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #06b6d4 0%, #8b5cf6 50%, #ec4899 100%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 1;
-        }
-
-        .card-2::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            background: linear-gradient(135deg, #eab308 0%, #f97316 50%, #10b981 100%);
-            opacity: 0;
-            transition: opacity 0.4s ease;
-            z-index: 1;
-        }
-
-        /* Desktop Cursor Spotlight */
-        .card-glow {
-            position: absolute;
-            inset: 0;
-            border-radius: 20px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-            z-index: 2;
-        }
-
-        @media (min-width: 721px) {
-            .card-1 .card-glow {
-                background: radial-gradient(circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(56, 189, 248, 0.65) 0%, rgba(168, 85, 247, 0.45) 45%, rgba(236, 72, 153, 0.25) 70%, transparent 100%);
-            }
-            .card-2 .card-glow {
-                background: radial-gradient(circle 220px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(250, 204, 21, 0.7) 0%, rgba(249, 115, 22, 0.5) 45%, rgba(16, 185, 129, 0.25) 70%, transparent 100%);
-            }
-            .card:hover {
-                transform: translateY(-14px);
-                box-shadow: 0 22px 42px rgba(0, 0, 0, 0.12);
-            }
-            .card:hover .card-glow {
-                opacity: 1;
-            }
-            .card:hover .cutout-layer {
-                transform: translateY(-32px) scale(1.12);
-                filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.28));
-            }
-        }
-
-        /* =========================================
-           3. STAGE & POP-OUT CUTOUT
-           ========================================= */
-        .card-image-stage {
-            position: relative;
-            width: 100%;
-            height: 220px;
-            border-radius: 14px;
-            overflow: visible;
-            z-index: 3;
-        }
-
-        /* Background Layer (Sky/Ocean Image) */
-        .bg-layer {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            border-radius: 14px;
-            overflow: hidden;
-            z-index: 3;
-        }
-
-        .bg-layer svg {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Cutout Layer (Pops Straight Up out of Top Border) */
-        .cutout-layer {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 4;
-            pointer-events: none;
-            transform: translateY(0) scale(1);
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.4s ease;
-            filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.15));
-        }
-
-        .cutout-layer svg {
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-        }
-
-        /* Typography Inside Frame */
-        .card-body {
-            position: relative;
-            z-index: 5;
-            padding: 14px 6px 6px 6px;
-            transition: color 0.4s ease;
-        }
-
-        .card-body h3 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            color: #111;
-            margin-bottom: 4px;
-            transition: color 0.4s ease;
-        }
-
-        .card-body p {
-            font-size: 0.8rem;
-            color: #666;
-            line-height: 1.35;
-            transition: color 0.4s ease;
-        }
-
-        /* =========================================
-           4. MOBILE SCROLL TRIGGERED POP-UP & GRADIENT
-           ========================================= */
-        @media (max-width: 720px) {
-            .cards-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 60px;
-            }
-
-            .card-wrapper {
-                width: 100%;
-            }
-
-            /* Active class applied by Intersection Observer on mobile scroll */
-            .card.scroll-active {
-                transform: translateY(-16px);
-                box-shadow: 0 24px 48px rgba(0, 0, 0, 0.2);
-            }
-
-            /* Fill card outer frame background with gradient */
-            .card.scroll-active::before {
-                opacity: 1;
-            }
-
-            /* Make text white for ultra contrast against active gradient frame */
-            .card.scroll-active .card-body h3,
-            .card.scroll-active .card-body p {
-                color: #ffffff;
-            }
-
-            /* Pop elements out on scroll */
-            .card.scroll-active .cutout-layer {
-                transform: translateY(-34px) scale(1.12);
-                filter: drop-shadow(0 20px 26px rgba(0, 0, 0, 0.32));
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <!-- Header -->
-    <div class="header">
-        <p>Scroll down to see cards<br>interact on mobile devices.</p>
-        <span class="arrow">↓</span>
-    </div>
-
-    <!-- Cards Section -->
-    <div class="cards-container">
-
-        <!-- CARD 1: Skateboarder -->
-        <div class="card-wrapper">
-            <div class="card card-1">
-                <div class="card-glow"></div>
-                
-                <div class="card-image-stage">
-                    <div class="bg-layer">
-                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
-                            <defs>
-                                <linearGradient id="skyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#7ca0c7"/>
-                                    <stop offset="40%" stop-color="#b2c8de"/>
-                                    <stop offset="100%" stop-color="#d9cfc1"/>
-                                </linearGradient>
-                            </defs>
-                            <rect width="400" height="280" fill="url(#skyGrad)"/>
-                            <path d="M 50,180 Q 80,140 130,160 Q 180,130 230,160 Q 270,140 320,170 Q 360,160 380,190 L 400,280 L 0,280 Z" fill="rgba(255,255,255,0.4)"/>
-                            <path d="M 20,200 Q 70,170 120,190 Q 190,160 260,195 Q 310,180 370,210 L 400,280 L 0,280 Z" fill="rgba(255,255,255,0.6)"/>
-                        </svg>
-                    </div>
-
-                    <div class="cutout-layer">
-                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
-                            <g transform="translate(130, 25) scale(0.78)">
-                                <path d="M 10 210 Q 70 230 130 180" stroke="#111" stroke-width="8" stroke-linecap="round" fill="none"/>
-                                <circle cx="35" cy="212" r="6" fill="#444"/>
-                                <circle cx="105" cy="190" r="6" fill="#444"/>
-                                <path d="M 45 160 L 35 205 M 95 135 L 110 180" stroke="#2b303a" stroke-width="16" stroke-linecap="round"/>
-                                <path d="M 50 100 L 80 145" stroke="#222" stroke-width="22" stroke-linecap="round"/>
-                                <path d="M 50 100 L 10 75 M 65 105 L 115 90" stroke="#222" stroke-width="10" stroke-linecap="round"/>
-                                <circle cx="45" cy="80" r="12" fill="#d0a880"/>
-                                <path d="M 30 75 Q 45 65 60 78" stroke="#111" stroke-width="8" stroke-linecap="round"/>
-                            </g>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <h3>Skateboarder</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- CARD 2: Soda Can -->
-        <div class="card-wrapper">
-            <div class="card card-2">
-                <div class="card-glow"></div>
-                
-                <div class="card-image-stage">
-                    <div class="bg-layer">
-                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid slice">
-                            <defs>
-                                <linearGradient id="seaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
-                                    <stop offset="0%" stop-color="#a4c2c2"/>
-                                    <stop offset="50%" stop-color="#5a8f91"/>
-                                    <stop offset="100%" stop-color="#2c5e63"/>
-                                </linearGradient>
-                            </defs>
-                            <rect width="400" height="280" fill="url(#seaGrad)"/>
-                            <path d="M 280 280 L 290 160 L 330 130 L 400 150 L 400 280 Z" fill="#3a3835"/>
-                            <path d="M 310 280 L 330 180 L 370 160 L 400 190 L 400 280 Z" fill="#262422"/>
-                        </svg>
-                    </div>
-
-                    <div class="cutout-layer">
-                        <svg viewBox="0 0 400 280" preserveAspectRatio="xMidYMid meet">
-                            <g transform="translate(180, 45) rotate(-12)">
-                                <rect x="0" y="20" width="55" height="100" rx="10" fill="#c02626"/>
-                                <ellipse cx="27.5" cy="20" rx="27.5" ry="6" fill="#d1d5db"/>
-                                <ellipse cx="27.5" cy="20" rx="22" ry="4" fill="#9ca3af"/>
-                                <rect x="0" y="45" width="55" height="45" fill="#a11d1d"/>
-                                <text x="27.5" y="72" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle" font-family="sans-serif" transform="rotate(-90 27.5 72)">ESCUDO</text>
-                                <rect x="6" y="20" width="8" height="100" fill="rgba(255,255,255,0.25)"/>
-                            </g>
-                        </svg>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <h3>Lorem Ipsum</h3>
-                    <p>Lorem ipsum dolor sit amet consectetur adipiscing elit</p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- INTERACTION SCRIPT -->
-    <script>
-        const cards = document.querySelectorAll('.card');
-
-        // 1. Desktop Cursor Spotlight Tracking
-        cards.forEach(card => {
-            card.addEventListener('mousemove', (e) => {
-                if (window.innerWidth > 720) {
-                    const rect = card.getBoundingClientRect();
-                    const mouseXPercent = ((e.clientX - rect.left) / rect.width) * 100;
-                    const mouseYPercent = ((e.clientY - rect.top) / rect.height) * 100;
-                    
-                    card.style.setProperty('--mouse-x', `${mouseXPercent}%`);
-                    card.style.setProperty('--mouse-y', `${mouseYPercent}%`);
-                }
-            });
-        });
-
-        // 2. Mobile Intersection Observer (Triggers pop-up and gradient fill on scroll)
-        const observerOptions = {
-            root: null,
-            rootMargin: '-15% 0px -15% 0px', // Triggers when card enters middle 70% of screen
-            threshold: 0.5
-        };
-
-        const mobileObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (window.innerWidth <= 720) {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('scroll-active');
-                    } else {
-                        entry.target.classList.remove('scroll-active');
-                    }
-                }
-            });
-        }, observerOptions);
-
-        cards.forEach(card => mobileObserver.observe(card));
-    </script>
-</body>
-</html>
-NEWNEW
-<!DOCTYPE html>
-<html lang="en">
-<head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Action Menu</title>
+  <title>Morrison Awning - Hero Section</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;800;900&display=swap" rel="stylesheet">
+
+  <!-- Model Viewer Script -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
   <style>
     /* -------------------------------------------------------------
-       1. GLOBAL RESET & BASE STYLES
+       1. GLOBAL & RESET STYLES
     ------------------------------------------------------------- */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -408,345 +24,280 @@ NEWNEW
     }
 
     body {
-      width: 100%;
+      font-family: "Montserrat", sans-serif;
+      background-color: #ffffff;
+      color: #1a1a1a;
+      overflow-x: hidden;
       min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #84a0f4;
-      background-image: linear-gradient(to top, #84a0f4 0%, #c2e9fb 100%);
-      font-family: "Montserrat", sans-serif;
-      overflow-x: hidden;
-      padding: 16px;
-    }
-
-    /* -------------------------------------------------------------
-       2. LIST CONTAINER & ACTION BUTTON
-    ------------------------------------------------------------- */
-    .list-container {
-      position: relative;
-    }
-
-    .more-button {
-      background-color: #5c67ff;
-      box-shadow: 0px 0px 0px 4px rgba(92, 103, 255, 0.3);
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-      border: none;
-      padding: 0;
-      cursor: pointer;
-      transition: all 0.2s ease-in;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      position: relative;
-      z-index: 10;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    .more-button:hover, 
-    .more-button:focus-visible {
-      box-shadow: 0px 0px 0px 8px rgba(92, 103, 255, 0.3);
-      background-color: #4854ff;
-    }
-
-    .more-button:focus-visible {
-      outline: 2px solid #1c3991;
-      outline-offset: 4px;
-    }
-
-    /* Hamburger Line Transforms */
-    .menu-icon-wrapper {
-      border-radius: 2px;
-      width: 20px;
-      height: 20px;
-      display: flex;
       flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      transition: transform 330ms ease-out;
-    }
-
-    .menu-icon-line {
-      background-color: #fff;
-      border-radius: 2px;
-      width: 100%;
-      height: 2px;
-    }
-
-    .menu-icon-line.half {
-      width: 50%;
-    }
-
-    .menu-icon-line.first {
-      transition: transform 300ms cubic-bezier(0.52, -0.8, 0.52, 0.52);
-      transform-origin: right;
-    }
-
-    .menu-icon-line.last {
-      align-self: flex-end;
-      transition: transform 300ms cubic-bezier(0.52, -0.8, 0.52, 0.52);
-      transform-origin: left;
     }
 
     /* -------------------------------------------------------------
-       3. DROPDOWN MENU & ANIMATIONS
+       2. NAVIGATION BAR
     ------------------------------------------------------------- */
-    .more-button-list {
-      background-color: #fff;
-      border-radius: 12px;
-      list-style-type: none;
-      width: 150px;
-      box-shadow: 0px 10px 25px rgba(28, 57, 145, 0.15);
-      padding: 6px;
-      position: absolute;
-      right: 0;
-      top: 60px; /* Positioned directly below button for responsive safety */
-      opacity: 0;
-      visibility: hidden;
-      transform: scale(0.8);
-      transform-origin: top right;
-      transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
-      z-index: 9;
-    }
-
-    .more-button-list-item {
+    .navbar {
+      width: 100%;
+      padding: 30px 20px;
       display: flex;
+      justify-content: center;
       align-items: center;
-      color: #1c3991;
-      padding: 10px 12px;
-      border-radius: 6px;
-      cursor: pointer;
-      position: relative;
-      transition: background-color 0.2s ease, color 0.2s ease;
-      opacity: 0;
-      transform: translateX(-10px);
     }
 
-    .more-button-list-item:hover {
-      color: #5c67ff;
-      background-color: rgba(132, 160, 244, 0.1);
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
     }
 
-    .more-button-list-item:after {
-      content: "";
-      position: absolute;
-      height: 1px;
-      width: calc(100% - 24px);
-      left: 12px;
-      bottom: 0;
-      background-color: rgba(132, 160, 244, 0.15);
-    }
-
-    .more-button-list-item:last-child:after {
-      display: none;
-    }
-
-    .more-button-list-item svg {
-      width: 18px;
-      height: 18px;
-      flex-shrink: 0;
-    }
-
-    .more-button-list-item span {
-      display: inline-block;
-      line-height: 20px;
+    .nav-links a {
+      text-decoration: none;
+      color: #555555;
       font-size: 14px;
       font-weight: 500;
-      margin-left: 10px;
+      transition: color 0.2s ease;
     }
 
-    /* Active State Animations */
-    .list-container.active .more-button-list {
-      opacity: 1;
-      visibility: visible;
-      transform: scale(1);
-    }
-
-    .list-container.active .more-button {
-      animation: onePulse 0.6s forwards linear;
-    }
-
-    .list-container.active .menu-icon-wrapper {
-      transform: rotate(-45deg);
-    }
-
-    .list-container.active .menu-icon-line.first {
-      transform: rotate(-90deg) translateX(1px);
-    }
-
-    .list-container.active .menu-icon-line.last {
-      transform: rotate(-90deg) translateX(-1px);
-    }
-
-    .list-container.active .more-button-list-item {
-      animation: fadeInItem 0.4s forwards ease-out;
-    }
-
-    .list-container.active .more-button-list-item:nth-child(1) { animation-delay: 0.1s; }
-    .list-container.active .more-button-list-item:nth-child(2) { animation-delay: 0.2s; }
-    .list-container.active .more-button-list-item:nth-child(3) { animation-delay: 0.3s; }
-    .list-container.active .more-button-list-item:nth-child(4) { animation-delay: 0.4s; }
-
-    @keyframes onePulse {
-      0% { box-shadow: 0px 0px 0px 0px rgba(92, 103, 255, 0.3); }
-      50% { box-shadow: 0px 0px 0px 12px rgba(92, 103, 255, 0.1); }
-      100% { box-shadow: 0px 0px 0px 4px rgba(92, 103, 255, 0.3); }
-    }
-
-    @keyframes fadeInItem {
-      to {
-        transform: translateX(0px);
-        opacity: 1;
-      }
+    .nav-links a:hover {
+      color: #000000;
     }
 
     /* -------------------------------------------------------------
-       4. FOOTER & SOCIAL LINKS
+       3. HERO SECTION LAYOUT
     ------------------------------------------------------------- */
-    .socials {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      display: flex;
+    .hero-section {
+      max-width: 1300px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 40px 24px 60px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
       align-items: center;
-      gap: 12px;
+      gap: 20px;
+      position: relative;
+      flex: 1;
+    }
+
+    /* --- Left Column: Typography --- */
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-title {
+      font-size: clamp(3.8rem, 8vw, 7.5rem);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -2px;
+      text-transform: none;
+    }
+
+    .text-solid {
+      display: block;
+      color: #22252a;
+    }
+
+    .text-outline {
+      display: block;
+      color: transparent;
+      -webkit-text-stroke: 2.5px #22252a;
+    }
+
+    /* --- 3D Character Positioning --- */
+    .character-container {
+      position: absolute;
+      right: 15%;
+      bottom: -40px;
+      width: 180px;
+      height: 240px;
+      pointer-events: none; /* Disables drag/click interaction */
       z-index: 5;
     }
 
-    .social-link {
-      color: #fff;
+    model-viewer {
+      width: 100%;
+      height: 100%;
+      --poster-color: transparent;
+      background: transparent;
+    }
+
+    /* --- Right Column: Visual Card --- */
+    .hero-visual {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .olive-card {
+      background-color: #BAB86C; /* Olive Green Accent */
+      width: 90%;
+      aspect-ratio: 1 / 0.95;
+      border-radius: 4px;
+      position: relative;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(4px);
-      text-decoration: none;
-      transition: all 0.2s ease;
     }
 
-    .social-link:hover,
-    .social-link:focus-visible {
-      background-color: #fff;
-      color: #5c67ff;
-      transform: translateY(-2px);
+    .house-image {
+      position: absolute;
+      width: 115%;
+      height: auto;
+      left: -20%;
+      bottom: 5%;
+      object-fit: contain;
+      filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.08));
+    }
+
+    /* --- Carousel Indicators --- */
+    .carousel-dots {
+      display: flex;
+      gap: 8px;
+      margin-top: 20px;
+      margin-right: 40%;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background-color: #d1d1d1;
+    }
+
+    .dot.active {
+      background-color: #BAB86C;
     }
 
     /* -------------------------------------------------------------
-       5. RESPONSIVE BREAKPOINTS
+       4. RESPONSIVE BREAKPOINTS
     ------------------------------------------------------------- */
-    @media (max-width: 480px) {
-      .more-button-list {
+    @media (max-width: 992px) {
+      .hero-section {
+        grid-template-columns: 1fr;
+        gap: 60px;
+        text-align: center;
+      }
+
+      .hero-visual {
+        align-items: center;
+      }
+
+      .olive-card {
+        width: 80%;
+      }
+
+      .house-image {
+        width: 110%;
+        left: -5%;
+      }
+
+      .character-container {
         right: 50%;
-        transform-origin: top center;
-        transform: translateX(50%) scale(0.8);
+        transform: translateX(50%);
+        bottom: -70px;
+        width: 150px;
+        height: 200px;
       }
 
-      .list-container.active .more-button-list {
-        transform: translateX(50%) scale(1);
+      .carousel-dots {
+        margin-right: 0;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .nav-links {
+        gap: 16px;
+        font-size: 13px;
       }
 
-      .socials {
-        left: 50%;
-        right: auto;
-        transform: translateX(-50%);
+      .text-outline {
+        -webkit-text-stroke: 1.5px #22252a;
+      }
+
+      .olive-card {
+        width: 100%;
+      }
+
+      .character-container {
+        width: 120px;
+        height: 160px;
+        bottom: -50px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Main Action Menu Component -->
-  <div class="list-container">
-    <button class="more-button" aria-label="Toggle Menu" aria-expanded="false" aria-controls="menu-list">
-      <div class="menu-icon-wrapper">
-        <div class="menu-icon-line half first"></div>
-        <div class="menu-icon-line"></div>
-        <div class="menu-icon-line half last"></div>
-      </div>
-    </button>
-    
-    <ul class="more-button-list" id="menu-list" role="menu">
-      <li class="more-button-list-item" role="menuitem" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-settings">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/>
-        </svg>
-        <span>Settings</span>
-      </li>
-      <li class="more-button-list-item" role="menuitem" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-copy">
-          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-          <path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/>
-        </svg>
-        <span>Copy</span>
-      </li>
-      <li class="more-button-list-item" role="menuitem" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-share">
-          <path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8M16 6l-4-4-4 4M12 2v13"/>
-        </svg>
-        <span>Share</span>
-      </li>
-      <li class="more-button-list-item" role="menuitem" tabindex="0">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2">
-          <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2M10 11v6M14 11v6"/>
-        </svg>
-        <span>Delete</span>
-      </li>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <ul class="nav-links">
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#products">Products</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#projects">Projects</a></li>
     </ul>
-  </div>
+  </nav>
 
-  <!-- Social Media Floating Links -->
-  <footer class="socials">
-    <a class="social-link" href="https://twitter.com/aybukeceylan" target="_blank" rel="noopener noreferrer" aria-label="Twitter Profile">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-twitter">
-        <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/>
-      </svg>
-    </a>
-    <a class="social-link" href="https://www.linkedin.com/in/ayb%C3%BCkeceylan/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile">
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-linkedin">
-        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
-        <rect x="2" y="9" width="4" height="12"/>
-        <circle cx="4" cy="4" r="2"/>
-      </svg>
-    </a>
-  </footer>
+  <!-- Hero Section -->
+  <main class="hero-section">
+    
+    <!-- Left Typography Section -->
+    <div class="hero-content">
+      <h1 class="hero-title">
+        <span class="text-solid">Morrison</span>
+        <span class="text-outline">Awning</span>
+      </h1>
 
-  <!-- JavaScript Integration -->
+      <!-- 3D Walking Character -->
+      <div class="character-container">
+        <model-viewer 
+          id="hero-character"
+          src="assets/UAL1_Standard.glb" 
+          animation-name="Walk_loop" 
+          autoplay 
+          loop 
+          interaction-prompt="none"
+          camera-orbit="-90deg 75deg 100%" 
+          shadow-intensity="0">
+        </model-viewer>
+      </div>
+    </div>
+
+    <!-- Right Visual Section -->
+    <div class="hero-visual">
+      <div class="olive-card">
+        <!-- Rendered House Asset -->
+        <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Modern Architecture Awning" class="house-image">
+      </div>
+      
+      <!-- Pagination Dots -->
+      <div class="carousel-dots">
+        <span class="dot"></span>
+        <span class="dot"></span>
+        <span class="dot active"></span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Script to apply #BAB86C Color to 3D Model -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const listContainer = document.querySelector('.list-container');
-      const moreButton = document.querySelector('.more-button');
+      const modelViewer = document.querySelector('#hero-character');
 
-      // Toggle Menu Functionality
-      function toggleMenu(state) {
-        const isActive = state !== undefined ? state : !listContainer.classList.contains('active');
-        listContainer.classList.toggle('active', isActive);
-        moreButton.setAttribute('aria-expanded', isActive ? 'true' : 'false');
-      }
+      modelViewer.addEventListener('load', () => {
+        // Convert #BAB86C hex color to normalized RGB floats (0 to 1 scale)
+        // Red: 186/255 = 0.729 | Green: 184/255 = 0.721 | Blue: 108/255 = 0.423
+        const targetColor = [0.729, 0.721, 0.423, 1.0];
 
-      moreButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        toggleMenu();
-      });
-
-      // Close menu when clicking outside
-      document.addEventListener('click', (e) => {
-        if (!listContainer.contains(e.target) && listContainer.classList.contains('active')) {
-          toggleMenu(false);
-        }
-      });
-
-      // Close menu on ESC key press
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && listContainer.classList.contains('active')) {
-          toggleMenu(false);
-        }
+        // Apply custom color factor across all character materials
+        modelViewer.model.materials.forEach((material) => {
+          if (material.pbrMetallicRoughness) {
+            material.pbrMetallicRoughness.setBaseColorFactor(targetColor);
+          }
+        });
       });
     });
   </script>
