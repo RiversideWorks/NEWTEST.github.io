@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Morrison Awning - Hero Section</title>
+  <title>Morrison Awning</title>
   
-  <!-- Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;800;900&display=swap" rel="stylesheet">
 
-  <!-- Model Viewer Script -->
+  <!-- Model Viewer Library -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
   <style>
     /* -------------------------------------------------------------
-       1. GLOBAL & RESET STYLES
+       1. GLOBAL RESET
     ------------------------------------------------------------- */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -27,26 +27,25 @@
       font-family: "Montserrat", sans-serif;
       background-color: #ffffff;
       color: #1a1a1a;
-      overflow-x: hidden;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
     }
 
     /* -------------------------------------------------------------
-       2. NAVIGATION BAR
+       2. NAVIGATION
     ------------------------------------------------------------- */
     .navbar {
       width: 100%;
-      padding: 30px 20px;
+      padding: 35px 20px 20px;
       display: flex;
       justify-content: center;
-      align-items: center;
     }
 
     .nav-links {
       display: flex;
-      gap: 32px;
+      gap: 36px;
       list-style: none;
     }
 
@@ -63,55 +62,59 @@
     }
 
     /* -------------------------------------------------------------
-       3. HERO SECTION LAYOUT
+       3. HERO SECTION GRID LAYOUT
     ------------------------------------------------------------- */
     .hero-section {
-      max-width: 1300px;
+      max-width: 1250px;
       width: 100%;
       margin: 0 auto;
-      padding: 40px 24px 60px;
+      padding: 20px 24px 60px;
       display: grid;
       grid-template-columns: 1.1fr 0.9fr;
       align-items: center;
-      gap: 20px;
-      position: relative;
+      gap: 30px;
       flex: 1;
     }
 
-    /* --- Left Column: Typography --- */
-    .hero-content {
+    /* Left Column (Typography & 3D Character) */
+    .hero-left {
+      display: flex;
+      flex-direction: column;
       position: relative;
-      z-index: 2;
     }
 
-    .hero-title {
-      font-size: clamp(3.8rem, 8vw, 7.5rem);
+    .title-wrapper {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .title-solid {
+      font-size: clamp(3.8rem, 7vw, 7rem);
       font-weight: 900;
-      line-height: 0.95;
+      color: #1e2229;
+      line-height: 0.92;
       letter-spacing: -2px;
-      text-transform: none;
     }
 
-    .text-solid {
-      display: block;
-      color: #22252a;
-    }
-
-    .text-outline {
-      display: block;
+    .title-outline {
+      font-size: clamp(3.8rem, 7vw, 7rem);
+      font-weight: 900;
       color: transparent;
-      -webkit-text-stroke: 2.5px #22252a;
+      -webkit-text-stroke: 2.5px #1e2229;
+      line-height: 0.92;
+      letter-spacing: -1px;
     }
 
-    /* --- 3D Character Positioning --- */
-    .character-container {
-      position: absolute;
-      right: 15%;
-      bottom: -40px;
-      width: 180px;
-      height: 240px;
-      pointer-events: none; /* Disables drag/click interaction */
+    /* 3D Character Container - Standing beside "Awning" */
+    .character-box {
+      width: 150px;
+      height: 220px;
+      align-self: flex-end;
+      margin-top: -80px;
+      margin-right: 30px;
+      position: relative;
       z-index: 5;
+      pointer-events: none; /* Disables dragging */
     }
 
     model-viewer {
@@ -119,25 +122,24 @@
       height: 100%;
       --poster-color: transparent;
       background: transparent;
+      /* CSS Fallback tint to guarantee #BAB86C color */
+      filter: sepia(0.8) hue-rotate(25deg) saturate(1.8) brightness(1.05);
     }
 
-    /* --- Right Column: Visual Card --- */
-    .hero-visual {
-      position: relative;
+    /* Right Column (Visual Card & House Image) */
+    .hero-right {
       display: flex;
       flex-direction: column;
       align-items: flex-end;
+      position: relative;
     }
 
     .olive-card {
-      background-color: #BAB86C; /* Olive Green Accent */
-      width: 90%;
+      background-color: #BAB86C;
+      width: 88%;
       aspect-ratio: 1 / 0.95;
       border-radius: 4px;
       position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
     .house-image {
@@ -145,24 +147,24 @@
       width: 115%;
       height: auto;
       left: -20%;
-      bottom: 5%;
-      object-fit: contain;
-      filter: drop-shadow(0px 15px 25px rgba(0, 0, 0, 0.08));
+      bottom: 6%;
+      border-radius: 2px;
+      box-shadow: 0px 20px 30px rgba(0, 0, 0, 0.12);
     }
 
-    /* --- Carousel Indicators --- */
+    /* Carousel Dots */
     .carousel-dots {
       display: flex;
       gap: 8px;
-      margin-top: 20px;
-      margin-right: 40%;
+      margin-top: 24px;
+      margin-right: 38%;
     }
 
     .dot {
-      width: 6px;
-      height: 6px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background-color: #d1d1d1;
+      background-color: #e0e0e0;
     }
 
     .dot.active {
@@ -172,58 +174,41 @@
     /* -------------------------------------------------------------
        4. RESPONSIVE BREAKPOINTS
     ------------------------------------------------------------- */
-    @media (max-width: 992px) {
+    @media (max-width: 900px) {
       .hero-section {
         grid-template-columns: 1fr;
-        gap: 60px;
+        gap: 50px;
         text-align: center;
       }
 
-      .hero-visual {
+      .hero-left {
         align-items: center;
       }
 
-      .olive-card {
-        width: 80%;
-      }
-
-      .house-image {
-        width: 110%;
-        left: -5%;
-      }
-
-      .character-container {
-        right: 50%;
-        transform: translateX(50%);
-        bottom: -70px;
-        width: 150px;
-        height: 200px;
-      }
-
-      .carousel-dots {
+      .character-box {
+        align-self: center;
+        margin-top: 10px;
         margin-right: 0;
-        justify-content: center;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .nav-links {
-        gap: 16px;
-        font-size: 13px;
       }
 
-      .text-outline {
-        -webkit-text-stroke: 1.5px #22252a;
+      .hero-right {
+        align-items: center;
       }
 
       .olive-card {
         width: 100%;
       }
 
-      .character-container {
-        width: 120px;
-        height: 160px;
-        bottom: -50px;
+      .house-image {
+        width: 100%;
+        left: 0;
+        bottom: 0;
+        position: relative;
+      }
+
+      .carousel-dots {
+        margin-right: 0;
+        justify-content: center;
       }
     }
   </style>
@@ -243,36 +228,33 @@
   <!-- Hero Section -->
   <main class="hero-section">
     
-    <!-- Left Typography Section -->
-    <div class="hero-content">
-      <h1 class="hero-title">
-        <span class="text-solid">Morrison</span>
-        <span class="text-outline">Awning</span>
-      </h1>
+    <!-- Left Column: Typography & 3D Character -->
+    <div class="hero-left">
+      <div class="title-wrapper">
+        <h1 class="title-solid">Morrison</h1>
+        <h1 class="title-outline">Awning</h1>
+      </div>
 
       <!-- 3D Walking Character -->
-      <div class="character-container">
+      <div class="character-box">
         <model-viewer 
           id="hero-character"
           src="assets/UAL1_Standard.glb" 
-          animation-name="Walk_loop" 
           autoplay 
           loop 
           interaction-prompt="none"
-          camera-orbit="-90deg 75deg 100%" 
+          camera-orbit="30deg 75deg 105%" 
           shadow-intensity="0">
         </model-viewer>
       </div>
     </div>
 
-    <!-- Right Visual Section -->
-    <div class="hero-visual">
+    <!-- Right Column: Card & Image -->
+    <div class="hero-right">
       <div class="olive-card">
-        <!-- Rendered House Asset -->
         <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Modern Architecture Awning" class="house-image">
       </div>
       
-      <!-- Pagination Dots -->
       <div class="carousel-dots">
         <span class="dot"></span>
         <span class="dot"></span>
@@ -282,22 +264,33 @@
 
   </main>
 
-  <!-- Script to apply #BAB86C Color to 3D Model -->
+  <!-- Script: Auto-Detect Animation & Force Color #BAB86C -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const modelViewer = document.querySelector('#hero-character');
+      const viewer = document.querySelector('#hero-character');
 
-      modelViewer.addEventListener('load', () => {
-        // Convert #BAB86C hex color to normalized RGB floats (0 to 1 scale)
-        // Red: 186/255 = 0.729 | Green: 184/255 = 0.721 | Blue: 108/255 = 0.423
-        const targetColor = [0.729, 0.721, 0.423, 1.0];
+      viewer.addEventListener('load', () => {
+        // 1. Play Walking/Active Animation automatically from available clips inside the GLB
+        const animations = viewer.availableAnimations;
+        if (animations && animations.length > 0) {
+          const walkClip = animations.find(a => a.toLowerCase().includes('walk')) ||
+                           animations.find(a => a.toLowerCase().includes('run')) ||
+                           animations[0];
+          viewer.animationName = walkClip;
+          viewer.play();
+        }
 
-        // Apply custom color factor across all character materials
-        modelViewer.model.materials.forEach((material) => {
-          if (material.pbrMetallicRoughness) {
-            material.pbrMetallicRoughness.setBaseColorFactor(targetColor);
-          }
-        });
+        // 2. Apply RGB Color #BAB86C [Red: 0.73, Green: 0.72, Blue: 0.42] directly to materials
+        try {
+          const oliveColor = [0.73, 0.72, 0.42, 1.0];
+          viewer.model.materials.forEach((material) => {
+            if (material.pbrMetallicRoughness) {
+              material.pbrMetallicRoughness.setBaseColorFactor(oliveColor);
+            }
+          });
+        } catch (e) {
+          // Fallback handled via CSS filter
+        }
       });
     });
   </script>
