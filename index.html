@@ -3,20 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Morrison Awning</title>
+  <title>Smart Motorisation Feature</title>
   
-  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800;900&display=swap" rel="stylesheet">
-
-  <!-- Model Viewer Library -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800;900&display=swap" rel="stylesheet">
+  
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
   <style>
-    /* -------------------------------------------------------------
-       1. GLOBAL RESET
-    ------------------------------------------------------------- */
     *, *::before, *::after {
       box-sizing: border-box;
       margin: 0;
@@ -25,129 +20,123 @@
 
     body {
       font-family: "Montserrat", sans-serif;
-      background-color: #ffffff;
-      color: #2B2D33;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow-x: hidden;
-    }
-
-    /* -------------------------------------------------------------
-       2. TOP NAVIGATION
-    ------------------------------------------------------------- */
-    .navbar {
-      width: 100%;
-      padding: 24px 40px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      z-index: 10;
-    }
-
-    .nav-pills {
-      display: flex;
-      gap: 12px;
-      list-style: none;
-    }
-
-    .pill-btn {
-      text-decoration: none;
-      color: #2B2D33;
-      font-size: 13px;
-      font-weight: 500;
-      padding: 10px 26px;
-      border: 1.5px solid #2B2D33;
-      border-radius: 50px;
-      transition: all 0.2s ease;
-    }
-
-    .pill-btn:hover {
       background-color: #2B2D33;
       color: #ffffff;
-    }
-
-    .hamburger-icon {
-      position: absolute;
-      right: 40px;
-      top: 50%;
-      transform: translateY(-50%);
+      min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
     }
 
-    .hamburger-icon span {
-      width: 24px;
-      height: 2px;
-      background-color: #2B2D33;
-      border-radius: 2px;
-    }
-
-    /* -------------------------------------------------------------
-       3. HERO SECTION & LAYOUT
-    ------------------------------------------------------------- */
-    .hero-section {
-      position: relative;
+    /* Section Container */
+    .feature-card {
+      background: #363940;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      max-width: 900px;
       width: 100%;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      min-height: calc(100vh - 90px);
-    }
-
-    /* Olive Bottom Banner */
-    .olive-banner {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 180px; /* Matched height from design */
-      background-color: #BAB86C;
-      z-index: 1;
-    }
-
-    .hero-container {
-      max-width: 1400px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 0 40px;
+      padding: 40px;
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      align-items: flex-end;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      align-items: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+
+    /* Left: Awning Interactive Visual */
+    .awning-display {
       position: relative;
+      background: #1e2025;
+      border-radius: 12px;
+      height: 280px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .wall-mount {
+      width: 100%;
+      height: 20px;
+      background: #555;
+      z-index: 3;
+    }
+
+    /* The HTML Retractable Canvas (Prop) */
+    .awning-fabric {
+      width: 85%;
+      height: 0px; /* Controlled via JS toggle */
+      background: linear-gradient(135deg, #BAB86C 0%, #a1a058 100%);
+      border-bottom: 6px solid #878546;
+      transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.4);
       z-index: 2;
     }
 
-    /* Typography Alignment */
-    .hero-title {
-      font-size: clamp(5rem, 11vw, 11.5rem);
-      font-weight: 900;
-      line-height: 0.82;
-      letter-spacing: -4px;
-      color: #2B2D33;
-      margin-bottom: 25px; /* Aligns "Morrison" above olive bar & "Awning" straddling top line */
+    .awning-fabric.extended {
+      height: 160px;
     }
 
-    .hero-title span {
-      display: block;
-    }
-
-    /* 3D Character Stage */
-    .characters-stage {
+    /* Right: Text & Control Panel */
+    .controls-wrapper {
       display: flex;
-      justify-content: flex-start;
-      align-items: flex-end;
-      gap: 10px;
-      margin-bottom: 35px; /* Places character feet directly on top edge of olive bar */
+      flex-direction: column;
+      gap: 20px;
     }
 
-    .character-slot {
-      width: 210px; /* Increased size to match reference image */
-      height: 420px;
+    .feature-title {
+      font-size: 2.2rem;
+      font-weight: 900;
+      line-height: 1.1;
+      color: #ffffff;
+    }
+
+    .feature-title span {
+      color: #BAB86C;
+    }
+
+    .feature-desc {
+      font-size: 0.95rem;
+      color: #ccc;
+      line-height: 1.5;
+    }
+
+    /* Interactive Switch Component */
+    .control-stage {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: #2B2D33;
+      padding: 15px 20px;
+      border-radius: 12px;
+      position: relative;
+    }
+
+    .remote-btn {
+      background: #BAB86C;
+      color: #2B2D33;
+      border: none;
+      padding: 12px 24px;
+      font-weight: 800;
+      border-radius: 30px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: transform 0.1s ease, background 0.2s ease;
+      z-index: 10;
+    }
+
+    .remote-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* 3D Character overlayed right beside the button */
+    .character-container {
+      width: 110px;
+      height: 180px;
+      position: absolute;
+      right: 10px;
+      bottom: -10px;
       pointer-events: none;
     }
 
@@ -155,174 +144,97 @@
       width: 100%;
       height: 100%;
       --poster-color: transparent;
-      --progress-bar-color: transparent;
-      background: transparent;
     }
 
-    model-viewer::part(default-progress-bar) {
-      display: none;
-    }
-
-    /* -------------------------------------------------------------
-       4. RESPONSIVE BREAKPOINTS
-    ------------------------------------------------------------- */
-    @media (max-width: 1024px) {
-      .hero-container {
+    @media (max-width: 768px) {
+      .feature-card {
         grid-template-columns: 1fr;
-        gap: 20px;
-      }
-
-      .hero-title {
-        letter-spacing: -2px;
-        margin-bottom: 10px;
-      }
-
-      .characters-stage {
-        justify-content: center;
-        margin-bottom: 10px;
-      }
-
-      .character-slot {
-        width: 150px;
-        height: 300px;
-      }
-
-      .olive-banner {
-        height: 120px;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .nav-pills {
-        gap: 6px;
-      }
-
-      .pill-btn {
-        padding: 8px 14px;
-        font-size: 11px;
-      }
-
-      .hamburger-icon {
-        right: 20px;
-      }
-
-      .navbar {
-        padding: 20px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Top Navigation -->
-  <nav class="navbar">
-    <ul class="nav-pills">
-      <li><a href="#who" class="pill-btn">Who Us?</a></li>
-      <li><a href="#offerings" class="pill-btn">Offerings</a></li>
-      <li><a href="#chat" class="pill-btn">Wanna Chat?</a></li>
-    </ul>
-
-    <div class="hamburger-icon" aria-label="Menu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  <main class="hero-section">
+  <div class="feature-card">
     
-    <div class="hero-container">
-      <!-- Left: Title Text -->
-      <h1 class="hero-title">
-        <span>Morrison</span>
-        <span>Awning</span>
-      </h1>
+    <!-- Left: Awning Extended Visual -->
+    <div class="awning-display">
+      <div class="wall-mount"></div>
+      <div class="awning-fabric" id="awningFabric"></div>
+    </div>
 
-      <!-- Right: Two Talking Characters -->
-      <div class="characters-stage">
-        
-        <!-- Left Talking Character (Facing Right-Center) -->
-        <div class="character-slot">
+    <!-- Right: Text & Control Stage -->
+    <div class="controls-wrapper">
+      <h2 class="feature-title">One-Touch <span>Motorisation</span></h2>
+      <p class="feature-desc">Control shade coverage instantly with automated smart sensors and quiet motor operation.</p>
+
+      <div class="control-stage">
+        <button class="remote-btn" id="toggleBtn">Deploy Awning</button>
+
+        <!-- Character overlayed to act as the operator -->
+        <div class="character-container">
           <model-viewer 
-            id="char-left"
+            id="operatorChar"
             src="assets/UAL1_Standard.glb" 
             autoplay 
             loop 
             interaction-prompt="none"
-            camera-orbit="-25deg 75deg 85%" 
-            camera-target="0m 0.9m 0m"
-            exposure="1.2"
-            shadow-intensity="0">
+            camera-orbit="-40deg 75deg 90%"
+            camera-target="0m 0.8m 0m">
           </model-viewer>
         </div>
-
-        <!-- Right Talking Character (Facing Left-Center) -->
-        <div class="character-slot">
-          <model-viewer 
-            id="char-right"
-            src="assets/UAL1_Standard.glb" 
-            autoplay 
-            loop 
-            interaction-prompt="none"
-            camera-orbit="25deg 75deg 85%" 
-            camera-target="0m 0.9m 0m"
-            exposure="1.2"
-            shadow-intensity="0">
-          </model-viewer>
-        </div>
-
       </div>
     </div>
 
-    <!-- Olive Bottom Banner -->
-    <div class="olive-banner"></div>
+  </div>
 
-  </main>
-
-  <!-- Script: Animation Trigger & Color Fix -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const charLeft = document.querySelector('#char-left');
-      const charRight = document.querySelector('#char-right');
+      const toggleBtn = document.getElementById('toggleBtn');
+      const awningFabric = document.getElementById('awningFabric');
+      const character = document.getElementById('operatorChar');
+      let isExtended = false;
 
-      // Vivid color values to ensure #BAB86C pops clearly without fading
-      const primaryColor = [0.169, 0.176, 0.200, 1.0];   // #2B2D33
-      const secondaryColor = [0.73, 0.72, 0.42, 1.0];     // #BAB86C
+      // Color tinting setup
+      character.addEventListener('load', () => {
+        const primaryColor = [0.169, 0.176, 0.200, 1.0]; // #2B2D33
+        const oliveColor = [0.73, 0.72, 0.42, 1.0];     // #BAB86C
 
-      const setupCharacter = (viewer) => {
-        viewer.addEventListener('load', () => {
-          // Play talking animation clip
-          const animations = viewer.availableAnimations || [];
-          const talkClip = animations.find(a => a.toLowerCase().includes('talk')) ||
-                           animations.find(a => a.toLowerCase().includes('idle')) ||
-                           animations[0];
+        if (character.model && character.model.materials) {
+          character.model.materials.forEach((mat, idx) => {
+            if (mat.pbrMetallicRoughness) {
+              mat.pbrMetallicRoughness.setBaseColorFactor(idx === 0 ? primaryColor : oliveColor);
+            }
+          });
+        }
+      });
+
+      // Synchronise UI Button, HTML Prop Animation, and Character Gesture
+      toggleBtn.addEventListener('click', () => {
+        isExtended = !isExtended;
+        
+        // 1. Extend/Retract the HTML Fabric
+        awningFabric.classList.toggle('extended', isExtended);
+        toggleBtn.textContent = isExtended ? 'Retract Awning' : 'Deploy Awning';
+
+        // 2. Play gesture animation clip on the character when clicked
+        const clips = character.availableAnimations || [];
+        const actionClip = clips.find(c => c.toLowerCase().includes('interact')) ||
+                           clips.find(c => c.toLowerCase().includes('wave')) || 
+                           clips[0];
+        
+        if (actionClip) {
+          character.animationName = actionClip;
+          character.play();
           
-          if (talkClip) {
-            viewer.animationName = talkClip;
-            viewer.play();
-          }
-
-          // Apply color factors and set surface roughness to ensure colors are rich
-          if (viewer.model && viewer.model.materials) {
-            viewer.model.materials.forEach((mat, index) => {
-              if (mat.pbrMetallicRoughness) {
-                mat.pbrMetallicRoughness.setRoughnessFactor(0.6);
-                mat.pbrMetallicRoughness.setMetallicFactor(0.0);
-                
-                if (index === 0) {
-                  mat.pbrMetallicRoughness.setBaseColorFactor(primaryColor);
-                } else {
-                  mat.pbrMetallicRoughness.setBaseColorFactor(secondaryColor);
-                }
-              }
-            });
-          }
-        });
-      };
-
-      setupCharacter(charLeft);
-      setupCharacter(charRight);
+          // Return to idle after gesture finishes
+          setTimeout(() => {
+            const idleClip = clips.find(c => c.toLowerCase().includes('idle')) || clips[0];
+            character.animationName = idleClip;
+            character.play();
+          }, 1200);
+        }
+      });
     });
   </script>
 
