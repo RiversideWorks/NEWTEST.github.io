@@ -29,7 +29,6 @@
       padding: 20px;
     }
 
-    /* Main Section Card */
     .feature-card {
       background: #2B2D33;
       border: 1px solid rgba(255, 255, 255, 0.08);
@@ -44,7 +43,6 @@
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     }
 
-    /* Interactive Awning Canvas */
     .awning-display {
       position: relative;
       background: #18191c;
@@ -78,7 +76,6 @@
       height: 200px;
     }
 
-    /* Controls & Content */
     .controls-wrapper {
       display: flex;
       flex-direction: column;
@@ -127,15 +124,9 @@
       z-index: 5;
     }
 
-    .remote-btn:hover {
-      background: #c5c377;
-    }
+    .remote-btn:hover { background: #c5c377; }
+    .remote-btn:active { transform: scale(0.96); }
 
-    .remote-btn:active {
-      transform: scale(0.96);
-    }
-
-    /* 3D Character Container */
     .character-container {
       width: 130px;
       height: 220px;
@@ -153,9 +144,7 @@
       background: transparent;
     }
 
-    model-viewer::part(default-progress-bar) {
-      display: none;
-    }
+    model-viewer::part(default-progress-bar) { display: none; }
 
     @media (max-width: 768px) {
       .feature-card {
@@ -169,13 +158,11 @@
 
   <div class="feature-card">
     
-    <!-- Left: Awning Extended Visual -->
     <div class="awning-display">
       <div class="wall-mount"></div>
       <div class="awning-fabric" id="awningFabric"></div>
     </div>
 
-    <!-- Right: Text & Control Panel -->
     <div class="controls-wrapper">
       <h2 class="feature-title">One-Touch <span>Motorisation</span></h2>
       <p class="feature-desc">Control shade coverage instantly with automated smart sensors and quiet motor operation.</p>
@@ -183,12 +170,11 @@
       <div class="control-stage">
         <button class="remote-btn" id="toggleBtn">Deploy Awning</button>
 
-        <!-- Fixed HTML Attributes: explicitly set animation-name="idle_talk" -->
         <div class="character-container">
+          <!-- Removed explicit animation-name attribute to let JS assign verified clips -->
           <model-viewer 
             id="operatorChar"
             src="assets/UAL1_Standard.glb" 
-            animation-name="idle_talk"
             autoplay 
             loop 
             interaction-prompt="none"
@@ -209,12 +195,14 @@
       const character = document.getElementById('operatorChar');
       let isExtended = false;
 
-      // Brand Colors: Primary (#2B2D33) & Secondary (#BAB86C)
+      let validIdleClip = null;
+      let validGestureClip = null;
+
       const primaryColor = [0.169, 0.176, 0.200, 1.0];
       const secondaryColor = [0.73, 0.72, 0.42, 1.0];
 
       character.addEventListener('load', () => {
-        // Apply material colors cleanly on load
+        // 1. Color Tinting
         if (character.model && character.model.materials) {
           character.model.materials.forEach((mat, idx) => {
             if (mat.pbrMetallicRoughness) {
@@ -224,36 +212,41 @@
             }
           });
         }
-        
-        // Ensure default idle animation starts playing immediately
-        character.animationName = 'idle_talk';
-        character.play();
+
+        // 2. Inspect GLB clips to prevent T-pose
+        const availableClips = character.availableAnimations || [];
+        console.log("Available Animations in GLB:", availableClips);
+
+        // Safely identify standing/idle and gesture clips from your GLB file
+        validIdleClip = availableClips.find(c => /idle|stand|talk/i.test(c)) || availableClips[0];
+        validGestureClip = availableClips.find(c => /wave|interact|point|punch/i.test(c)) || availableClips[1] || validIdleClip;
+
+        // Force character into a standing idle immediately on load
+        if (validIdleClip) {
+          character.animationName = validIdleClip;
+          character.play();
+        }
       });
 
+      // 3. Button Click Animation Cycle
       toggleBtn.addEventListener('click', () => {
         isExtended = !isExtended;
-        
-        // 1. Toggle Awning Fabric UI
         awningFabric.classList.toggle('extended', isExtended);
         toggleBtn.textContent = isExtended ? 'Retract Awning' : 'Deploy Awning';
 
-        // 2. Play gesture clip safely, then FORCE return to idle_talk
-        const available = character.availableAnimations || [];
-        
-        // Find safe gesture clip or fallback strictly to idle_talk
-        const gestureClip = available.find(a => a.toLowerCase() === 'wave') ||
-                            available.find(a => a.toLowerCase() === 'interact') ||
-                            available.find(a => a.toLowerCase().includes('talk')) ||
-                            'idle_talk';
-
-        character.animationName = gestureClip;
-        character.play();
-
-        // 3. Reset back to continuous idle_talk after gesture completes
-        setTimeout(() => {
-          character.animationName = 'idle_talk';
+        // Play gesture clip
+        if (validGestureClip) {
+          character.animationName = validGestureClip;
           character.play();
-        }, 1400);
+        }
+
+        // Return strictly to standing idle posture (never T-pose)
+        setTimeout(() => {
+          if (validIdleClip) {
+            character.animationName = validIdleClip;
+            character.play();
+          }
+        }, 1200);
       });
     });
   </script>
