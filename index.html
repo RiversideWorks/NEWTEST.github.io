@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Smart Motorisation Feature</title>
+  <title>UV & Heat Protection Simulator</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -29,7 +29,8 @@
       padding: 20px;
     }
 
-    .feature-card {
+    /* Card Container */
+    .simulator-card {
       background: #2B2D33;
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 20px;
@@ -43,39 +44,59 @@
       box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
     }
 
-    .awning-display {
+    /* Left Visual Stage */
+    .climate-stage {
       position: relative;
-      background: #18191c;
-      border-radius: 14px;
+      background: linear-gradient(180deg, #d97736 0%, #362319 100%);
+      border-radius: 16px;
       height: 320px;
-      overflow: hidden;
+      padding: 30px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      justify-content: space-between;
+      transition: background 0.5s ease;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
     }
 
-    .wall-mount {
-      width: 100%;
-      height: 24px;
-      background: #363940;
-      z-index: 3;
+    .climate-stage.shaded {
+      background: linear-gradient(180deg, #4a5d4e 0%, #1c261e 100%);
     }
 
-    .awning-fabric {
-      width: 90%;
-      height: 0px;
-      background: linear-gradient(180deg, #BAB86C 0%, #9a9852 100%);
-      border-bottom: 6px solid #7a783d;
-      transition: height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-      box-shadow: 0 12px 25px rgba(0,0,0,0.5);
-      z-index: 2;
+    .badge {
+      display: inline-block;
+      align-self: flex-start;
+      padding: 6px 14px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #fff;
     }
 
-    .awning-fabric.extended {
-      height: 200px;
+    .temp-readout {
+      font-size: 4.5rem;
+      font-weight: 900;
+      line-height: 1;
+      color: #ffffff;
+      transition: color 0.3s ease;
     }
 
+    .temp-readout span {
+      font-size: 1.8rem;
+      vertical-align: super;
+      color: #BAB86C;
+    }
+
+    .status-text {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #f1f1f1;
+    }
+
+    /* Right Controls */
     .controls-wrapper {
       display: flex;
       flex-direction: column;
@@ -83,10 +104,9 @@
     }
 
     .feature-title {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       font-weight: 900;
-      line-height: 1.1;
-      color: #ffffff;
+      line-height: 1.15;
     }
 
     .feature-title span {
@@ -99,39 +119,39 @@
       line-height: 1.6;
     }
 
-    .control-stage {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+    /* Custom Slider */
+    .slider-stage {
       background: #212328;
-      padding: 16px 24px;
+      padding: 20px 24px;
       border-radius: 14px;
       position: relative;
       margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
 
-    .remote-btn {
-      background: #BAB86C;
-      color: #2B2D33;
-      border: none;
-      padding: 14px 28px;
+    .slider-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
       font-weight: 800;
-      font-size: 0.95rem;
-      border-radius: 50px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: transform 0.1s ease, background 0.2s ease;
-      z-index: 5;
+      color: #BAB86C;
     }
 
-    .remote-btn:hover { background: #c5c377; }
-    .remote-btn:active { transform: scale(0.96); }
+    .shade-slider {
+      width: 65%;
+      accent-color: #BAB86C;
+      cursor: pointer;
+      height: 6px;
+    }
 
+    /* Character Overlay */
     .character-container {
-      width: 130px;
-      height: 220px;
+      width: 120px;
+      height: 200px;
       position: absolute;
-      right: 15px;
+      right: 10px;
       bottom: -15px;
       pointer-events: none;
     }
@@ -147,7 +167,7 @@
     model-viewer::part(default-progress-bar) { display: none; }
 
     @media (max-width: 768px) {
-      .feature-card {
+      .simulator-card {
         grid-template-columns: 1fr;
         padding: 24px;
       }
@@ -156,29 +176,39 @@
 </head>
 <body>
 
-  <div class="feature-card">
+  <div class="simulator-card">
     
-    <div class="awning-display">
-      <div class="wall-mount"></div>
-      <div class="awning-fabric" id="awningFabric"></div>
+    <!-- Left: Climate Simulation Screen -->
+    <div class="climate-stage" id="climateStage">
+      <div class="badge" id="statusBadge">Unprotected Surface</div>
+      <div>
+        <div class="temp-readout" id="tempDisplay">38<span>°C</span></div>
+        <p class="status-text" id="statusText">Direct Solar Radiation & High UV</p>
+      </div>
     </div>
 
+    <!-- Right: Interactive Slider & Character Inspector -->
     <div class="controls-wrapper">
-      <h2 class="feature-title">One-Touch <span>Motorisation</span></h2>
-      <p class="feature-desc">Control shade coverage instantly with automated smart sensors and quiet motor operation.</p>
+      <h2 class="feature-title">Thermal <span>Comfort</span> Shield</h2>
+      <p class="feature-desc">Block up to 98% of harmful UV rays and drastically reduce patio temperatures with high-density fabric weaves.</p>
 
-      <div class="control-stage">
-        <button class="remote-btn" id="toggleBtn">Deploy Awning</button>
+      <div class="slider-stage">
+        <div class="slider-label">
+          <span>SHADE COVERAGE</span>
+          <span id="percentText">0%</span>
+        </div>
 
+        <input type="range" min="0" max="100" value="0" class="shade-slider" id="shadeSlider">
+
+        <!-- Character acts as the Inspector pointing out data -->
         <div class="character-container">
-          <!-- Removed explicit animation-name attribute to let JS assign verified clips -->
           <model-viewer 
-            id="operatorChar"
+            id="inspectorChar"
             src="assets/UAL1_Standard.glb" 
             autoplay 
             loop 
             interaction-prompt="none"
-            camera-orbit="-25deg 75deg 85%"
+            camera-orbit="-20deg 75deg 85%"
             camera-target="0m 0.9m 0m"
             exposure="1.2">
           </model-viewer>
@@ -190,19 +220,23 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const toggleBtn = document.getElementById('toggleBtn');
-      const awningFabric = document.getElementById('awningFabric');
-      const character = document.getElementById('operatorChar');
-      let isExtended = false;
+      const slider = document.getElementById('shadeSlider');
+      const climateStage = document.getElementById('climateStage');
+      const tempDisplay = document.getElementById('tempDisplay');
+      const percentText = document.getElementById('percentText');
+      const statusBadge = document.getElementById('statusBadge');
+      const statusText = document.getElementById('statusText');
+      const character = document.getElementById('inspectorChar');
 
       let validIdleClip = null;
       let validGestureClip = null;
+      let gestureTimeout = null;
 
       const primaryColor = [0.169, 0.176, 0.200, 1.0];
       const secondaryColor = [0.73, 0.72, 0.42, 1.0];
 
       character.addEventListener('load', () => {
-        // 1. Color Tinting
+        // Material tinting
         if (character.model && character.model.materials) {
           character.model.materials.forEach((mat, idx) => {
             if (mat.pbrMetallicRoughness) {
@@ -213,40 +247,51 @@
           });
         }
 
-        // 2. Inspect GLB clips to prevent T-pose
-        const availableClips = character.availableAnimations || [];
-        console.log("Available Animations in GLB:", availableClips);
+        // Dynamically extract animation clips
+        const available = character.availableAnimations || [];
+        validIdleClip = available.find(c => /idle|stand|talk/i.test(c)) || available[0];
+        validGestureClip = available.find(c => /point|wave|interact|walk/i.test(c)) || available[1] || validIdleClip;
 
-        // Safely identify standing/idle and gesture clips from your GLB file
-        validIdleClip = availableClips.find(c => /idle|stand|talk/i.test(c)) || availableClips[0];
-        validGestureClip = availableClips.find(c => /wave|interact|point|punch/i.test(c)) || availableClips[1] || validIdleClip;
-
-        // Force character into a standing idle immediately on load
         if (validIdleClip) {
           character.animationName = validIdleClip;
           character.play();
         }
       });
 
-      // 3. Button Click Animation Cycle
-      toggleBtn.addEventListener('click', () => {
-        isExtended = !isExtended;
-        awningFabric.classList.toggle('extended', isExtended);
-        toggleBtn.textContent = isExtended ? 'Retract Awning' : 'Deploy Awning';
+      // Interactive Slider Event
+      slider.addEventListener('input', (e) => {
+        const val = parseInt(e.target.value);
+        percentText.textContent = `${val}%`;
 
-        // Play gesture clip
-        if (validGestureClip) {
+        // Calculate Temperature (38°C down to 21°C)
+        const temp = Math.round(38 - (val * 0.17));
+        tempDisplay.innerHTML = `${temp}<span>°C</span>`;
+
+        // Visual State Changes
+        if (val > 50) {
+          climateStage.classList.add('shaded');
+          statusBadge.textContent = 'Morrison Canopy Active';
+          statusText.textContent = 'Cool Ambient Shade & 98% UV Blocked';
+        } else {
+          climateStage.classList.remove('shaded');
+          statusBadge.textContent = 'Unprotected Surface';
+          statusText.textContent = 'Direct Solar Radiation & High UV';
+        }
+
+        // Trigger character gesture while dragging
+        if (validGestureClip && character.animationName !== validGestureClip) {
           character.animationName = validGestureClip;
           character.play();
         }
 
-        // Return strictly to standing idle posture (never T-pose)
-        setTimeout(() => {
+        // Reset back to continuous standing idle when user stops sliding
+        clearTimeout(gestureTimeout);
+        gestureTimeout = setTimeout(() => {
           if (validIdleClip) {
             character.animationName = validIdleClip;
             character.play();
           }
-        }, 1200);
+        }, 800);
       });
     });
   </script>
