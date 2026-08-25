@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Morrison Awning - Interactive Scene</title>
+  <title>Morrison Awning</title>
   
-  <!-- Fonts -->
+  <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800;900&display=swap" rel="stylesheet">
 
-  <!-- Model Viewer Script -->
+  <!-- Model Viewer Library -->
   <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
 
   <style>
     /* -------------------------------------------------------------
-       1. GLOBAL RESET & BASE STYLES
+       1. GLOBAL RESET
     ------------------------------------------------------------- */
     *, *::before, *::after {
       box-sizing: border-box;
@@ -34,7 +34,7 @@
     }
 
     /* -------------------------------------------------------------
-       2. TOP NAVIGATION (PILL BUTTONS & HAMBURGER)
+       2. TOP NAVIGATION
     ------------------------------------------------------------- */
     .navbar {
       width: 100%;
@@ -43,6 +43,7 @@
       align-items: center;
       justify-content: center;
       position: relative;
+      z-index: 10;
     }
 
     .nav-pills {
@@ -56,7 +57,7 @@
       color: #2B2D33;
       font-size: 13px;
       font-weight: 500;
-      padding: 10px 24px;
+      padding: 10px 26px;
       border: 1.5px solid #2B2D33;
       border-radius: 50px;
       transition: all 0.2s ease;
@@ -98,19 +99,19 @@
       min-height: calc(100vh - 90px);
     }
 
-    /* Bottom Olive Band */
+    /* Olive Bottom Banner */
     .olive-banner {
       position: absolute;
       bottom: 0;
       left: 0;
       width: 100%;
-      height: 110px;
+      height: 180px; /* Matched height from design */
       background-color: #BAB86C;
       z-index: 1;
     }
 
     .hero-container {
-      max-width: 1350px;
+      max-width: 1400px;
       width: 100%;
       margin: 0 auto;
       padding: 0 40px;
@@ -119,37 +120,35 @@
       align-items: flex-end;
       position: relative;
       z-index: 2;
-      padding-bottom: 0px;
     }
 
-    /* Title Styling */
+    /* Typography Alignment */
     .hero-title {
-      font-size: clamp(4.5rem, 9.5vw, 9.5rem);
+      font-size: clamp(5rem, 11vw, 11.5rem);
       font-weight: 900;
-      line-height: 0.85;
-      letter-spacing: -3px;
+      line-height: 0.82;
+      letter-spacing: -4px;
       color: #2B2D33;
-      margin-bottom: 20px;
+      margin-bottom: 25px; /* Aligns "Morrison" above olive bar & "Awning" straddling top line */
     }
 
     .hero-title span {
       display: block;
     }
 
-    /* 3D Character Stage (Side-by-Side Talking Duo) */
+    /* 3D Character Stage */
     .characters-stage {
       display: flex;
       justify-content: flex-start;
       align-items: flex-end;
-      gap: 15px;
-      height: 280px;
-      margin-bottom: 10px;
+      gap: 10px;
+      margin-bottom: 35px; /* Places character feet directly on top edge of olive bar */
     }
 
     .character-slot {
-      width: 120px;
-      height: 260px;
-      pointer-events: none; /* Disables mouse drag interference */
+      width: 210px; /* Increased size to match reference image */
+      height: 420px;
+      pointer-events: none;
     }
 
     model-viewer {
@@ -167,32 +166,29 @@
     /* -------------------------------------------------------------
        4. RESPONSIVE BREAKPOINTS
     ------------------------------------------------------------- */
-    @media (max-width: 992px) {
+    @media (max-width: 1024px) {
       .hero-container {
         grid-template-columns: 1fr;
-        gap: 30px;
+        gap: 20px;
       }
 
-      .olive-banner {
-        height: 80px;
+      .hero-title {
+        letter-spacing: -2px;
+        margin-bottom: 10px;
       }
 
       .characters-stage {
         justify-content: center;
-        height: 220px;
+        margin-bottom: 10px;
       }
 
       .character-slot {
-        width: 100px;
-        height: 200px;
+        width: 150px;
+        height: 300px;
       }
 
-      .hamburger-icon {
-        right: 20px;
-      }
-
-      .navbar {
-        padding: 20px;
+      .olive-banner {
+        height: 120px;
       }
     }
 
@@ -206,8 +202,12 @@
         font-size: 11px;
       }
 
-      .hero-title {
-        letter-spacing: -1px;
+      .hamburger-icon {
+        right: 20px;
+      }
+
+      .navbar {
+        padding: 20px;
       }
     }
   </style>
@@ -242,7 +242,7 @@
       <!-- Right: Two Talking Characters -->
       <div class="characters-stage">
         
-        <!-- Left Talking Character -->
+        <!-- Left Talking Character (Facing Right-Center) -->
         <div class="character-slot">
           <model-viewer 
             id="char-left"
@@ -250,12 +250,14 @@
             autoplay 
             loop 
             interaction-prompt="none"
-            camera-orbit="-30deg 75deg 105%" 
+            camera-orbit="-25deg 75deg 85%" 
+            camera-target="0m 0.9m 0m"
+            exposure="1.2"
             shadow-intensity="0">
           </model-viewer>
         </div>
 
-        <!-- Right Talking Character -->
+        <!-- Right Talking Character (Facing Left-Center) -->
         <div class="character-slot">
           <model-viewer 
             id="char-right"
@@ -263,7 +265,9 @@
             autoplay 
             loop 
             interaction-prompt="none"
-            camera-orbit="150deg 75deg 105%" 
+            camera-orbit="25deg 75deg 85%" 
+            camera-target="0m 0.9m 0m"
+            exposure="1.2"
             shadow-intensity="0">
           </model-viewer>
         </div>
@@ -276,20 +280,19 @@
 
   </main>
 
-  <!-- JavaScript: Animation Trigger & Color Replacement Script -->
+  <!-- Script: Animation Trigger & Color Fix -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const charLeft = document.querySelector('#char-left');
       const charRight = document.querySelector('#char-right');
 
-      // Primary Color: #2B2D33 -> [0.169, 0.176, 0.200, 1.0]
-      // Secondary Accent: #BAB86C -> [0.729, 0.721, 0.423, 1.0]
-      const primaryColor = [0.169, 0.176, 0.200, 1.0];
-      const secondaryColor = [0.729, 0.721, 0.423, 1.0];
+      // Vivid color values to ensure #BAB86C pops clearly without fading
+      const primaryColor = [0.169, 0.176, 0.200, 1.0];   // #2B2D33
+      const secondaryColor = [0.73, 0.72, 0.42, 1.0];     // #BAB86C
 
       const setupCharacter = (viewer) => {
         viewer.addEventListener('load', () => {
-          // 1. Play 'idle_talk' or fallback to available talking/idle animation
+          // Play talking animation clip
           const animations = viewer.availableAnimations || [];
           const talkClip = animations.find(a => a.toLowerCase().includes('talk')) ||
                            animations.find(a => a.toLowerCase().includes('idle')) ||
@@ -300,11 +303,13 @@
             viewer.play();
           }
 
-          // 2. Apply custom dual-tone material colors (#2B2D33 and #BAB86C)
+          // Apply color factors and set surface roughness to ensure colors are rich
           if (viewer.model && viewer.model.materials) {
             viewer.model.materials.forEach((mat, index) => {
               if (mat.pbrMetallicRoughness) {
-                // First material index receives primary dark charcoal, second receives olive accent
+                mat.pbrMetallicRoughness.setRoughnessFactor(0.6);
+                mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+                
                 if (index === 0) {
                   mat.pbrMetallicRoughness.setBaseColorFactor(primaryColor);
                 } else {
