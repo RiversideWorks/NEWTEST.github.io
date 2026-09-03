@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apple-Style Text Scroll Highlight</title>
+  <title>Apple-Style Text Scroll Highlight Engine</title>
   <style>
     * {
       box-sizing: border-box;
@@ -12,166 +12,253 @@
     }
 
     body {
-      background-color: #000;
+      background-color: #050507;
       color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
       overflow-x: hidden;
-      padding: 10vh 5vw;
+      padding: 5vh 5vw 20vh;
     }
 
-    .spacer {
-      height: 70vh;
+    /* Section Scaffolding */
+    .demo-section {
+      min-height: 80vh;
       display: flex;
-      align-items: center;
+      flex-direction: column;
       justify-content: center;
-      color: #444;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-      letter-spacing: 0.2em;
+      align-items: flex-start;
+      max-width: 1100px;
+      margin: 0 auto 10vh auto;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 5vh;
     }
 
-    /* Container defining perspective space */
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #38bdf8;
+      margin-bottom: 1.5rem;
+    }
+
     .scroll-text-container {
-      perspective: 1000px;
-      perspective-origin: center;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 40px 0;
+      perspective: 1200px;
+      perspective-origin: 50% 50%;
+      width: 100%;
     }
 
     .scroll-text {
-      font-size: clamp(2.2rem, 5.5vw, 4.5rem);
+      font-size: clamp(2.2rem, 5vw, 4.2rem);
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.25;
       letter-spacing: -0.02em;
       display: flex;
       flex-wrap: wrap;
-      column-gap: 0.3em;
-      row-gap: 0.15em;
+      column-gap: 0.35em;
+      row-gap: 0.2em;
       transform-style: preserve-3d;
     }
 
-    /* Individual word wrappers */
-    .scroll-word {
+    /* Units (Words / Letters) */
+    .scroll-unit {
       display: inline-block;
       transform-style: preserve-3d;
       will-change: transform, opacity, filter, color;
-      color: rgba(255, 255, 255, 0.2); /* Base unhighlighted state */
-      transition: color 0.2s ease-out;
+      transition: color 0.15s ease-out;
     }
 
-    /* Highlight Active Color */
-    .scroll-word.active {
+    /* Feature 1: Pure Color Reveal */
+    .color-mode .scroll-unit {
+      color: rgba(255, 255, 255, 0.15);
+    }
+    .color-mode .scroll-unit.active {
+      color: #38bdf8;
+      text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+
+    /* Base Dim State for general 3D FX */
+    .scroll-unit {
+      color: rgba(255, 255, 255, 0.2);
+    }
+    .scroll-unit.active {
       color: #ffffff;
     }
 
-    /* Vibrant Gradient Accent Variant */
-    .gradient-mode .scroll-word.active {
-      background: linear-gradient(135deg, #ffffff 0%, #a5f3fc 50%, #38bdf8 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    /* Character Splitting Display Rules */
+    .scroll-word-wrapper {
+      display: inline-flex;
+      white-space: nowrap;
     }
   </style>
 </head>
 <body>
 
-  <div class="spacer">Scroll Down ↓</div>
+  <!-- FEATURE 1: Scroll Driven Color Reveal -->
+  <section class="demo-section">
+    <span class="badge">Feature 1: Scroll Driven Color Reveal</span>
+    <div class="scroll-text-container">
+      <h2 class="scroll-text color-mode" data-fx="color-reveal" data-split="word">
+        Seamlessly transition typography from an initial muted state to a vibrant highlight color tied directly to scroll progress.
+      </h2>
+    </div>
+  </section>
 
-  <div class="scroll-text-container">
-    <h1 class="scroll-text" data-scroll-fx="vision-os">
-      Spatial Depth and Dynamic Blur emulate VisionOS aesthetics with word-by-word dynamic scale, Z-axis translation, and adaptive lens depth.
-    </h1>
-  </div>
+  <!-- FEATURE 2: 3D Perspective & Tilt Controls -->
+  <section class="demo-section">
+    <span class="badge">Feature 2: 3D Perspective & Tilt Controls</span>
+    <div class="scroll-text-container">
+      <h2 class="scroll-text" data-fx="3d-tilt" data-split="word">
+        Apply custom 2D rotation or immersive 3D X/Y perspective angles that straighten automatically as headlines scroll into view.
+      </h2>
+    </div>
+  </section>
 
-  <div class="spacer">Keep Scrolling</div>
+  <!-- FEATURE 3: Spatial Depth & Dynamic Blur -->
+  <section class="demo-section">
+    <span class="badge">Feature 3: Spatial Depth & Dynamic Blur</span>
+    <div class="scroll-text-container">
+      <h2 class="scroll-text" data-fx="spatial-blur" data-split="word">
+        Emulate VisionOS aesthetics with word-by-word dynamic scale, Z-axis translate, and adaptive lens blur depth effects.
+      </h2>
+    </div>
+  </section>
 
-  <div class="scroll-text-container">
-    <h2 class="scroll-text gradient-mode" data-scroll-fx="elastic-wave">
-      Drive headline reveals with color shifts, responsive 3D perspective angles, and fluid vertical wave displacement tied to scroll progress.
-    </h2>
-  </div>
+  <!-- FEATURE 4: Elastic Wave Motion (Wave FX) -->
+  <section class="demo-section">
+    <span class="badge">Feature 4: Elastic Wave Motion</span>
+    <div class="scroll-text-container">
+      <h2 class="scroll-text" data-fx="elastic-wave" data-split="word">
+        Enable organic vertical sine-wave displacements to create fluid, ripples-on-water kinetic text motion.
+      </h2>
+    </div>
+  </section>
 
-  <div class="spacer">End of Demo</div>
+  <!-- FEATURE 5: Granular Letter vs Word Splitting -->
+  <section class="demo-section">
+    <span class="badge">Feature 5: Letter & Word Splitting</span>
+    <div class="scroll-text-container">
+      <h2 class="scroll-text" data-fx="3d-tilt" data-split="letter">
+        Granular control over animation staggering, allowing triggers by individual letters instead of full word blocks.
+      </h2>
+    </div>
+  </section>
+
+  <!-- FEATURE 6: Viewport Trigger & Offsets -->
+  <section class="demo-section">
+    <span class="badge">Feature 6: Viewport Trigger & Reverse Scroll</span>
+    <div class="scroll-text-container">
+      <h2 class="scroll-text" data-fx="spatial-blur" data-split="word" data-trigger-offset="0.5">
+        Fine tune scroll start references and offset percentages, with continuous forward and reverse scroll recalculation.
+      </h2>
+    </div>
+  </section>
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-      const textContainers = document.querySelectorAll("[data-scroll-fx]");
+      const textContainers = document.querySelectorAll("[data-fx]");
 
-      // 1. Split Text into Word Spans
+      // 1. Text Splitting Engine (Word or Letter level)
       textContainers.forEach((container) => {
+        const splitType = container.dataset.split || "word";
         const text = container.innerText.trim();
-        const words = text.split(/\s+/);
         container.innerHTML = "";
 
-        words.forEach((wordText, i) => {
-          const span = document.createElement("span");
-          span.classList.add("scroll-word");
-          span.textContent = wordText;
-          container.appendChild(span);
-        });
+        if (splitType === "letter") {
+          const words = text.split(/\s+/);
+          words.forEach((wordText) => {
+            const wordWrapper = document.createElement("span");
+            wordWrapper.classList.add("scroll-word-wrapper");
+
+            for (let char of wordText) {
+              const charSpan = document.createElement("span");
+              charSpan.classList.add("scroll-unit");
+              charSpan.textContent = char;
+              wordWrapper.appendChild(charSpan);
+            }
+            container.appendChild(wordWrapper);
+          });
+        } else {
+          const words = text.split(/\s+/);
+          words.forEach((wordText) => {
+            const wordSpan = document.createElement("span");
+            wordSpan.classList.add("scroll-unit");
+            wordSpan.textContent = wordText;
+            container.appendChild(wordSpan);
+          });
+        }
       });
 
-      // 2. Scroll Animation Engine
+      // 2. Scroll Animation Rendering Loop
       function renderScrollFX() {
         const viewportHeight = window.innerHeight;
 
         textContainers.forEach((container) => {
-          const fxType = container.dataset.scrollFx;
-          const words = container.querySelectorAll(".scroll-word");
-          const totalWords = words.length;
-
+          const fxType = container.dataset.fx;
+          const units = container.querySelectorAll(".scroll-unit");
+          const totalUnits = units.length;
           const rect = container.getBoundingClientRect();
-          
-          // Viewport progress mapping (0 = bottom enter, 1 = upper reveal threshold)
-          const triggerStart = viewportHeight * 0.85;
-          const triggerEnd = viewportHeight * 0.3;
+
+          // Configurable Viewport Offsets
+          const offset = parseFloat(container.dataset.triggerOffset) || 0.8;
+          const triggerStart = viewportHeight * offset;
+          const triggerEnd = viewportHeight * 0.2;
+
           let overallProgress = (triggerStart - rect.top) / (triggerStart - triggerEnd);
           overallProgress = Math.max(0, Math.min(1, overallProgress));
 
-          words.forEach((word, index) => {
-            // Calculate staggered progress per word
-            const wordStart = index / totalWords;
-            const wordEnd = (index + 1) / totalWords;
-            let wordProgress = (overallProgress - wordStart) / (wordEnd - wordStart);
-            wordProgress = Math.max(0, Math.min(1, wordProgress));
+          units.forEach((unit, index) => {
+            // Stagger calculation per letter/word
+            const start = index / totalUnits;
+            const end = (index + 1) / totalUnits;
+            let unitProgress = (overallProgress - start) / (end - start);
+            unitProgress = Math.max(0, Math.min(1, unitProgress));
 
-            if (fxType === "vision-os") {
-              // 3D Tilt straightening, scale depth, dynamic lens blur
-              const tiltX = (1 - wordProgress) * 35; 
-              const translateZ = (1 - wordProgress) * -150; 
-              const scale = 0.85 + wordProgress * 0.15;
-              const blurVal = (1 - wordProgress) * 10; 
+            // Feature 1: Scroll Driven Color Reveal
+            if (fxType === "color-reveal") {
+              unit.style.transform = `scale(${0.95 + unitProgress * 0.05})`;
+              if (unitProgress > 0.1) unit.classList.add("active");
+              else unit.classList.remove("active");
+            }
 
-              word.style.transform = `rotateX(${tiltX}deg) translateZ(${translateZ}px) scale(${scale})`;
-              word.style.filter = `blur(${blurVal}px)`;
-              word.style.opacity = 0.2 + wordProgress * 0.8;
+            // Feature 2: 3D Perspective & Tilt
+            else if (fxType === "3d-tilt") {
+              const rotateX = (1 - unitProgress) * 45;
+              const rotateY = (1 - unitProgress) * -25;
+              const rotateZ = (1 - unitProgress) * -5;
+              unit.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
+              unit.style.opacity = 0.2 + unitProgress * 0.8;
+              if (unitProgress > 0.2) unit.classList.add("active");
+              else unit.classList.remove("active");
+            }
 
-              if (wordProgress > 0.2) {
-                word.classList.add("active");
-              } else {
-                word.classList.remove("active");
-              }
-            } 
+            // Feature 3: Spatial Depth & Dynamic Blur (VisionOS)
+            else if (fxType === "spatial-blur") {
+              const translateZ = (1 - unitProgress) * -200;
+              const scale = 0.8 + unitProgress * 0.2;
+              const blurVal = (1 - unitProgress) * 12;
+              unit.style.transform = `translateZ(${translateZ}px) scale(${scale})`;
+              unit.style.filter = `blur(${blurVal}px)`;
+              unit.style.opacity = 0.1 + unitProgress * 0.9;
+              if (unitProgress > 0.3) unit.classList.add("active");
+              else unit.classList.remove("active");
+            }
+
+            // Feature 4: Elastic Wave Motion
             else if (fxType === "elastic-wave") {
-              // Vertical sine wave motion, Y-axis perspective tilt
-              const waveY = Math.sin((overallProgress * Math.PI * 2) + (index * 0.2)) * 15 * (1 - wordProgress);
-              const tiltY = (1 - wordProgress) * -25;
-              const scale = 0.9 + wordProgress * 0.1;
-
-              word.style.transform = `translateY(${waveY}px) rotateY(${tiltY}deg) scale(${scale})`;
-              word.style.opacity = 0.2 + wordProgress * 0.8;
-
-              if (wordProgress > 0.3) {
-                word.classList.add("active");
-              } else {
-                word.classList.remove("active");
-              }
+              const waveY = Math.sin((overallProgress * Math.PI * 2) + (index * 0.25)) * 20 * (1 - unitProgress);
+              unit.style.transform = `translateY(${waveY}px) scale(${0.9 + unitProgress * 0.1})`;
+              unit.style.opacity = 0.2 + unitProgress * 0.8;
+              if (unitProgress > 0.2) unit.classList.add("active");
+              else unit.classList.remove("active");
             }
           });
         });
       }
 
-      // 3. Bind Scroll & Resize
       window.addEventListener("scroll", renderScrollFX, { passive: true });
       window.addEventListener("resize", renderScrollFX, { passive: true });
       renderScrollFX();
