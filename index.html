@@ -3,388 +3,272 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Image Hotspots</title>
+  <title>Coaching Track Interactive Carousel</title>
   <style>
-    :root {
-      --bg-color: #e5e5e7;
-      --card-bg: #ffffff;
-      --text-main: #111827;
-      --text-muted: #6b7280;
-      --accent: #111827;
-      --accent-hover: #374151;
-      --hotspot-color: #111827;
-      --radius-lg: 20px;
-      --radius-md: 12px;
-      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07);
-      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
-      background-color: var(--bg-color);
-      color: var(--text-main);
-      font-family: var(--font-family);
+      background-color: #e5e5e5;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 40px 20px;
       overflow-x: hidden;
     }
 
-    /* Track Layout Container */
-    .showcase-track {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 24px;
-      width: 100%;
-      max-width: 1280px;
-      margin: 0 auto;
-      perspective: 1000px;
-    }
-
-    /* Secondary Side Cards for Context Track */
-    .side-card {
-      width: 220px;
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 12px;
-      box-shadow: var(--shadow);
-      opacity: 0.55;
-      transform: scale(0.9);
-      transition: all 0.3s ease;
-      flex-shrink: 0;
-      pointer-events: none;
-    }
-
-    .side-card img {
-      width: 100%;
-      height: 180px;
-      object-fit: cover;
-      border-radius: var(--radius-md);
-      display: block;
-      margin-bottom: 12px;
-      filter: grayscale(20%);
-    }
-
-    .side-card .title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-main);
-      white-space: nowrap;
+    .carousel-container {
+      width: 100vw;
+      padding: 60px 0;
+      position: relative;
       overflow: hidden;
-      text-overflow: ellipsis;
+      cursor: grab;
+      user-select: none;
     }
 
-    /* Main Center Interactive Hotspot Card */
-    .main-card-container {
-      width: 100%;
-      max-width: 440px;
+    .carousel-container:active {
+      cursor: grabbing;
+    }
+
+    .carousel-track {
+      display: flex;
+      align-items: flex-start;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: transform;
+      width: max-content;
+    }
+
+    .card-item {
+      width: 280px;
+      margin: 0 12px;
+      flex-shrink: 0;
+      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
+      opacity: 0.35;
+      transform: scale(0.9);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      z-index: 10;
-      flex-shrink: 0;
     }
 
-    /* Top Main Card */
-    .main-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 16px;
-      box-shadow: var(--shadow);
-      position: relative;
+    .card-item.active {
+      opacity: 1;
+      transform: scale(1);
     }
 
-    /* Header Bar inside Card */
-    .card-header {
+    /* Top Badge */
+    .card-badge {
+      background: #ffffff;
+      padding: 8px 16px;
+      border-radius: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      padding: 0 4px;
-    }
-
-    .card-header .label {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .card-header .units-badge {
-      font-size: 0.75rem;
+      font-size: 13px;
       font-weight: 600;
-      color: var(--text-main);
-      background: rgba(0, 0, 0, 0.05);
-      padding: 4px 10px;
-      border-radius: 100px;
+      color: #111111;
+      margin-bottom: 10px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(6px);
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
     }
 
-    /* Interactive Image & Hotspots Wrapper */
-    .image-viewport {
-      position: relative;
+    .card-item.active .card-badge {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .badge-count {
+      color: #666666;
+      font-weight: 500;
+    }
+
+    /* Main Image Card */
+    .card-main {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+    }
+
+    .card-image-wrap {
       width: 100%;
-      aspect-ratio: 4 / 3;
-      border-radius: var(--radius-md);
+      height: 220px;
+      border-radius: 12px;
       overflow: hidden;
-      background-color: #f3f3f5;
+      background-color: #f2f2f2;
     }
 
-    .image-viewport img {
+    .card-image-wrap img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      user-select: none;
+      pointer-events: none;
     }
 
-    /* Hotspot Markers */
-    .hotspot-pin {
-      position: absolute;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--hotspot-color);
-      color: #ffffff;
-      border: 2px solid #ffffff;
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111111;
+      padding: 12px 6px 4px 6px;
+    }
+
+    /* Bottom Module Overview Box */
+    .card-overview {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: all 0.4s ease;
+    }
+
+    .card-item.active .card-overview {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .overview-heading {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: #888888;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .overview-text {
+      font-size: 12px;
+      line-height: 1.5;
+      color: #333333;
+      margin-bottom: 12px;
+    }
+
+    .overview-link {
+      font-size: 12px;
+      font-weight: 700;
+      color: #111111;
+      text-decoration: none;
+      border-bottom: 1px solid #111111;
+      display: inline-block;
+      padding-bottom: 1px;
+    }
+
+    /* Controls & Navigation Dots */
+    .controls {
       display: flex;
       align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transform: translate(-50%, -50%);
-      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      z-index: 20;
+      gap: 8px;
+      margin-top: 20px;
     }
 
-    .hotspot-pin::before {
-      content: '';
+    .dot {
       width: 8px;
       height: 8px;
-      background: #ffffff;
       border-radius: 50%;
-      transition: transform 0.2s ease;
-    }
-
-    /* Pulsing Ring Effect */
-    .hotspot-pin::after {
-      content: '';
-      position: absolute;
-      inset: -6px;
-      border-radius: 50%;
-      background: rgba(17, 24, 39, 0.35);
-      z-index: -1;
-      animation: pulse-ring 2s infinite;
-    }
-
-    @keyframes pulse-ring {
-      0% { transform: scale(0.8); opacity: 0.8; }
-      100% { transform: scale(1.6); opacity: 0; }
-    }
-
-    .hotspot-pin:hover {
-      transform: translate(-50%, -50%) scale(1.18);
-      background: #000000;
-    }
-
-    .hotspot-pin.active {
-      background: #2563eb;
-      border-color: #ffffff;
-    }
-
-    .hotspot-pin.active::after {
-      background: rgba(37, 99, 235, 0.4);
-    }
-
-    /* Card Footer / Category Title */
-    .card-footer-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-      margin-top: 14px;
-      padding: 0 4px;
-      color: var(--text-main);
-    }
-
-    /* Bottom Dynamic Module Overview / Hotspot Detail Card */
-    .detail-card {
-      background: var(--card-bg);
-      border-radius: var(--radius-lg);
-      padding: 20px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-    }
-
-    .detail-card .meta-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      letter-spacing: 0.8px;
-      text-transform: uppercase;
-      color: var(--text-muted);
-    }
-
-    .detail-card .description {
-      font-size: 0.85rem;
-      line-height: 1.5;
-      color: #374151;
-    }
-
-    .detail-card .cta-btn {
-      align-self: flex-start;
-      margin-top: 6px;
-      background: transparent;
-      border: none;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-main);
+      background-color: #bbbbbb;
       cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0;
-      transition: color 0.2s ease;
+      transition: all 0.3s ease;
     }
 
-    .detail-card .cta-btn:hover {
-      color: #2563eb;
+    .dot.active {
+      background-color: #111111;
+      width: 20px;
+      border-radius: 4px;
     }
 
-    /* Responsive Adaptation */
-    @media (max-width: 900px) {
-      .side-card {
-        display: none;
+    @media (max-width: 600px) {
+      .card-item {
+        width: 240px;
       }
-
-      body {
-        padding: 20px 16px;
-      }
-
-      .main-card-container {
-        max-width: 100%;
+      .card-image-wrap {
+        height: 180px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Interactive Component Track Container -->
-  <div class="showcase-track">
-    
-    <!-- Left Context Preview Card -->
-    <div class="side-card">
-      <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" alt="Fat-Soluble Vitamins">
-      <div class="title">Fat-Soluble Vitamins</div>
-    </div>
-
-    <!-- Main Interactive Hotspot Showcase Card -->
-    <div class="main-card-container">
+  <div class="carousel-container" id="carouselViewport">
+    <div class="carousel-track" id="carouselTrack">
       
-      <!-- Upper Main Card -->
-      <div class="main-card">
-        <div class="card-header">
-          <span class="label">Coaching Track</span>
-          <span class="units-badge" id="hotspotCountBadge">3 Hotspots</span>
+      <div class="card-item">
+        <div class="card-badge">
+          <span>Coaching Track</span>
+          <span class="badge-count">10 Units</span>
         </div>
-
-        <!-- Interactive Image Canvas -->
-        <div class="image-viewport" id="imageContainer">
-          <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1000&q=80" alt="Water-Soluble Vitamins Scene">
-          
-          <!-- Hotspots dynamically placed via percentage coordinates -->
-          <div class="hotspot-pin active" style="top: 42%; left: 48%;" data-index="0"></div>
-          <div class="hotspot-pin" style="top: 30%; left: 78%;" data-index="1"></div>
-          <div class="hotspot-pin" style="top: 72%; left: 32%;" data-index="2"></div>
+        <div class="card-main">
+          <div class="card-image-wrap">
+            <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80" alt="Energy Balance">
+          </div>
+          <div class="card-title">Energy Balance</div>
         </div>
-
-        <div class="card-footer-title" id="mainCardTitle">Water-Soluble Vitamins</div>
+        <div class="card-overview">
+          <div class="overview-heading">Module Overview</div>
+          <div class="overview-text">Understand basal metabolic rate, energy intake calculations, and optimizing daily caloric balance.</div>
+          <a href="#" class="overview-link">Explore Course</a>
+        </div>
       </div>
 
-      <!-- Bottom Interactive Detail Card -->
-      <div class="detail-card" id="detailCard">
-        <div class="meta-label" id="detailMeta">MODULE OVERVIEW</div>
-        <div class="description" id="detailDescription">
-          Identify deficiency patterns in B-complex and vitamin C pathways, optimising energy production, stress resilience, and methylation.
+      <div class="card-item">
+        <div class="card-badge">
+          <span>Coaching Track</span>
+          <span class="badge-count">10 Units</span>
         </div>
-        <button class="cta-btn" id="detailCta">
-          <span>Explore Course</span> &rarr;
-        </button>
+        <div class="card-main">
+          <div class="card-image-wrap">
+            <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" alt="Fat-Soluble Vitamins">
+          </div>
+          <div class="card-title">Fat-Soluble Vitamins</div>
+        </div>
+        <div class="card-overview">
+          <div class="overview-heading">Module Overview</div>
+          <div class="overview-text">Master dietary absorption, transport, and functions of vitamins A, D, E, and K in metabolic health.</div>
+          <a href="#" class="overview-link">Explore Course</a>
+        </div>
       </div>
 
-    </div>
+      <div class="card-item">
+        <div class="card-badge">
+          <span>Coaching Track</span>
+          <span class="badge-count">10 Units</span>
+        </div>
+        <div class="card-main">
+          <div class="card-image-wrap">
+            <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80" alt="Water-Soluble Vitamins">
+          </div>
+          <div class="card-title">Water-Soluble Vitamins</div>
+        </div>
+        <div class="card-overview">
+          <div class="overview-heading">Module Overview</div>
+          <div class="overview-text">Identify deficiency patterns in B-complex and vitamin C pathways, optimising energy production, stress resilience, and methylation.</div>
+          <a href="#" class="overview-link">Explore Course</a>
+        </div>
+      </div>
 
-    <!-- Right Context Preview Card -->
-    <div class="side-card">
-      <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" alt="Minerals">
-      <div class="title">Minerals</div>
-    </div>
-
-  </div>
-
-  <script>
-    // Hotspot Content Dataset
-    const hotspotData = [
-      {
-        title: "Water-Soluble Vitamins",
-        meta: "MODULE OVERVIEW",
-        description: "Identify deficiency patterns in B-complex and vitamin C pathways, optimising energy production, stress resilience, and methylation.",
-        buttonText: "Explore Course"
-      },
-      {
-        title: "Herbal & Infusion Extracts",
-        meta: "FEATURE BREAKDOWN",
-        description: "Analyze active botanical compounds and adaptogens designed to support metabolic equilibrium and digestive wellness.",
-        buttonText: "View Formula"
-      },
-      {
-        title: "Bioavailability & Absorption",
-        meta: "KEY MECHANISM",
-        description: "Understand optimal liquid delivery systems that maximize cellular uptake and improve nutritional efficiency.",
-        buttonText: "Learn More"
-      }
-    ];
-
-    // Element References
-    const pins = document.querySelectorAll('.hotspot-pin');
-    const mainCardTitle = document.getElementById('mainCardTitle');
-    const detailMeta = document.getElementById('detailMeta');
-    const detailDescription = document.getElementById('detailDescription');
-    const detailCta = document.getElementById('detailCta');
-    const detailCard = document.getElementById('detailCard');
-
-    // Click Event Handler
-    pins.forEach(pin => {
-      pin.addEventListener('click', (e) => {
-        const index = parseInt(e.currentTarget.getAttribute('data-index'));
-
-        // Update active pin state
-        pins.forEach(p => p.classList.remove('active'));
-        e.currentTarget.classList.add('active');
-
-        // Smooth transition effect for content update
-        detailCard.style.opacity = '0.4';
-        detailCard.style.transform = 'translateY(4px)';
-
-        setTimeout(() => {
-          const data = hotspotData[index];
-          mainCardTitle.textContent = data.title;
-          detailMeta.textContent = data.meta;
-          detailDescription.textContent = data.description;
-          detailCta.querySelector('span').textContent = data.buttonText;
-
-          detailCard.style.opacity = '1';
-          detailCard.style.transform = 'translateY(0)';
-        }, 150);
-      });
-    });
-  </script>
-</body>
-</html>
+      <div class="card-item">
+        <div class="card-badge">
+          <span>Coaching Track</span>
+          <span class="badge-count">10 Units</span>
+        </div>
+        <div class="card-main">
+          <div class="card-image-wrap">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" alt="Minerals">
+          </div>
+          <div class="card-title">Minerals</div>
+        </div>
+        <div class="card-overview">
+          <div class="overview-heading">Module Overview</div>
+          <div class="overview-text">Explore macro and trace minerals, electrolyte balance, tissue hydration, and cellular function.</div>
+          <a href="#" class="overview-
