@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Coaching Track Interactive Carousel</title>
+  <title>Infinite Responsive Coaching Track Carousel</title>
   <style>
     * {
       box-sizing: border-box;
@@ -16,93 +16,82 @@
       background-color: #e5e5e5;
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
       overflow-x: hidden;
     }
 
-    .carousel-container {
+    .carousel-wrapper {
       width: 100vw;
-      padding: 60px 0;
+      padding: 40px 0;
       position: relative;
       overflow: hidden;
       cursor: grab;
       user-select: none;
     }
 
-    .carousel-container:active {
+    .carousel-wrapper:active {
       cursor: grabbing;
     }
 
     .carousel-track {
       display: flex;
-      align-items: flex-start;
-      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+      align-items: center;
       will-change: transform;
       width: max-content;
     }
 
-    .card-item {
-      width: 280px;
-      margin: 0 12px;
+    .card-group {
+      width: 290px;
+      margin: 0 14px;
       flex-shrink: 0;
-      transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.5s ease;
-      opacity: 0.35;
-      transform: scale(0.9);
       display: flex;
       flex-direction: column;
+      gap: 12px;
+      transform: scale(0.86);
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
+      opacity: 0.75;
     }
 
-    .card-item.active {
+    .card-group.active {
+      transform: scale(1.04);
       opacity: 1;
-      transform: scale(1);
     }
 
     /* Top Badge */
     .card-badge {
       background: #ffffff;
-      padding: 8px 16px;
-      border-radius: 12px;
+      padding: 10px 18px;
+      border-radius: 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 13px;
-      font-weight: 600;
+      font-weight: 700;
       color: #111111;
-      margin-bottom: 10px;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(6px);
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-    }
-
-    .card-item.active .card-badge {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
     }
 
     .badge-count {
       color: #666666;
-      font-weight: 500;
+      font-weight: 600;
+      font-size: 12px;
     }
 
-    /* Main Image Card */
+    /* Main Center Card */
     .card-main {
       background: #ffffff;
-      border-radius: 18px;
+      border-radius: 20px;
       padding: 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
 
     .card-image-wrap {
       width: 100%;
       height: 220px;
-      border-radius: 12px;
+      border-radius: 14px;
       overflow: hidden;
-      background-color: #f2f2f2;
+      background-color: #f0f0f0;
     }
 
     .card-image-wrap img {
@@ -120,29 +109,18 @@
       padding: 12px 6px 4px 6px;
     }
 
-    /* Bottom Module Overview Box */
+    /* Bottom Overview Box */
     .card-overview {
       background: #ffffff;
-      border-radius: 16px;
-      padding: 16px;
-      margin-top: 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(-8px);
-      transition: all 0.4s ease;
-    }
-
-    .card-item.active .card-overview {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
     }
 
     .overview-heading {
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 700;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.8px;
       color: #888888;
       text-transform: uppercase;
       margin-bottom: 8px;
@@ -150,7 +128,7 @@
 
     .overview-text {
       font-size: 12px;
-      line-height: 1.5;
+      line-height: 1.45;
       color: #333333;
       margin-bottom: 12px;
     }
@@ -160,37 +138,15 @@
       font-weight: 700;
       color: #111111;
       text-decoration: none;
-      border-bottom: 1px solid #111111;
+      border-bottom: 1.5px solid #111111;
       display: inline-block;
       padding-bottom: 1px;
     }
 
-    /* Controls & Navigation Dots */
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 20px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background-color: #bbbbbb;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .dot.active {
-      background-color: #111111;
-      width: 20px;
-      border-radius: 4px;
-    }
-
     @media (max-width: 600px) {
-      .card-item {
+      .card-group {
         width: 240px;
+        margin: 0 8px;
       }
       .card-image-wrap {
         height: 180px;
@@ -200,75 +156,200 @@
 </head>
 <body>
 
-  <div class="carousel-container" id="carouselViewport">
-    <div class="carousel-track" id="carouselTrack">
+  <div class="carousel-wrapper" id="viewport">
+    <div class="carousel-track" id="track"></div>
+  </div>
+
+  <script>
+    const itemsData = [
+      {
+        badgeTitle: "Coaching Track",
+        units: "10 Units",
+        title: "Energy Balance",
+        image: "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80",
+        overview: "Understand basal metabolic rate, energy intake calculations, and optimizing daily caloric balance."
+      },
+      {
+        badgeTitle: "Coaching Track",
+        units: "10 Units",
+        title: "Fat-Soluble Vitamins",
+        image: "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80",
+        overview: "Master dietary absorption, transport, and metabolic functions of vitamins A, D, E, and K."
+      },
+      {
+        badgeTitle: "Coaching Track",
+        units: "10 Units",
+        title: "Water-Soluble Vitamins",
+        image: "https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80",
+        overview: "Identify deficiency patterns in B-complex and vitamin C pathways, optimising energy production, stress resilience, and methylation."
+      },
+      {
+        badgeTitle: "Coaching Track",
+        units: "10 Units",
+        title: "Minerals",
+        image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80",
+        overview: "Explore macro and trace minerals, electrolyte balance, tissue hydration, and cellular function."
+      },
+      {
+        badgeTitle: "Coaching Track",
+        units: "10 Units",
+        title: "Plant-Based Diets",
+        image: "https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?auto=format&fit=crop&w=600&q=80",
+        overview: "Evaluate plant-protein completeness, phytonutrients, and strategies for optimal vegetarian nutrition."
+      }
+    ];
+
+    const track = document.getElementById('track');
+    const viewport = document.getElementById('viewport');
+
+    // Create 3 sets of items for seamless infinite looping
+    const extendedItems = [...itemsData, ...itemsData, ...itemsData];
+    let cardElements = [];
+
+    function renderCards() {
+      track.innerHTML = '';
+      extendedItems.forEach((item) => {
+        const cardGroup = document.createElement('div');
+        cardGroup.classList.add('card-group');
+        cardGroup.innerHTML = `
+          <div class="card-badge">
+            <span>${item.badgeTitle}</span>
+            <span class="badge-count">${item.units}</span>
+          </div>
+          <div class="card-main">
+            <div class="card-image-wrap">
+              <img src="${item.image}" alt="${item.title}">
+            </div>
+            <div class="card-title">${item.title}</div>
+          </div>
+          <div class="card-overview">
+            <div class="overview-heading">MODULE OVERVIEW</div>
+            <div class="overview-text">${item.overview}</div>
+            <a href="#" class="overview-link">Explore Course</a>
+          </div>
+        `;
+        track.appendChild(cardGroup);
+      });
+      cardElements = Array.from(track.children);
+    }
+
+    renderCards();
+
+    let currentIndex = itemsData.length + 2; // Start in the middle clone set at item 3
+    let autoSwipeTimer = null;
+    let isDragging = false;
+    let startX = 0;
+    let currentTranslate = 0;
+    let dragOffset = 0;
+
+    function getCardWidth() {
+      if (cardElements.length === 0) return 0;
+      const style = window.getComputedStyle(cardElements[0]);
+      const width = cardElements[0].offsetWidth;
+      const margin = parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+      return width + margin;
+    }
+
+    function updateCarousel(animated = true) {
+      if (animated) {
+        track.style.transition = 'transform 0.45s cubic-bezier(0.25, 1, 0.5, 1)';
+      } else {
+        track.style.transition = 'none';
+      }
+
+      const cardWidth = getCardWidth();
+      const viewportWidth = viewport.offsetWidth;
+      const centerOffset = (viewportWidth / 2) - (cardWidth / 2);
       
-      <div class="card-item">
-        <div class="card-badge">
-          <span>Coaching Track</span>
-          <span class="badge-count">10 Units</span>
-        </div>
-        <div class="card-main">
-          <div class="card-image-wrap">
-            <img src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=600&q=80" alt="Energy Balance">
-          </div>
-          <div class="card-title">Energy Balance</div>
-        </div>
-        <div class="card-overview">
-          <div class="overview-heading">Module Overview</div>
-          <div class="overview-text">Understand basal metabolic rate, energy intake calculations, and optimizing daily caloric balance.</div>
-          <a href="#" class="overview-link">Explore Course</a>
-        </div>
-      </div>
+      currentTranslate = centerOffset - (currentIndex * cardWidth);
+      track.style.transform = `translateX(${currentTranslate + dragOffset}px)`;
 
-      <div class="card-item">
-        <div class="card-badge">
-          <span>Coaching Track</span>
-          <span class="badge-count">10 Units</span>
-        </div>
-        <div class="card-main">
-          <div class="card-image-wrap">
-            <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" alt="Fat-Soluble Vitamins">
-          </div>
-          <div class="card-title">Fat-Soluble Vitamins</div>
-        </div>
-        <div class="card-overview">
-          <div class="overview-heading">Module Overview</div>
-          <div class="overview-text">Master dietary absorption, transport, and functions of vitamins A, D, E, and K in metabolic health.</div>
-          <a href="#" class="overview-link">Explore Course</a>
-        </div>
-      </div>
+      cardElements.forEach((card, idx) => {
+        card.classList.toggle('active', idx === currentIndex);
+      });
+    }
 
-      <div class="card-item">
-        <div class="card-badge">
-          <span>Coaching Track</span>
-          <span class="badge-count">10 Units</span>
-        </div>
-        <div class="card-main">
-          <div class="card-image-wrap">
-            <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=600&q=80" alt="Water-Soluble Vitamins">
-          </div>
-          <div class="card-title">Water-Soluble Vitamins</div>
-        </div>
-        <div class="card-overview">
-          <div class="overview-heading">Module Overview</div>
-          <div class="overview-text">Identify deficiency patterns in B-complex and vitamin C pathways, optimising energy production, stress resilience, and methylation.</div>
-          <a href="#" class="overview-link">Explore Course</a>
-        </div>
-      </div>
+    function checkBoundaryLoop() {
+      // Jump seamlessly when reaching outer clone sets
+      if (currentIndex >= itemsData.length * 2) {
+        currentIndex -= itemsData.length;
+        updateCarousel(false);
+      } else if (currentIndex < itemsData.length) {
+        currentIndex += itemsData.length;
+        updateCarousel(false);
+      }
+    }
 
-      <div class="card-item">
-        <div class="card-badge">
-          <span>Coaching Track</span>
-          <span class="badge-count">10 Units</span>
-        </div>
-        <div class="card-main">
-          <div class="card-image-wrap">
-            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" alt="Minerals">
-          </div>
-          <div class="card-title">Minerals</div>
-        </div>
-        <div class="card-overview">
-          <div class="overview-heading">Module Overview</div>
-          <div class="overview-text">Explore macro and trace minerals, electrolyte balance, tissue hydration, and cellular function.</div>
-          <a href="#" class="overview-
+    function nextSlide() {
+      currentIndex++;
+      updateCarousel(true);
+      setTimeout(checkBoundaryLoop, 450);
+    }
+
+    function startAutoSwipe() {
+      stopAutoSwipe();
+      autoSwipeTimer = setInterval(nextSlide, 3000);
+    }
+
+    function stopAutoSwipe() {
+      if (autoSwipeTimer) clearInterval(autoSwipeTimer);
+    }
+
+    // Touch & Mouse Drag Handlers
+    function onStart(e) {
+      isDragging = true;
+      startX = getXPosition(e);
+      dragOffset = 0;
+      stopAutoSwipe();
+      track.style.transition = 'none';
+    }
+
+    function onMove(e) {
+      if (!isDragging) return;
+      const currentX = getXPosition(e);
+      dragOffset = currentX - startX;
+      const cardWidth = getCardWidth();
+      const viewportWidth = viewport.offsetWidth;
+      const centerOffset = (viewportWidth / 2) - (cardWidth / 2);
+      track.style.transform = `translateX(${centerOffset - (currentIndex * cardWidth) + dragOffset}px)`;
+    }
+
+    function onEnd() {
+      if (!isDragging) return;
+      isDragging = false;
+      const cardWidth = getCardWidth();
+      
+      if (dragOffset < -50) {
+        currentIndex++;
+      } else if (dragOffset > 50) {
+        currentIndex--;
+      }
+      
+      dragOffset = 0;
+      updateCarousel(true);
+      setTimeout(checkBoundaryLoop, 450);
+      startAutoSwipe();
+    }
+
+    function getXPosition(e) {
+      return e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
+    }
+
+    // Event Listeners
+    viewport.addEventListener('mousedown', onStart);
+    viewport.addEventListener('mousemove', onMove);
+    viewport.addEventListener('mouseup', onEnd);
+    viewport.addEventListener('mouseleave', () => { if (isDragging) onEnd(); });
+
+    viewport.addEventListener('touchstart', onStart, { passive: true });
+    viewport.addEventListener('touchmove', onMove, { passive: true });
+    viewport.addEventListener('touchend', onEnd);
+
+    window.addEventListener('resize', () => updateCarousel(false));
+
+    // Initialize
+    updateCarousel(false);
+    startAutoSwipe();
+  </script>
+</body>
+</html>
