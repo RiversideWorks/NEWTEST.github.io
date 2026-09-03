@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Infinite Responsive Coaching Track Carousel</title>
+  <title>Coaching Track Carousel</title>
   <style>
     * {
       box-sizing: border-box;
@@ -13,7 +13,7 @@
     }
 
     body {
-      background-color: #e5e5e5;
+      background-color: #e3e3e3;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -23,7 +23,7 @@
 
     .carousel-wrapper {
       width: 100vw;
-      padding: 40px 0;
+      padding: 70px 0;
       position: relative;
       overflow: hidden;
       cursor: grab;
@@ -41,55 +41,63 @@
       width: max-content;
     }
 
+    /* Card Item Group */
     .card-group {
-      width: 290px;
-      margin: 0 14px;
+      width: 270px;
+      margin: 0 16px;
       flex-shrink: 0;
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      transform: scale(0.86);
-      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease;
-      opacity: 0.75;
+      gap: 10px;
+      transform: scale(0.78);
+      opacity: 0.45;
+      transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.45s ease;
+      z-index: 1;
     }
 
+    /* Centre Card Highlight (Bigger Scale & Full Opacity) */
     .card-group.active {
-      transform: scale(1.04);
+      transform: scale(1.22);
       opacity: 1;
+      z-index: 10;
     }
 
-    /* Top Badge */
+    /* Top Badge - Hidden on inactive cards, visible only on centre card */
     .card-badge {
       background: #ffffff;
-      padding: 10px 18px;
-      border-radius: 14px;
+      padding: 8px 16px;
+      border-radius: 12px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 700;
       color: #111111;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(6px);
+      transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
     }
 
     .badge-count {
       color: #666666;
       font-weight: 600;
-      font-size: 12px;
+      font-size: 11px;
     }
 
-    /* Main Center Card */
+    /* Main Center Card Shape */
     .card-main {
       background: #ffffff;
-      border-radius: 20px;
-      padding: 10px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      border-radius: 18px;
+      padding: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
     }
 
     .card-image-wrap {
       width: 100%;
-      height: 220px;
-      border-radius: 14px;
+      height: 200px;
+      border-radius: 12px;
       overflow: hidden;
       background-color: #f0f0f0;
     }
@@ -103,38 +111,42 @@
     }
 
     .card-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 700;
       color: #111111;
-      padding: 12px 6px 4px 6px;
+      padding: 10px 4px 4px 4px;
     }
 
-    /* Bottom Overview Box */
+    /* Bottom Overview Container - Hidden on inactive cards, visible only on centre card */
     .card-overview {
       background: #ffffff;
-      border-radius: 18px;
-      padding: 18px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.04);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: opacity 0.35s ease, transform 0.35s ease, visibility 0.35s;
     }
 
     .overview-heading {
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 700;
       letter-spacing: 0.8px;
       color: #888888;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
     }
 
     .overview-text {
-      font-size: 12px;
-      line-height: 1.45;
+      font-size: 11px;
+      line-height: 1.4;
       color: #333333;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .overview-link {
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 700;
       color: #111111;
       text-decoration: none;
@@ -143,13 +155,24 @@
       padding-bottom: 1px;
     }
 
+    /* Reveal Top and Bottom shapes ONLY when active */
+    .card-group.active .card-badge,
+    .card-group.active .card-overview {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
     @media (max-width: 600px) {
       .card-group {
-        width: 240px;
-        margin: 0 8px;
+        width: 210px;
+        margin: 0 10px;
       }
       .card-image-wrap {
-        height: 180px;
+        height: 150px;
+      }
+      .card-group.active {
+        transform: scale(1.15);
       }
     }
   </style>
@@ -202,7 +225,7 @@
     const track = document.getElementById('track');
     const viewport = document.getElementById('viewport');
 
-    // Create 3 sets of items for seamless infinite looping
+    // Create 3 identical sets for seamless infinite loop calculation
     const extendedItems = [...itemsData, ...itemsData, ...itemsData];
     let cardElements = [];
 
@@ -235,11 +258,10 @@
 
     renderCards();
 
-    let currentIndex = itemsData.length + 2; // Start in the middle clone set at item 3
+    let currentIndex = itemsData.length + 2; // Start in middle duplicate group
     let autoSwipeTimer = null;
     let isDragging = false;
     let startX = 0;
-    let currentTranslate = 0;
     let dragOffset = 0;
 
     function getCardWidth() {
@@ -261,7 +283,7 @@
       const viewportWidth = viewport.offsetWidth;
       const centerOffset = (viewportWidth / 2) - (cardWidth / 2);
       
-      currentTranslate = centerOffset - (currentIndex * cardWidth);
+      const currentTranslate = centerOffset - (currentIndex * cardWidth);
       track.style.transform = `translateX(${currentTranslate + dragOffset}px)`;
 
       cardElements.forEach((card, idx) => {
@@ -270,7 +292,6 @@
     }
 
     function checkBoundaryLoop() {
-      // Jump seamlessly when reaching outer clone sets
       if (currentIndex >= itemsData.length * 2) {
         currentIndex -= itemsData.length;
         updateCarousel(false);
@@ -295,7 +316,7 @@
       if (autoSwipeTimer) clearInterval(autoSwipeTimer);
     }
 
-    // Touch & Mouse Drag Handlers
+    // Swipe & Mouse Drag Logic
     function onStart(e) {
       isDragging = true;
       startX = getXPosition(e);
@@ -317,11 +338,10 @@
     function onEnd() {
       if (!isDragging) return;
       isDragging = false;
-      const cardWidth = getCardWidth();
       
-      if (dragOffset < -50) {
+      if (dragOffset < -40) {
         currentIndex++;
-      } else if (dragOffset > 50) {
+      } else if (dragOffset > 40) {
         currentIndex--;
       }
       
@@ -335,7 +355,7 @@
       return e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
     }
 
-    // Event Listeners
+    // Touch & Mouse Event Binding
     viewport.addEventListener('mousedown', onStart);
     viewport.addEventListener('mousemove', onMove);
     viewport.addEventListener('mouseup', onEnd);
