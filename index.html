@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Apple-Style Text Scroll Highlight Engine</title>
+  <title>Interactive Image Hotspots</title>
   <style>
+    :root {
+      --bg-color: #e5e5e7;
+      --card-bg: #ffffff;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --accent: #111827;
+      --accent-hover: #374151;
+      --hotspot-color: #111827;
+      --radius-lg: 20px;
+      --radius-md: 12px;
+      --shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.07);
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -12,256 +26,364 @@
     }
 
     body {
-      background-color: #050507;
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
-      overflow-x: hidden;
-      padding: 5vh 5vw 20vh;
-    }
-
-    /* Section Scaffolding */
-    .demo-section {
-      min-height: 80vh;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
+      align-items: center;
       justify-content: center;
-      align-items: flex-start;
-      max-width: 1100px;
-      margin: 0 auto 10vh auto;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding-bottom: 5vh;
+      padding: 40px 20px;
+      overflow-x: hidden;
     }
 
-    .badge {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 20px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: #38bdf8;
-      margin-bottom: 1.5rem;
-    }
-
-    .scroll-text-container {
-      perspective: 1200px;
-      perspective-origin: 50% 50%;
-      width: 100%;
-    }
-
-    .scroll-text {
-      font-size: clamp(2.2rem, 5vw, 4.2rem);
-      font-weight: 700;
-      line-height: 1.25;
-      letter-spacing: -0.02em;
+    /* Track Layout Container */
+    .showcase-track {
       display: flex;
-      flex-wrap: wrap;
-      column-gap: 0.35em;
-      row-gap: 0.2em;
-      transform-style: preserve-3d;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      perspective: 1000px;
     }
 
-    /* Units (Words / Letters) */
-    .scroll-unit {
-      display: inline-block;
-      transform-style: preserve-3d;
-      will-change: transform, opacity, filter, color;
-      transition: color 0.15s ease-out;
+    /* Secondary Side Cards for Context Track */
+    .side-card {
+      width: 220px;
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 12px;
+      box-shadow: var(--shadow);
+      opacity: 0.55;
+      transform: scale(0.9);
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+      pointer-events: none;
     }
 
-    /* Feature 1: Pure Color Reveal */
-    .color-mode .scroll-unit {
-      color: rgba(255, 255, 255, 0.15);
-    }
-    .color-mode .scroll-unit.active {
-      color: #38bdf8;
-      text-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
-    }
-
-    /* Base Dim State for general 3D FX */
-    .scroll-unit {
-      color: rgba(255, 255, 255, 0.2);
-    }
-    .scroll-unit.active {
-      color: #ffffff;
+    .side-card img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: var(--radius-md);
+      display: block;
+      margin-bottom: 12px;
+      filter: grayscale(20%);
     }
 
-    /* Character Splitting Display Rules */
-    .scroll-word-wrapper {
-      display: inline-flex;
+    .side-card .title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Main Center Interactive Hotspot Card */
+    .main-card-container {
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      z-index: 10;
+      flex-shrink: 0;
+    }
+
+    /* Top Main Card */
+    .main-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    /* Header Bar inside Card */
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+
+    .card-header .label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .card-header .units-badge {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-main);
+      background: rgba(0, 0, 0, 0.05);
+      padding: 4px 10px;
+      border-radius: 100px;
+    }
+
+    /* Interactive Image & Hotspots Wrapper */
+    .image-viewport {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background-color: #f3f3f5;
+    }
+
+    .image-viewport img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      user-select: none;
+    }
+
+    /* Hotspot Markers */
+    .hotspot-pin {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--hotspot-color);
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transform: translate(-50%, -50%);
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.2s ease;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      z-index: 20;
+    }
+
+    .hotspot-pin::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: #ffffff;
+      border-radius: 50%;
+      transition: transform 0.2s ease;
+    }
+
+    /* Pulsing Ring Effect */
+    .hotspot-pin::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      background: rgba(17, 24, 39, 0.35);
+      z-index: -1;
+      animation: pulse-ring 2s infinite;
+    }
+
+    @keyframes pulse-ring {
+      0% { transform: scale(0.8); opacity: 0.8; }
+      100% { transform: scale(1.6); opacity: 0; }
+    }
+
+    .hotspot-pin:hover {
+      transform: translate(-50%, -50%) scale(1.18);
+      background: #000000;
+    }
+
+    .hotspot-pin.active {
+      background: #2563eb;
+      border-color: #ffffff;
+    }
+
+    .hotspot-pin.active::after {
+      background: rgba(37, 99, 235, 0.4);
+    }
+
+    /* Card Footer / Category Title */
+    .card-footer-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-top: 14px;
+      padding: 0 4px;
+      color: var(--text-main);
+    }
+
+    /* Bottom Dynamic Module Overview / Hotspot Detail Card */
+    .detail-card {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .detail-card .meta-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .detail-card .description {
+      font-size: 0.85rem;
+      line-height: 1.5;
+      color: #374151;
+    }
+
+    .detail-card .cta-btn {
+      align-self: flex-start;
+      margin-top: 6px;
+      background: transparent;
+      border: none;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0;
+      transition: color 0.2s ease;
+    }
+
+    .detail-card .cta-btn:hover {
+      color: #2563eb;
+    }
+
+    /* Responsive Adaptation */
+    @media (max-width: 900px) {
+      .side-card {
+        display: none;
+      }
+
+      body {
+        padding: 20px 16px;
+      }
+
+      .main-card-container {
+        max-width: 100%;
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- FEATURE 1: Scroll Driven Color Reveal -->
-  <section class="demo-section">
-    <span class="badge">Feature 1: Scroll Driven Color Reveal</span>
-    <div class="scroll-text-container">
-      <h2 class="scroll-text color-mode" data-fx="color-reveal" data-split="word">
-        Seamlessly transition typography from an initial muted state to a vibrant highlight color tied directly to scroll progress.
-      </h2>
+  <!-- Interactive Component Track Container -->
+  <div class="showcase-track">
+    
+    <!-- Left Context Preview Card -->
+    <div class="side-card">
+      <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80" alt="Fat-Soluble Vitamins">
+      <div class="title">Fat-Soluble Vitamins</div>
     </div>
-  </section>
 
-  <!-- FEATURE 2: 3D Perspective & Tilt Controls -->
-  <section class="demo-section">
-    <span class="badge">Feature 2: 3D Perspective & Tilt Controls</span>
-    <div class="scroll-text-container">
-      <h2 class="scroll-text" data-fx="3d-tilt" data-split="word">
-        Apply custom 2D rotation or immersive 3D X/Y perspective angles that straighten automatically as headlines scroll into view.
-      </h2>
-    </div>
-  </section>
+    <!-- Main Interactive Hotspot Showcase Card -->
+    <div class="main-card-container">
+      
+      <!-- Upper Main Card -->
+      <div class="main-card">
+        <div class="card-header">
+          <span class="label">Coaching Track</span>
+          <span class="units-badge" id="hotspotCountBadge">3 Hotspots</span>
+        </div>
 
-  <!-- FEATURE 3: Spatial Depth & Dynamic Blur -->
-  <section class="demo-section">
-    <span class="badge">Feature 3: Spatial Depth & Dynamic Blur</span>
-    <div class="scroll-text-container">
-      <h2 class="scroll-text" data-fx="spatial-blur" data-split="word">
-        Emulate VisionOS aesthetics with word-by-word dynamic scale, Z-axis translate, and adaptive lens blur depth effects.
-      </h2>
-    </div>
-  </section>
+        <!-- Interactive Image Canvas -->
+        <div class="image-viewport" id="imageContainer">
+          <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&w=1000&q=80" alt="Water-Soluble Vitamins Scene">
+          
+          <!-- Hotspots dynamically placed via percentage coordinates -->
+          <div class="hotspot-pin active" style="top: 42%; left: 48%;" data-index="0"></div>
+          <div class="hotspot-pin" style="top: 30%; left: 78%;" data-index="1"></div>
+          <div class="hotspot-pin" style="top: 72%; left: 32%;" data-index="2"></div>
+        </div>
 
-  <!-- FEATURE 4: Elastic Wave Motion (Wave FX) -->
-  <section class="demo-section">
-    <span class="badge">Feature 4: Elastic Wave Motion</span>
-    <div class="scroll-text-container">
-      <h2 class="scroll-text" data-fx="elastic-wave" data-split="word">
-        Enable organic vertical sine-wave displacements to create fluid, ripples-on-water kinetic text motion.
-      </h2>
-    </div>
-  </section>
+        <div class="card-footer-title" id="mainCardTitle">Water-Soluble Vitamins</div>
+      </div>
 
-  <!-- FEATURE 5: Granular Letter vs Word Splitting -->
-  <section class="demo-section">
-    <span class="badge">Feature 5: Letter & Word Splitting</span>
-    <div class="scroll-text-container">
-      <h2 class="scroll-text" data-fx="3d-tilt" data-split="letter">
-        Granular control over animation staggering, allowing triggers by individual letters instead of full word blocks.
-      </h2>
-    </div>
-  </section>
+      <!-- Bottom Interactive Detail Card -->
+      <div class="detail-card" id="detailCard">
+        <div class="meta-label" id="detailMeta">MODULE OVERVIEW</div>
+        <div class="description" id="detailDescription">
+          Identify deficiency patterns in B-complex and vitamin C pathways, optimising energy production, stress resilience, and methylation.
+        </div>
+        <button class="cta-btn" id="detailCta">
+          <span>Explore Course</span> &rarr;
+        </button>
+      </div>
 
-  <!-- FEATURE 6: Viewport Trigger & Offsets -->
-  <section class="demo-section">
-    <span class="badge">Feature 6: Viewport Trigger & Reverse Scroll</span>
-    <div class="scroll-text-container">
-      <h2 class="scroll-text" data-fx="spatial-blur" data-split="word" data-trigger-offset="0.5">
-        Fine tune scroll start references and offset percentages, with continuous forward and reverse scroll recalculation.
-      </h2>
     </div>
-  </section>
+
+    <!-- Right Context Preview Card -->
+    <div class="side-card">
+      <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?auto=format&fit=crop&w=600&q=80" alt="Minerals">
+      <div class="title">Minerals</div>
+    </div>
+
+  </div>
 
   <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const textContainers = document.querySelectorAll("[data-fx]");
-
-      // 1. Text Splitting Engine (Word or Letter level)
-      textContainers.forEach((container) => {
-        const splitType = container.dataset.split || "word";
-        const text = container.innerText.trim();
-        container.innerHTML = "";
-
-        if (splitType === "letter") {
-          const words = text.split(/\s+/);
-          words.forEach((wordText) => {
-            const wordWrapper = document.createElement("span");
-            wordWrapper.classList.add("scroll-word-wrapper");
-
-            for (let char of wordText) {
-              const charSpan = document.createElement("span");
-              charSpan.classList.add("scroll-unit");
-              charSpan.textContent = char;
-              wordWrapper.appendChild(charSpan);
-            }
-            container.appendChild(wordWrapper);
-          });
-        } else {
-          const words = text.split(/\s+/);
-          words.forEach((wordText) => {
-            const wordSpan = document.createElement("span");
-            wordSpan.classList.add("scroll-unit");
-            wordSpan.textContent = wordText;
-            container.appendChild(wordSpan);
-          });
-        }
-      });
-
-      // 2. Scroll Animation Rendering Loop
-      function renderScrollFX() {
-        const viewportHeight = window.innerHeight;
-
-        textContainers.forEach((container) => {
-          const fxType = container.dataset.fx;
-          const units = container.querySelectorAll(".scroll-unit");
-          const totalUnits = units.length;
-          const rect = container.getBoundingClientRect();
-
-          // Configurable Viewport Offsets
-          const offset = parseFloat(container.dataset.triggerOffset) || 0.8;
-          const triggerStart = viewportHeight * offset;
-          const triggerEnd = viewportHeight * 0.2;
-
-          let overallProgress = (triggerStart - rect.top) / (triggerStart - triggerEnd);
-          overallProgress = Math.max(0, Math.min(1, overallProgress));
-
-          units.forEach((unit, index) => {
-            // Stagger calculation per letter/word
-            const start = index / totalUnits;
-            const end = (index + 1) / totalUnits;
-            let unitProgress = (overallProgress - start) / (end - start);
-            unitProgress = Math.max(0, Math.min(1, unitProgress));
-
-            // Feature 1: Scroll Driven Color Reveal
-            if (fxType === "color-reveal") {
-              unit.style.transform = `scale(${0.95 + unitProgress * 0.05})`;
-              if (unitProgress > 0.1) unit.classList.add("active");
-              else unit.classList.remove("active");
-            }
-
-            // Feature 2: 3D Perspective & Tilt
-            else if (fxType === "3d-tilt") {
-              const rotateX = (1 - unitProgress) * 45;
-              const rotateY = (1 - unitProgress) * -25;
-              const rotateZ = (1 - unitProgress) * -5;
-              unit.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) rotateZ(${rotateZ}deg)`;
-              unit.style.opacity = 0.2 + unitProgress * 0.8;
-              if (unitProgress > 0.2) unit.classList.add("active");
-              else unit.classList.remove("active");
-            }
-
-            // Feature 3: Spatial Depth & Dynamic Blur (VisionOS)
-            else if (fxType === "spatial-blur") {
-              const translateZ = (1 - unitProgress) * -200;
-              const scale = 0.8 + unitProgress * 0.2;
-              const blurVal = (1 - unitProgress) * 12;
-              unit.style.transform = `translateZ(${translateZ}px) scale(${scale})`;
-              unit.style.filter = `blur(${blurVal}px)`;
-              unit.style.opacity = 0.1 + unitProgress * 0.9;
-              if (unitProgress > 0.3) unit.classList.add("active");
-              else unit.classList.remove("active");
-            }
-
-            // Feature 4: Elastic Wave Motion
-            else if (fxType === "elastic-wave") {
-              const waveY = Math.sin((overallProgress * Math.PI * 2) + (index * 0.25)) * 20 * (1 - unitProgress);
-              unit.style.transform = `translateY(${waveY}px) scale(${0.9 + unitProgress * 0.1})`;
-              unit.style.opacity = 0.2 + unitProgress * 0.8;
-              if (unitProgress > 0.2) unit.classList.add("active");
-              else unit.classList.remove("active");
-            }
-          });
-        });
+    // Hotspot Content Dataset
+    const hotspotData = [
+      {
+        title: "Water-Soluble Vitamins",
+        meta: "MODULE OVERVIEW",
+        description: "Identify deficiency patterns in B-complex and vitamin C pathways, optimising energy production, stress resilience, and methylation.",
+        buttonText: "Explore Course"
+      },
+      {
+        title: "Herbal & Infusion Extracts",
+        meta: "FEATURE BREAKDOWN",
+        description: "Analyze active botanical compounds and adaptogens designed to support metabolic equilibrium and digestive wellness.",
+        buttonText: "View Formula"
+      },
+      {
+        title: "Bioavailability & Absorption",
+        meta: "KEY MECHANISM",
+        description: "Understand optimal liquid delivery systems that maximize cellular uptake and improve nutritional efficiency.",
+        buttonText: "Learn More"
       }
+    ];
 
-      window.addEventListener("scroll", renderScrollFX, { passive: true });
-      window.addEventListener("resize", renderScrollFX, { passive: true });
-      renderScrollFX();
+    // Element References
+    const pins = document.querySelectorAll('.hotspot-pin');
+    const mainCardTitle = document.getElementById('mainCardTitle');
+    const detailMeta = document.getElementById('detailMeta');
+    const detailDescription = document.getElementById('detailDescription');
+    const detailCta = document.getElementById('detailCta');
+    const detailCard = document.getElementById('detailCard');
+
+    // Click Event Handler
+    pins.forEach(pin => {
+      pin.addEventListener('click', (e) => {
+        const index = parseInt(e.currentTarget.getAttribute('data-index'));
+
+        // Update active pin state
+        pins.forEach(p => p.classList.remove('active'));
+        e.currentTarget.classList.add('active');
+
+        // Smooth transition effect for content update
+        detailCard.style.opacity = '0.4';
+        detailCard.style.transform = 'translateY(4px)';
+
+        setTimeout(() => {
+          const data = hotspotData[index];
+          mainCardTitle.textContent = data.title;
+          detailMeta.textContent = data.meta;
+          detailDescription.textContent = data.description;
+          detailCta.querySelector('span').textContent = data.buttonText;
+
+          detailCard.style.opacity = '1';
+          detailCard.style.transform = 'translateY(0)';
+        }, 150);
+      });
     });
   </script>
 </body>
