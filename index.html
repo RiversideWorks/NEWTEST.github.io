@@ -1,358 +1,341 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>London Architectural Awnings | Hero</title>
-  <style>
-    :root {
-      --bg: #080808;
-      --text-main: #f5f5f7;
-      --text-muted: #86868b;
-      --accent-gold: #c5a059;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Awnings Made Simple | Stippled Dissolve Hero</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow: hidden; /* Hide scrollbars, ensure no overflow during animation */
+        }
 
-    html, body {
-      width: 100%;
-      height: 100%;
-      background-color: var(--bg);
-      color: var(--text-main);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      overflow-x: hidden;
-    }
+        /* Hero Section (Black Background with Noise Overlay) */
+        .hero {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at 50% 30%, #000 0%, #000 100%);
+            z-index: 10;
+        }
 
-    /* SVG Grain Noise Background Overlay */
-    .noise-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      pointer-events: none;
-      z-index: 1;
-      opacity: 0.06;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-    }
+        /* Ambient Noise Overlay (like previous instructions) */
+        .noise-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
 
-    /* Ambient Background Atmosphere */
-    .ambient-glow {
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(197, 160, 89, 0.08) 0%, rgba(0, 0, 0, 0) 70%);
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-      z-index: 2;
-    }
+        /* Top Header & Hamburger Menu */
+        header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20;
+        }
 
-    /* Header & Hamburger Menu */
-    header {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 30px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      z-index: 20;
-    }
+        .logo {
+            font-size: 0.95rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #fff;
+        }
 
-    .brand-logo {
-      font-size: 0.95rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      font-weight: 600;
-      color: var(--text-main);
-    }
+        .hamburger-menu {
+            width: 40px;
+            height: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            cursor: pointer;
+            padding: 5px;
+            background: transparent;
+            border: none;
+        }
 
-    .hamburger-menu {
-      width: 40px;
-      height: 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-      padding: 5px;
-      background: transparent;
-      border: none;
-    }
+        .hamburger-menu span {
+            display: block;
+            width: 100%;
+            height: 2px;
+            background-color: #fff;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
 
-    .hamburger-menu span {
-      display: block;
-      width: 100%;
-      height: 2px;
-      background-color: var(--text-main);
-      transition: transform 0.3s ease, opacity 0.3s ease;
-    }
+        .hamburger-menu:hover span:nth-child(2) {
+            transform: translateX(-4px);
+        }
 
-    .hamburger-menu:hover span:nth-child(2) {
-      transform: translateX(-4px);
-    }
+        /* Center Content Group */
+        .hero-content {
+            z-index: 10;
+            max-width: 1000px;
+            width: 90%;
+            padding: 0 20px;
+        }
 
-    /* Hero Section */
-    .hero {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-      padding: 0 20px;
-      z-index: 10;
-    }
+        /* Big Heading */
+        .hero-title {
+            font-size: clamp(2.8rem, 6.5vw, 5.5rem);
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
 
-    .hero-title {
-      font-size: clamp(2.8rem, 6.5vw, 5.5rem);
-      font-weight: 700;
-      letter-spacing: -0.02em;
-      line-height: 1.1;
-      margin-bottom: 25px;
-      background: linear-gradient(180deg, #ffffff 0%, #a1a1a6 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+        /* Container for the one-liners */
+        .one-liner-wrapper {
+            position: relative;
+            width: 100%;
+            min-height: 200px; /* Minimum height for multi-line text */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    /* Particle Dissolve Canvas */
-    .subtitle-wrapper {
-      position: relative;
-      width: 100%;
-      max-width: 900px;
-      height: 120px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #text-canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-    }
-
-    /* Call to Action Button */
-    .hero-cta {
-      margin-top: 30px;
-      padding: 14px 32px;
-      font-size: 0.85rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--bg);
-      background-color: var(--text-main);
-      border: 1px solid var(--text-main);
-      border-radius: 9999px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-    }
-
-    .hero-cta:hover {
-      background-color: transparent;
-      color: var(--text-main);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
-    }
-  </style>
+        /* The canvas itself */
+        #text-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2; /* In front of the title, but title is central */
+        }
+    </style>
 </head>
 <body>
 
-  <div class="noise-overlay"></div>
-  <div class="ambient-glow"></div>
+    <div class="noise-overlay"></div>
 
-  <header>
-    <div class="brand-logo">London Awning Co.</div>
-    <button class="hamburger-menu" aria-label="Toggle Navigation">
-      <span></span>
-      <span></span>
-      <span></span>
-    </button>
-  </header>
+    <header>
+        <div class="logo">London Awning Co.</div>
+        <button class="hamburger-menu" aria-label="Toggle Navigation">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
 
-  <main class="hero">
-    <h1 class="hero-title">Awnings made simple</h1>
-    
-    <div class="subtitle-wrapper">
-      <canvas id="text-canvas"></canvas>
-    </div>
+    <main class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Awnings made simple</h1>
+            <div class="one-liner-wrapper">
+                <canvas id="text-canvas"></canvas>
+            </div>
+        </div>
+    </main>
 
-    <button class="hero-cta" onclick="window.location.href='tel:02088582083'">Contact Workshop</button>
-  </main>
+    <script>
+        const canvas = document.getElementById('text-canvas');
+        const ctx = canvas.getContext('2d');
 
-  <script>
-    const canvas = document.getElementById('text-canvas');
-    const ctx = canvas.getContext('2d');
+        const phrases = [
+            "Commercial Awnings for Shops, Restaurants, Hotels & Bars",
+            "For over 60 years, we have manufactured hand-crafted bespoke awnings and canopies in our London Thameside workshop.",
+            "Over that time, we have gained a reputation for outstanding quality, expertise and professionalism across the UK.",
+            "Call our team on 020 8858 2083 today to discuss your project."
+        ];
 
-    const phrases = [
-      "Commercial Awnings for Shops, Restaurants, Hotels & Bars",
-      "For over 60 years, we have manufactured hand-crafted bespoke awnings and canopies in our London Thameside workshop.",
-      "Over that time, we have gained a reputation for outstanding quality, expertise and professionalism across the UK.",
-      "Call our team on 020 8858 2083 today to discuss your project."
-    ];
+        let currentPhraseIndex = 0;
+        let particles = [];
+        let animationFrameId;
+        let textLoaded = false;
+        let effectTriggered = false;
+        let lastTimestamp = 0;
 
-    let currentPhraseIndex = 0;
-    let particles = [];
-    let animationFrameId;
-    let isDecomposing = false;
-
-    function resizeCanvas() {
-      const rect = canvas.parentElement.getBoundingClientRect();
-      canvas.width = rect.width * window.devicePixelRatio;
-      canvas.height = rect.height * window.devicePixelRatio;
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    }
-
-    // Helper to wrap text cleanly inside canvas
-    function getWrappedLines(text, maxWidth, fontSize) {
-      ctx.font = `400 ${fontSize}px system-ui, -apple-system, sans-serif`;
-      const words = text.split(' ');
-      let lines = [];
-      let currentLine = words[0];
-
-      for (let i = 1; i < words.length; i++) {
-        let testLine = currentLine + " " + words[i];
-        let metrics = ctx.measureText(testLine);
-        if (metrics.width > maxWidth) {
-          lines.push(currentLine);
-          currentLine = words[i];
-        } else {
-          currentLine = testLine;
+        function resizeCanvas() {
+            // Get parent container dimensions
+            const rect = canvas.parentElement.getBoundingClientRect();
+            // Match canvas internal size to parent size
+            canvas.width = rect.width * window.devicePixelRatio;
+            canvas.height = rect.height * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
         }
-      }
-      lines.push(currentLine);
-      return lines;
-    }
 
-    function createParticlesFromText(text) {
-      const width = canvas.parentElement.clientWidth;
-      const height = canvas.parentElement.clientHeight;
-      
-      ctx.clearRect(0, 0, width, height);
+        // --- Core Animation Logic ---
 
-      const fontSize = window.innerWidth < 600 ? 15 : 18;
-      const lineHeight = fontSize * 1.5;
-      const lines = getWrappedLines(text, width - 40, fontSize);
+        // Convert text string into particle objects
+        function createParticlesFromText(text) {
+            const width = canvas.parentElement.clientWidth;
+            const height = canvas.parentElement.clientHeight;
+            
+            // Clear entire canvas
+            ctx.clearRect(0, 0, width, height);
 
-      ctx.fillStyle = '#a1a1a6';
-      ctx.font = `400 ${fontSize}px system-ui, -apple-system, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
+            // Configure text properties
+            const fontSize = window.innerWidth < 600 ? 16 : 20;
+            const lineHeight = fontSize * 1.5;
+            const maxWidth = width - 40; // Add some padding
 
-      const totalHeight = lines.length * lineHeight;
-      const startY = (height - totalHeight) / 2 + lineHeight / 2;
+            ctx.font = `400 ${fontSize}px system-ui, -apple-system, sans-serif`;
+            ctx.fillStyle = '#ffffff'; // White text
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
 
-      lines.forEach((line, index) => {
-        ctx.fillText(line, width / 2, startY + (index * lineHeight));
-      });
+            // Helper to wrap text
+            const getWrappedLines = (text, maxWidth) => {
+                const words = text.split(' ');
+                let lines = [];
+                let currentLine = words[0];
 
-      // Sample pixel data to convert text into soil particles
-      const imgData = ctx.getImageData(0, 0, width * window.devicePixelRatio, height * window.devicePixelRatio);
-      const data = imgData.data;
-      particles = [];
+                for (let i = 1; i < words.length; i++) {
+                    let testLine = currentLine + " " + words[i];
+                    let metrics = ctx.measureText(testLine);
+                    if (metrics.width > maxWidth) {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    } else {
+                        currentLine = testLine;
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            };
 
-      const step = window.innerWidth < 600 ? 3 : 2;
+            const lines = getWrappedLines(text, maxWidth);
+            const totalHeight = lines.length * lineHeight;
+            const startY = (height - totalHeight) / 2 + lineHeight / 2;
 
-      for (let y = 0; y < canvas.height; y += step * window.devicePixelRatio) {
-        for (let x = 0; x < canvas.width; x += step * window.devicePixelRatio) {
-          const index = (y * canvas.width + x) * 4;
-          const alpha = data[index + 3];
-
-          if (alpha > 128) {
-            particles.push({
-              x: x / window.devicePixelRatio,
-              y: y / window.devicePixelRatio,
-              originX: x / window.devicePixelRatio,
-              originY: y / window.devicePixelRatio,
-              // Soil particle physics (scatter outward and crumble down)
-              vx: (Math.random() - 0.5) * (Math.random() * 8 + 2),
-              vy: (Math.random() - 0.7) * (Math.random() * 6 + 1),
-              size: Math.random() * 2 + 0.8,
-              alpha: 1,
-              decay: Math.random() * 0.03 + 0.015,
-              // Earthy soil color palette matching London workshop theme
-              color: Math.random() > 0.4 ? '#a1a1a6' : (Math.random() > 0.5 ? '#c5a059' : '#635335')
+            // Draw text to off-screen canvas to capture pixel data
+            lines.forEach((line, index) => {
+                ctx.fillText(line, width / 2, startY + (index * lineHeight));
             });
-          }
+
+            // Sample pixel data to convert text into particles
+            const imgData = ctx.getImageData(0, 0, width * window.devicePixelRatio, height * window.devicePixelRatio);
+            const data = imgData.data;
+            particles = [];
+
+            // Define step for density of stippling
+            const step = window.innerWidth < 600 ? 3 : 2;
+
+            for (let y = 0; y < canvas.height; y += step * window.devicePixelRatio) {
+                for (let x = 0; x < canvas.width; x += step * window.devicePixelRatio) {
+                    const index = (y * canvas.width + x) * 4;
+                    const alpha = data[index + 3];
+
+                    if (alpha > 128) {
+                        // Create a particle object for each sampled pixel
+                        particles.push({
+                            x: x / window.devicePixelRatio,
+                            y: y / window.devicePixelRatio,
+                            originX: x / window.devicePixelRatio,
+                            originY: y / window.devicePixelRatio,
+                            // Random stippled/spray velocity on scatter
+                            vx: (Math.random() - 0.5) * (Math.random() * 8 + 2),
+                            vy: (Math.random() - 0.7) * (Math.random() * 6 + 1),
+                            size: Math.random() * 2 + 0.8, // Varies size for stippling effect
+                            alpha: 1,
+                            decay: Math.random() * 0.03 + 0.01 // Random decay rate
+                        });
+                    }
+                }
+            }
+
+            // Clear the temporary text from main canvas
+            ctx.clearRect(0, 0, width, height);
+            textLoaded = true;
+            effectTriggered = false;
         }
-      }
-      ctx.clearRect(0, 0, width, height);
-    }
 
-    function renderLoop() {
-      const width = canvas.parentElement.clientWidth;
-      const height = canvas.parentElement.clientHeight;
-      ctx.clearRect(0, 0, width, height);
+        // The animation rendering loop
+        function renderLoop(timestamp) {
+            const width = canvas.parentElement.clientWidth;
+            const height = canvas.parentElement.clientHeight;
+            ctx.clearRect(0, 0, width, height);
 
-      if (!isDecomposing) {
-        // Static rendered text state
-        particles.forEach(p => {
-          ctx.fillStyle = p.color;
-          ctx.globalAlpha = 1;
-          ctx.fillRect(p.originX, p.originY, p.size, p.size);
-        });
-      } else {
-        // Soil decomposition animation state
-        let activeParticles = 0;
+            if (!effectTriggered) {
+                // Static rendering: Particles remain at origin forming text
+                particles.forEach(p => {
+                    ctx.fillStyle = '#ffffff'; // White stippling
+                    ctx.globalAlpha = 1;
+                    ctx.fillRect(p.originX, p.originY, p.size, p.size);
+                });
+            } else {
+                // Scattered rendering: Decomposing into stippled spray
+                let activeParticles = 0;
 
-        particles.forEach(p => {
-          if (p.alpha > 0) {
-            activeParticles++;
-            p.x += p.vx;
-            p.y += p.vy;
-            p.vy += 0.15; // Gravity pull simulating crumbling earth
-            p.vx *= 0.98; // Air resistance
-            p.alpha -= p.decay;
+                particles.forEach(p => {
+                    if (p.alpha > 0) {
+                        activeParticles++;
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.vy += 0.1; // Add minimal gravity for more natural fall-off
+                        p.vx *= 0.98; // Air resistance
 
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = Math.max(0, p.alpha);
-            ctx.beginPath();
-            ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-            ctx.fill();
-          }
-        });
+                        p.alpha -= p.decay;
 
-        if (activeParticles === 0) {
-          // Advance to next phrase after dissolution completes
-          currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
-          createParticlesFromText(phrases[currentPhraseIndex]);
-          isDecomposing = false;
+                        // Draw particle in its new location with current alpha
+                        ctx.fillStyle = '#ffffff'; // Stippling color
+                        ctx.globalAlpha = Math.max(0, p.alpha);
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+
+                if (activeParticles === 0) {
+                    // Start next line process
+                    currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+                    createParticlesFromText(phrases[currentPhraseIndex]);
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(renderLoop);
         }
-      }
 
-      animationFrameId = requestAnimationFrame(renderLoop);
-    }
+        // --- Initialisation and Lifecycle ---
 
-    function startCycle() {
-      createParticlesFromText(phrases[currentPhraseIndex]);
-      renderLoop();
+        function startCycle() {
+            // Initial render of first line
+            createParticlesFromText(phrases[currentPhraseIndex]);
+            renderLoop(); // Start animation loop
 
-      // Trigger soil disintegrate effect every 2 seconds
-      setInterval(() => {
-        isDecomposing = true;
-      }, 2500);
-    }
+            // Create a timed event to trigger dissolution
+            setInterval(() => {
+                effectTriggered = true;
+            }, 3000); // 3 seconds on screen before scatter
+        }
 
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-      createParticlesFromText(phrases[currentPhraseIndex]);
-    });
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            // Re-render text after resize
+            if(textLoaded) createParticlesFromText(phrases[currentPhraseIndex]);
+        });
 
-    window.addEventListener('DOMContentLoaded', () => {
-      resizeCanvas();
-      startCycle();
-    });
-  </script>
+        window.addEventListener('DOMContentLoaded', () => {
+            resizeCanvas();
+            startCycle();
+        });
+    </script>
 </body>
 </html>
