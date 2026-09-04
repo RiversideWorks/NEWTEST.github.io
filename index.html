@@ -3,142 +3,244 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive Magnetic Button</title>
+  <title>Kinetic Particle Portal Component</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --glow-color: rgba(99, 102, 241, 0.6);
-      --accent-color: #818cf8;
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      background-color: var(--bg);
+      background: #030712;
+      min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      min-height: 100vh;
-      margin: 0;
       font-family: system-ui, -apple-system, sans-serif;
+      overflow: hidden;
     }
 
-    .magnetic-btn {
+    .wrapper {
       position: relative;
-      padding: 18px 42px;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: #ffffff;
-      background: rgba(30, 41, 59, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 9999px;
+      padding: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      perspective: 1000px;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .kinetic-btn {
+      position: relative;
+      z-index: 2;
+      padding: 22px 52px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #f3f4f6;
+      background: rgba(17, 24, 39, 0.6);
+      border: 1px solid rgba(147, 51, 234, 0.4);
+      border-radius: 20px;
       cursor: pointer;
       outline: none;
-      overflow: hidden;
-      backdrop-filter: blur(12px);
-      transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), 
-                  box-shadow 0.3s ease, 
-                  border-color 0.3s ease;
-      will-change: transform;
+      backdrop-filter: blur(20px);
+      transform-style: preserve-3d;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 
+                  inset 0 1px 1px rgba(255, 255, 255, 0.2);
     }
 
-    /* Glow Effect Overlay */
-    .magnetic-btn::before {
-      content: '';
-      position: absolute;
-      top: var(--y, 50%);
-      left: var(--x, 50%);
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
-      transform: translate(-50%, -50%);
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-
-    .magnetic-btn:hover {
-      border-color: rgba(129, 140, 248, 0.5);
-      box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.5);
-    }
-
-    .magnetic-btn:hover::before {
-      opacity: 1;
-    }
-
-    /* Click Ripple Layer */
-    .ripple {
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.4);
-      transform: scale(0);
-      animation: ripple-animation 0.6s linear;
-      pointer-events: none;
-    }
-
-    @keyframes ripple-animation {
-      to {
-        transform: scale(4);
-        opacity: 0;
-      }
+    .kinetic-btn:hover {
+      border-color: rgba(192, 132, 252, 0.8);
+      box-shadow: 0 25px 60px rgba(147, 51, 234, 0.35), 
+                  inset 0 1px 2px rgba(255, 255, 255, 0.4);
     }
 
     .btn-text {
-      position: relative;
-      z-index: 1;
+      display: inline-block;
+      transform: translateZ(35px);
+      transition: transform 0.3s ease;
+      text-shadow: 0 0 15px rgba(192, 132, 252, 0.6);
       pointer-events: none;
     }
   </style>
 </head>
 <body>
 
-  <button class="magnetic-btn" id="btn">
-    <span class="btn-text">Explore Interactive Component</span>
-  </button>
+  <div class="wrapper" id="wrapper">
+    <canvas id="canvas"></canvas>
+    <button class="kinetic-btn" id="btn">
+      <span class="btn-text">Engage Core</span>
+    </button>
+  </div>
 
   <script>
+    const wrapper = document.getElementById('wrapper');
     const btn = document.getElementById('btn');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
 
-    // Magnetic cursor tracking and spotlight glow position
-    btn.addEventListener('mousemove', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
+    let width, height;
+    let particles = [];
+    const particleCount = 90;
+    let mouse = { x: null, y: null, active: false };
 
-      // Update light source position
-      btn.style.setProperty('--x', `${x}px`);
-      btn.style.setProperty('--y', `${y}px`);
+    function resizeCanvas() {
+      width = canvas.width = wrapper.offsetWidth;
+      height = canvas.height = wrapper.offsetHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
-      // Calculate spring displacement (Magnetic Pull)
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const deltaX = (x - centerX) * 0.25;
-      const deltaY = (y - centerY) * 0.25;
-
-      btn.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(1.03)`;
-    });
-
-    // Reset button on leave
-    btn.addEventListener('mouseleave', () => {
-      btn.style.transform = `translate3d(0px, 0px, 0) scale(1)`;
-    });
-
-    // Ripple effect on click
-    btn.addEventListener('click', (e) => {
-      const rect = btn.getBoundingClientRect();
-      const circle = document.createElement('span');
-      const diameter = Math.max(rect.width, rect.height);
-      const radius = diameter / 2;
-
-      circle.style.width = circle.style.height = `${diameter}px`;
-      circle.style.left = `${e.clientX - rect.left - radius}px`;
-      circle.style.top = `${e.clientY - rect.top - radius}px`;
-      circle.classList.add('ripple');
-
-      const existingRipple = btn.querySelector('.ripple');
-      if (existingRipple) {
-        existingRipple.remove();
+    class Particle {
+      constructor() {
+        this.reset();
       }
 
-      btn.appendChild(circle);
+      reset() {
+        const rect = btn.getBoundingClientRect();
+        const wrapperRect = wrapper.getBoundingClientRect();
+
+        // Calculate button perimeter coordinates relative to canvas
+        const btnLeft = rect.left - wrapperRect.left;
+        const btnTop = rect.top - wrapperRect.top;
+        
+        // Distribute along outer perimeter
+        if (Math.random() > 0.5) {
+          this.baseX = btnLeft + Math.random() * rect.width;
+          this.baseY = Math.random() > 0.5 ? btnTop : btnTop + rect.height;
+        } else {
+          this.baseX = Math.random() > 0.5 ? btnLeft : btnLeft + rect.width;
+          this.baseY = btnTop + Math.random() * rect.height;
+        }
+
+        this.x = this.baseX;
+        this.y = this.baseY;
+        this.vx = 0;
+        this.vy = 0;
+        this.size = Math.random() * 2.5 + 1;
+        this.color = Math.random() > 0.5 ? '#c084fc' : '#818cf8';
+        this.spring = 0.04 + Math.random() * 0.03;
+        this.friction = 0.85;
+      }
+
+      update() {
+        // Return to perimeter force (spring physics)
+        let dx = this.baseX - this.x;
+        let dy = this.baseY - this.y;
+        this.vx += dx * this.spring;
+        this.vy += dy * this.spring;
+
+        // Mouse attraction/repulsion inside canvas bounds
+        if (mouse.active) {
+          let mdx = mouse.x - this.x;
+          let mdy = mouse.y - this.y;
+          let dist = Math.sqrt(mdx * mdx + mdy * mdy);
+          if (dist < 120) {
+            let force = (120 - dist) / 120;
+            this.vx += (mdx / dist) * force * 2.5;
+            this.vy += (mdy / dist) * force * 2.5;
+          }
+        }
+
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.x += this.vx;
+        this.y += this.vy;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.shadowColor = this.color;
+        ctx.shadowBlur = 8;
+        ctx.fill();
+      }
+
+      explode() {
+        const angle = Math.random() * Math.PI * 2;
+        const speed = Math.random() * 18 + 6;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+
+    // Connect particles with translucent energy lines
+    function connectParticles() {
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a; b < particles.length; b++) {
+          let dx = particles[a].x - particles[b].x;
+          let dy = particles[a].y - particles[b].y;
+          let dist = Math.sqrt(dx * dx + dy * dy);
+
+          if (dist < 45) {
+            ctx.strokeStyle = `rgba(192, 132, 252, ${1 - dist / 45})`;
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+          }
+        }
+      }
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(p => {
+        p.update();
+        p.draw();
+      });
+      connectParticles();
+      requestAnimationFrame(render);
+    }
+    render();
+
+    // Mouse spatial tracking & 3D Tilt Matrix
+    wrapper.addEventListener('mousemove', (e) => {
+      const rect = wrapper.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      mouse.active = true;
+
+      const btnRect = btn.getBoundingClientRect();
+      const centerX = btnRect.left + btnRect.width / 2;
+      const centerY = btnRect.top + btnRect.height / 2;
+      
+      const rotateX = (e.clientY - centerY) / -12;
+      const rotateY = (e.clientX - centerX) / 12;
+
+      btn.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+    });
+
+    wrapper.addEventListener('mouseleave', () => {
+      mouse.active = false;
+      btn.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+    });
+
+    // Kinetic disintegration trigger on click
+    btn.addEventListener('click', () => {
+      particles.forEach(p => p.explode());
+      btn.style.transform = `perspective(1000px) scale(0.92) translateZ(-10px)`;
+      setTimeout(() => {
+        btn.style.transform = `perspective(1000px) scale(1) translateZ(0px)`;
+      }, 150);
     });
   </script>
 </body>
