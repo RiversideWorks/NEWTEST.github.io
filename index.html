@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hero Section</title>
   
-  <!-- Preload fonts for rapid switching without delay -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Courier+Prime:wght@700&family=Inter:wght@900&family=Pacifico&family=Playfair+Display:wght@900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
@@ -43,18 +42,28 @@
       white-space: nowrap;
     }
 
-    /* 1. "Change" - Font cycling without layout shift */
+    /* Fixed responsive widths lock word coordinates in place */
     #change-word {
       display: inline-block;
+      width: 4.8em;
       text-align: center;
-      min-width: 4.2ch; /* Prevents adjacent words from shifting */
       vertical-align: baseline;
     }
 
-    /* 2. "Style" - Rapid color cycling */
     #style-word {
       display: inline-block;
+      width: 2.7em;
+      text-align: center;
+      vertical-align: baseline;
       animation: colorCycle 0.3s infinite linear;
+    }
+
+    #that-word {
+      display: inline-block;
+      width: 2.3em;
+      text-align: center;
+      vertical-align: baseline;
+      animation: vibrate 0.1s infinite linear;
     }
 
     @keyframes colorCycle {
@@ -66,12 +75,6 @@
       100% { color: #00bbf9; }
     }
 
-    /* 3. "That" - Vibrating motion effect */
-    #that-word {
-      display: inline-block;
-      animation: vibrate 0.1s infinite linear;
-    }
-
     @keyframes vibrate {
       0%   { transform: translate(0, 0); }
       20%  { transform: translate(-2px, 1.5px); }
@@ -81,7 +84,6 @@
       100% { transform: translate(0, 0); }
     }
 
-    /* Button Group */
     .button-group {
       display: flex;
       gap: 1.25rem;
@@ -123,7 +125,6 @@
   </main>
 
   <script>
-    // Rapid font changing for "Change"
     const fonts = [
       "'Inter', sans-serif",
       "'Playfair Display', serif",
