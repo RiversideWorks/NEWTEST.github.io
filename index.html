@@ -1,147 +1,183 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hero Section</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Courier+Prime:wght@700&family=Inter:wght@900&family=Pacifico&family=Playfair+Display:wght@900&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Hovering Bee Animation</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* A soft background color like sky/garden */
+            background-color: #f0f8ff; 
+            overflow: hidden;
+        }
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+        /* 
+           1. HOVER CONTAINER 
+           This element handles the gentle bobbing up and down.
+        */
+        .bee-hover-container {
+            position: relative;
+            animation: hoverBob 1.5s ease-in-out infinite;
+        }
 
-    body {
-      background-color: #ffffff;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden;
-    }
+        /*
+           2. THE BEE BODY 
+           Acts as the main container for body parts and sets the base color.
+        */
+        .bee {
+            position: relative;
+            width: 50px;
+            height: 35px;
+            background: #FFC107; /* Golden yellow */
+            border-radius: 20px;
+            box-shadow: inset 0 -3px 5px rgba(0,0,0,0.1);
+        }
 
-    .hero-container {
-      text-align: center;
-      padding: 2rem;
-      max-width: 1200px;
-    }
+        /* Head */
+        .bee::after {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 5px;
+            width: 25px;
+            height: 25px;
+            background: #212121; /* Black/Dark gray */
+            border-radius: 50%;
+        }
 
-    .hero-title {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 900;
-      color: #1a1a1a;
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 2.5rem;
-      white-space: nowrap;
-    }
+        /* Eyes */
+        .bee-eye {
+            position: absolute;
+            z-index: 2;
+            top: 10px;
+            left: -2px;
+            width: 6px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
 
-    /* Fixed responsive widths lock word coordinates in place */
-    #change-word {
-      display: inline-block;
-      width: 4.8em;
-      text-align: center;
-      vertical-align: baseline;
-    }
+        /* Stripes on body */
+        .bee-stripes {
+            position: absolute;
+            top: 0;
+            left: 15px;
+            width: 25px;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                #212121,
+                #212121 5px,
+                transparent 5px,
+                transparent 10px
+            );
+        }
 
-    #style-word {
-      display: inline-block;
-      width: 2.7em;
-      text-align: center;
-      vertical-align: baseline;
-      animation: colorCycle 0.3s infinite linear;
-    }
+        /* Stinger */
+        .bee-stinger {
+            position: absolute;
+            right: -6px;
+            top: 12px;
+            width: 0;
+            height: 0;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 8px solid #212121;
+        }
 
-    #that-word {
-      display: inline-block;
-      width: 2.3em;
-      text-align: center;
-      vertical-align: baseline;
-      animation: vibrate 0.1s infinite linear;
-    }
+        /* 
+           3. THE WINGS 
+        */
+        .wings {
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            z-index: -1; /* Wings sit behind the body slightly */
+        }
 
-    @keyframes colorCycle {
-      0%   { color: #e63946; }
-      20%  { color: #2a9d8f; }
-      40%  { color: #e76f51; }
-      60%  { color: #9b5de5; }
-      80%  { color: #f15bb5; }
-      100% { color: #00bbf9; }
-    }
+        .wing {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid rgba(200, 200, 200, 0.5);
+            border-radius: 50% 50% 0 50%;
+            transform-origin: bottom right;
+        }
 
-    @keyframes vibrate {
-      0%   { transform: translate(0, 0); }
-      20%  { transform: translate(-2px, 1.5px); }
-      40%  { transform: translate(-1.5px, -2px); }
-      60%  { transform: translate(2px, 1px); }
-      80%  { transform: translate(1.5px, -1.5px); }
-      100% { transform: translate(0, 0); }
-    }
+        /* Back wing */
+        .wing-1 {
+            width: 25px;
+            height: 25px;
+            top: 5px;
+            left: 5px;
+            opacity: 0.8;
+            /* Flaps slightly slower and with a delay for realism */
+            animation: flap 0.1s ease-in-out infinite alternate;
+        }
 
-    .button-group {
-      display: flex;
-      gap: 1.25rem;
-      justify-content: center;
-      align-items: center;
-    }
+        /* Front wing */
+        .wing-2 {
+            width: 28px;
+            height: 28px;
+            top: 0;
+            left: 0;
+            /* Extremely fast flapping */
+            animation: flap 0.08s ease-in-out infinite alternate-reverse;
+        }
 
-    .btn {
-      background: #ffffff;
-      border: 1.5px solid #1a1a1a;
-      border-radius: 50px;
-      padding: 0.65rem 2.25rem;
-      font-family: 'Inter', sans-serif;
-      font-weight: 700;
-      font-size: 1rem;
-      color: #1a1a1a;
-      cursor: pointer;
-      transition: background-color 0.2s ease, transform 0.15s ease;
-    }
+        /*
+           4. ANIMATION KEYFRAMES
+        */
 
-    .btn:hover {
-      background-color: #f5f5f5;
-      transform: translateY(-1px);
-    }
-  </style>
+        /* Hover bobbing (Gentle Up/Down) */
+        @keyframes hoverBob {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        /* Wing Flapping (Rotation on Y-axis and slight movement) */
+        @keyframes flap {
+            0% {
+                transform: rotateY(0deg) translateY(0);
+            }
+            100% {
+                /* A higher degree creates a blur effect, like rapid movement */
+                transform: rotateY(70deg) translateY(2px);
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <main class="hero-container">
-    <h1 class="hero-title">
-      We <span id="change-word">Change</span> <span id="style-word">Style</span> Just Like <span id="that-word">That</span>
-    </h1>
-
-    <div class="button-group">
-      <button class="btn">Cool</button>
-      <button class="btn">Classic</button>
-      <button class="btn">Professional</button>
+    <!-- Main Container ensuring it stays centrally located -->
+    <div class="main-container">
+        <!-- Bobbing Container -->
+        <div class="bee-hover-container">
+            <!-- Bee Body -->
+            <div class="bee">
+                <div class="bee-eye"></div>
+                <div class="bee-stripes"></div>
+                <div class="bee-stinger"></div>
+                <!-- Wings Container inside the bobbing container -->
+                <div class="wings">
+                    <div class="wing wing-1"></div>
+                    <div class="wing wing-2"></div>
+                </div>
+            </div>
+        </div>
     </div>
-  </main>
-
-  <script>
-    const fonts = [
-      "'Inter', sans-serif",
-      "'Playfair Display', serif",
-      "'Courier Prime', monospace",
-      "'Pacifico', cursive",
-      "'Cinzel', serif",
-      "'Space Grotesk', sans-serif"
-    ];
-
-    const changeElement = document.getElementById('change-word');
-    let currentFontIndex = 0;
-
-    setInterval(() => {
-      currentFontIndex = (currentFontIndex + 1) % fonts.length;
-      changeElement.style.fontFamily = fonts[currentFontIndex];
-    }, 180);
-  </script>
 
 </body>
 </html>
