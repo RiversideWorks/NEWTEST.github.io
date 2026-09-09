@@ -3,244 +3,199 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Static CRM</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Atmospheric Puzzle Platformer</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: #0d0d0d;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      font-family: monospace;
+      color: #777;
+    }
+    canvas {
+      border: 1px solid #222;
+      box-shadow: 0 0 30px rgba(0,0,0,0.9);
+      background: #141619;
+    }
+    #ui {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      pointer-events: none;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800">
+<body>
 
-  <div class="flex h-screen overflow-hidden">
-    <!-- Sidebar -->
-    <aside class="w-64 bg-slate-900 text-white flex flex-col p-6">
-      <h1 class="text-2xl font-bold mb-8 text-blue-400">SimpleCRM</h1>
-      <nav class="space-y-4 flex-1">
-        <a href="#" class="block py-2 px-4 rounded bg-slate-800 text-white font-medium">Contacts Dashboard</a>
-      </nav>
-      <div class="space-y-2 pt-4 border-t border-slate-700">
-        <button onclick="exportData()" class="w-full text-left py-2 px-4 text-sm text-slate-300 hover:bg-slate-800 rounded">Export JSON</button>
-        <label class="w-full text-left py-2 px-4 text-sm text-slate-300 hover:bg-slate-800 rounded block cursor-pointer">
-          Import JSON <input type="file" id="importFile" class="hidden" accept=".json" onchange="importData(event)">
-        </label>
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col overflow-y-auto p-8">
-      <!-- Top Metrics -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <p class="text-sm font-semibold text-gray-500">Total Contacts</p>
-          <p id="metric-total" class="text-3xl font-bold text-gray-900">0</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <p class="text-sm font-semibold text-gray-500">Active Leads</p>
-          <p id="metric-leads" class="text-3xl font-bold text-amber-600">0</p>
-        </div>
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <p class="text-sm font-semibold text-gray-500">Customers</p>
-          <p id="metric-customers" class="text-3xl font-bold text-emerald-600">0</p>
-        </div>
-      </div>
-
-      <!-- Actions Bar -->
-      <div class="flex justify-between items-center mb-6 gap-4">
-        <div class="flex gap-4 flex-1 max-w-md">
-          <input type="text" id="searchInput" oninput="render()" placeholder="Search name, email, company..." class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-          <select id="statusFilter" onchange="render()" class="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <option value="All">All Statuses</option>
-            <option value="Lead">Lead</option>
-            <option value="Contacted">Contacted</option>
-            <option value="Customer">Customer</option>
-          </select>
-        </div>
-        <button onclick="openModal()" class="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition">+ Add Contact</button>
-      </div>
-
-      <!-- Contacts Table -->
-      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden flex-1">
-        <table class="w-full text-left border-collapse">
-          <thead>
-            <tr class="bg-gray-50 border-b border-gray-200 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              <th class="p-4">Name</th>
-              <th class="p-4">Company</th>
-              <th class="p-4">Email / Phone</th>
-              <th class="p-4">Status</th>
-              <th class="p-4 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody id="contactTableBody" class="divide-y divide-gray-200 text-sm"></tbody>
-        </table>
-      </div>
-    </main>
-  </div>
-
-  <!-- Modal Form -->
-  <div id="modal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex justify-center items-center p-4">
-    <div class="bg-white rounded-lg w-full max-w-md p-6 shadow-xl">
-      <h2 id="modalTitle" class="text-xl font-bold mb-4">Add Contact</h2>
-      <form id="contactForm" onsubmit="saveContact(event)" class="space-y-4">
-        <input type="hidden" id="contactId">
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Name</label>
-          <input type="text" id="name" required class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Company</label>
-          <input type="text" id="company" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Email</label>
-            <input type="email" id="email" required class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
-          </div>
-          <div>
-            <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Phone</label>
-            <input type="text" id="phone" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
-          </div>
-        </div>
-        <div>
-          <label class="block text-xs font-semibold text-gray-600 uppercase mb-1">Status</label>
-          <select id="status" class="w-full px-3 py-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
-            <option value="Lead">Lead</option>
-            <option value="Contacted">Contacted</option>
-            <option value="Customer">Customer</option>
-          </select>
-        </div>
-        <div class="flex justify-end gap-3 pt-4">
-          <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded text-gray-600 hover:bg-gray-100">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
+  <div id="ui">Controls: [A/D] Move | [W / Space] Jump | Hold [E] Push/Pull Box</div>
+  <canvas id="gameCanvas" width="900" height="500"></canvas>
 
   <script>
-    let contacts = JSON.parse(localStorage.getItem('crm_contacts')) || [];
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-    function saveToStorage() {
-      localStorage.setItem('crm_contacts', JSON.stringify(contacts));
-    }
+    // Input tracking
+    const keys = {};
+    window.addEventListener('keydown', e => keys[e.code] = true);
+    window.addEventListener('keyup', e => keys[e.code] = false);
 
-    function render() {
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const statusFilter = document.getElementById('statusFilter').value;
-      const tbody = document.getElementById('contactTableBody');
-      tbody.innerHTML = '';
+    // World & Camera
+    const gravity = 0.5;
+    const camera = { x: 0, y: 0 };
 
-      const filtered = contacts.filter(c => {
-        const matchesSearch = c.name.toLowerCase().includes(search) || 
-                              c.email.toLowerCase().includes(search) || 
-                              c.company.toLowerCase().includes(search);
-        const matchesStatus = statusFilter === 'All' || c.status === statusFilter;
-        return matchesSearch && matchesStatus;
-      });
+    // Player Object
+    const player = {
+      x: 100, y: 300, width: 18, height: 42,
+      vx: 0, vy: 0, speed: 3.5, jumpPower: -9.5,
+      grounded: false, grabbing: false
+    };
 
-      filtered.forEach(c => {
-        const statusColors = {
-          'Lead': 'bg-amber-100 text-amber-800',
-          'Contacted': 'bg-blue-100 text-blue-800',
-          'Customer': 'bg-emerald-100 text-emerald-800'
-        };
+    // Movable Box (Puzzle element)
+    const box = {
+      x: 500, y: 340, width: 40, height: 40,
+      vx: 0, vy: 0, grounded: false
+    };
 
-        const row = `
-          <tr class="hover:bg-gray-50">
-            <td class="p-4 font-medium text-gray-900">${c.name}</td>
-            <td class="p-4 text-gray-600">${c.company || '-'}</td>
-            <td class="p-4 text-gray-600">${c.email}<br><span class="text-xs text-gray-400">${c.phone || ''}</span></td>
-            <td class="p-4"><span class="px-2.5 py-1 text-xs font-semibold rounded-full ${statusColors[c.status]}">${c.status}</span></td>
-            <td class="p-4 text-right space-x-2">
-              <button onclick="editContact('${c.id}')" class="text-blue-600 hover:underline">Edit</button>
-              <button onclick="deleteContact('${c.id}')" class="text-red-600 hover:underline">Delete</button>
-            </td>
-          </tr>`;
-        tbody.innerHTML += row;
-      });
+    // Environment Platforms
+    const platforms = [
+      { x: 0, y: 400, width: 1200, height: 100 },      // Ground
+      { x: 750, y: 280, width: 300, height: 120 },     // High Ledge
+      { x: 1250, y: 200, width: 400, height: 300 }     // End Ledge
+    ];
 
-      // Update Metrics
-      document.getElementById('metric-total').innerText = contacts.length;
-      document.getElementById('metric-leads').innerText = contacts.filter(c => c.status === 'Lead').length;
-      document.getElementById('metric-customers').innerText = contacts.filter(c => c.status === 'Customer').length;
-    }
+    function update() {
+      // 1. Player Horizontal Movement
+      player.vx = 0;
+      if (keys['KeyA'] || keys['ArrowLeft']) player.vx = -player.speed;
+      if (keys['KeyD'] || keys['ArrowRight']) player.vx = player.speed;
 
-    function openModal(contact = null) {
-      document.getElementById('modal').classList.remove('hidden');
-      if (contact) {
-        document.getElementById('modalTitle').innerText = 'Edit Contact';
-        document.getElementById('contactId').value = contact.id;
-        document.getElementById('name').value = contact.name;
-        document.getElementById('company').value = contact.company;
-        document.getElementById('email').value = contact.email;
-        document.getElementById('phone').value = contact.phone;
-        document.getElementById('status').value = contact.status;
+      // 2. Jumping
+      if ((keys['KeyW'] || keys['Space'] || keys['ArrowUp']) && player.grounded) {
+        player.vy = player.jumpPower;
+        player.grounded = false;
+      }
+
+      // 3. Gravity
+      player.vy += gravity;
+      box.vy += gravity;
+
+      // 4. Box Interaction (Push/Pull)
+      const distToBox = Math.abs((player.x + player.width / 2) - (box.x + box.width / 2));
+      const nearBox = distToBox < 35 && Math.abs(player.y - box.y) < 20;
+
+      if (keys['KeyE'] && nearBox) {
+        player.grabbing = true;
+        box.vx = player.vx; // Box moves with player
       } else {
-        document.getElementById('modalTitle').innerText = 'Add Contact';
-        document.getElementById('contactForm').reset();
-        document.getElementById('contactId').value = '';
-      }
-    }
-
-    function closeModal() {
-      document.getElementById('modal').classList.add('hidden');
-    }
-
-    function saveContact(e) {
-      e.preventDefault();
-      const id = document.getElementById('contactId').value;
-      const contactData = {
-        id: id || Date.now().toString(),
-        name: document.getElementById('name').value,
-        company: document.getElementById('company').value,
-        email: document.getElementById('email').value,
-        phone: document.getElementById('phone').value,
-        status: document.getElementById('status').value
-      };
-
-      if (id) {
-        contacts = contacts.map(c => c.id === id ? contactData : c);
-      } else {
-        contacts.push(contactData);
+        player.grabbing = false;
+        box.vx *= 0.8; // Friction
       }
 
-      saveToStorage();
-      render();
-      closeModal();
-    }
+      // Apply horizontal movement
+      player.x += player.vx;
+      box.x += box.vx;
 
-    function editContact(id) {
-      const contact = contacts.find(c => c.id === id);
-      if (contact) openModal(contact);
-    }
-
-    function deleteContact(id) {
-      if (confirm('Delete this contact?')) {
-        contacts = contacts.filter(c => c.id !== id);
-        saveToStorage();
-        render();
-      }
-    }
-
-    function exportData() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(contacts, null, 2));
-      const dlAnchor = document.createElement('a');
-      dlAnchor.setAttribute("href", dataStr);
-      dlAnchor.setAttribute("download", `crm_backup_${new Date().toISOString().slice(0,10)}.json`);
-      dlAnchor.click();
-    }
-
-    function importData(e) {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        try {
-          contacts = JSON.parse(event.target.result);
-          saveToStorage();
-          render();
-        } catch(err) {
-          alert('Invalid JSON file');
+      // Box vs Platforms Collisions
+      box.grounded = false;
+      platforms.forEach(p => {
+        if (box.x < p.x + p.width && box.x + box.width > p.x &&
+            box.y + box.height <= p.y + box.vy && box.y + box.height + box.vy >= p.y) {
+          box.vy = 0;
+          box.y = p.y - box.height;
+          box.grounded = true;
         }
-      };
-      reader.readAsText(e.target.files[0]);
+      });
+      box.y += box.vy;
+
+      // Player vs Box Collision (Stand on box / Push obstacle)
+      if (player.x < box.x + box.width && player.x + player.width > box.x) {
+        // Landing on box
+        if (player.y + player.height <= box.y && player.y + player.height + player.vy >= box.y) {
+          player.vy = 0;
+          player.y = box.y - player.height;
+          player.grounded = true;
+        } 
+        // Side collision (Pushing without grabbing)
+        else if (!player.grabbing) {
+          if (player.vx > 0 && player.x + player.width <= box.x + 10) player.x = box.x - player.width;
+          if (player.vx < 0 && player.x >= box.x + box.width - 10) player.x = box.x + box.width;
+        }
+      }
+
+      // Player vs Platforms Collision
+      player.grounded = false;
+      platforms.forEach(p => {
+        // Vertical collision
+        if (player.x + player.width > p.x && player.x < p.x + p.width) {
+          if (player.y + player.height <= p.y && player.y + player.height + player.vy >= p.y) {
+            player.vy = 0;
+            player.y = p.y - player.height;
+            player.grounded = true;
+          }
+        }
+        // Horizontal wall collision
+        if (player.y + player.height > p.y + 5 && player.y < p.y + p.height) {
+          if (player.vx > 0 && player.x + player.width <= p.x + 10) player.x = p.x - player.width;
+          if (player.vx < 0 && player.x >= p.x + p.width - 10) player.x = p.x + p.width;
+        }
+      });
+
+      player.y += player.vy;
+
+      // Camera Tracking
+      camera.x += (player.x - canvas.width / 3 - camera.x) * 0.05;
     }
 
-    render();
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.save();
+      ctx.translate(-Math.round(camera.x), 0);
+
+      // Background Fog Elements
+      ctx.fillStyle = "#1c2026";
+      ctx.fillRect(200, 150, 80, 250);
+      ctx.fillRect(600, 100, 120, 300);
+
+      // Draw Platforms (Silhouettes)
+      ctx.fillStyle = "#090a0c";
+      platforms.forEach(p => {
+        ctx.fillRect(p.x, p.y, p.width, p.height);
+      });
+
+      // Draw Puzzle Box
+      ctx.fillStyle = "#2d3238";
+      ctx.fillRect(box.x, box.y, box.width, box.height);
+      ctx.strokeStyle = "#1a1d21";
+      ctx.strokeRect(box.x, box.y, box.width, box.height);
+
+      // Draw Player Silhouette
+      ctx.fillStyle = player.grabbing ? "#3a4149" : "#e0e0e0";
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+
+      // Atmospheric Vignette/Lighting Overlay
+      ctx.restore();
+      const gradient = ctx.createRadialGradient(
+        canvas.width / 2, canvas.height / 2, 100,
+        canvas.width / 2, canvas.height / 2, 500
+      );
+      gradient.addColorStop(0, "rgba(0,0,0,0)");
+      gradient.addColorStop(1, "rgba(0,0,0,0.75)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function loop() {
+      update();
+      draw();
+      requestAnimationFrame(loop);
+    }
+
+    loop();
   </script>
 </body>
 </html>
